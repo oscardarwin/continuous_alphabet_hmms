@@ -1,0 +1,31 @@
+\section{Stefan} 
+
+In the following we show that, although it is hard to \emph{compute} likelihood exponents, one can efficiently represent them in terms of \emph{Lyapunov exponents}.
+The definition of Lyapunov exponents is based on the following definition.
+
+\begin{definition} \label{lem:lyapunov-exponent}
+A \emph{Lyapunov system} is a quadruple $(Q, \Sigma, \Psi, \rho)$ where $Q$ is a finite set of states, $\Sigma$ is a finite set of observations, $\psi: \Sigma \rightarrow \mathbb{R}_{\ge 0}^{Q \times Q}$ specifies the transitions, and $\rho : \Sigma \to [0,1]$ is a probability distribution on~$\Sigma$ [PROBABLY INTRODUCE A NOTATION FOR A PROBABILITY DISTRIBUTION IN THE PRELIMINARIES.], such that the directed graph $(Q,E)$ with $E = \{(q,r) \mid \sum_{a \in \Sigma} \Psi_{q,r}(a) > 0\}$ is strongly connected.
+\end{definition}
+
+Let $(Q, \Sigma, \Psi, \rho)$ be a Lyapunov system.
+We can identify $\rho$ with the single-state HMM $(\{s\}, \Sigma, \Psi_\rho)$ where $\Psi_\rho(a)_{s,s} = \rho(a)$ for all $a \in \Sigma$.
+In this way, $\rho$ produces a random infinite word from $\Sigma^\omega$.
+For $w \in \Sigma^\omega$ we write $w_n$ for the length-$n$ prefix of~$w$.
+The following lemma is known from [CITE].
+
+\begin{lemma}[{[CITE]}] \label{lem:lyapunov-exponent}
+Let $(Q, \Sigma, \Psi, \rho)$ be a Lyapunov system.
+Then there is $\ell \in \RR$ such that, $\PP_{\rho}$-a.s., for all $q \in Q$, the limit $\lim_{n \to \infty} \| e_q \Psi(w_n) \|$ exists and equals~$\ell$.
+\end{lemma}
+\renewcommand{\S}{\mathcal{S}}
+For a Lyapunov system~$\S$ we call $\ell(S) = \ell$ from the lemma the \emph{Lyapunov exponent} defined by~$\S$.
+We prove the following theorem.
+\begin{theorem} \label{thm:likelihood-to-lyapunov}
+Given an HMM $(Q, \Sigma, \Psi)$ we can compute in polynomial time $2 K \le 2 |Q|^2$ Lyapunov systems $\S_1^1, \S_1^2, \S_2^1, \S_2^2, \ldots, \S_K^1, \S_K^2$ such that
+\[ 
+\Lambda \ \subseteq \ \{-\infty\} \cup \{\ell(S_1^1) - \ell(S_1^2), \ldots, \ell(S_K^1) - \ell(S_K^2)\} \,.
+\]
+In particular, the HMM has at most $|Q|^2 + 1$ likelihood exponents.
+\end{theorem}
+
+In the rest of the section we provide more details on the construction underlying \cref{thm:likelihood-to-lyapunov}.

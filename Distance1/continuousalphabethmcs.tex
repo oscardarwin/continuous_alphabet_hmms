@@ -1,0 +1,851 @@
+\documentclass[a4paper,UKenglish,cleveref, autoref,mathscr]{lipics-v2019}
+%This is a template for producing LIPIcs articles.
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling cleveref support, use "autoref"
+
+\usepackage{bbm, tikz, mathtools, thm-restate}
+\usetikzlibrary{arrows,calc,automata}
+\tikzset{LMC style/.style={>=angle 60,every edge/.append style={thick},every state/.style={thick,minimum size=20,inner sep=0.5}}}
+
+\newcommand{\eow}{\$}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Epsilon}{\mathcal{E}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\Bor}{\mathscr{B}}
+\newcommand{\BorC}{\mathscr{C}}
+\newcommand{\GG}{\mathscr{G}}
+\newcommand{\HH}{\mathscr{H}}
+\newcommand{\Norm}{\mathscr{N}}
+%\newcommand{\FF}{\mathscr{F}}
+\newcommand{\DD}{\mathscr{D}}
+\newcommand{\MM}{\mathscr{M}}
+\newcommand{\Basis}{\mathscr{B}}
+\newcommand{\balph}{\boldsymbol{\alpha}}
+\newcommand{\bpldP}{\boldsymbol{P}}
+\newcommand{\stoch}{\boldsymbol{S}}
+\newcommand{\TT}{\boldsymbol{T}}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\pem}{\mathbf{A}}
+\newcommand{\con}{\textbf{con}}
+\newcommand{\Con}{\overline{\textbf{con}}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\pl}{\Gamma_{\mathit{GEM}}}
+\newcommand{\Leb}{\lambda_{\mathit{Leb}}}
+
+\graphicspath{ {images/} }
+
+\DeclareMathOperator{\Span}{span\,}
+
+%\newcommand{\stefan}[1]{\marginpar{\textcolor{blue}{#1}}}
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Equivalence of Hidden Markov Models with Continuous Observations}
+
+\author{Oscar Darwin}{Department of Computer Science, Oxford University, United Kingdom }{}{https://orcid.org/0000-0001-5016-014X}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\author{Stefan Kiefer}{Department of Computer Science, Oxford University, United Kingdom}{}{https://orcid.org/0000-0003-4173-6877}{}
+
+\authorrunning{O. Darwin and S. Kiefer}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{John Q. Public and Joan R. Public}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+%\ccsdesc[100]{General and reference~General literature}
+%\ccsdesc[100]{General and reference}%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm
+\ccsdesc[500]{Theory of computation~Random walks and Markov chains}
+\ccsdesc[500]{Mathematics of computing~Stochastic processes}
+\ccsdesc[300]{Theory of computation~Logic and verification}
+
+\keywords{Markov chains, equivalence, probabilistic systems, verification}%TODO mandatory; please add comma-separated list of keywords
+
+\category{}%optional, e.g. invited paper
+
+\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversion{A full version of the paper is available at \url{...}.}
+
+\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%\acknowledgements{I want to thank \dots}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sloppy
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We consider Hidden Markov Models that emit sequences of observations that are drawn from continuous distributions. For example, such a model may emit a sequence of numbers, each of which is drawn from a uniform distribution, but the support of the uniform distribution depends on the state of the Hidden Markov Model. Such models generalise the more common version where each observation is drawn from a finite alphabet. Under suitable conditions on the representation of the associated density functions, we develop an algorithm that determines in polynomial time whether two Hidden Markov Models with continuous observations are equivalent.
+\end{abstract}
+
+\section{Introduction}
+
+A (discrete-time, finite-state) \emph{Hidden Markov Model (HMM)} (often called \emph{labelled Markov chain}) has a finite set $Q$ of states and for each state a probability distribution over its possible successor states.
+For any two states $q, q'$, whenever the state changes from $q$ to~$q'$, the HMM samples and then emits a random observation according to a probability distribution $D(q, q')$.
+For example, consider the following diagram visualising a HMM:
+\begin{center}
+\begin{tikzpicture}[scale=2.5,LMC style]
+\node[state] (q1) at (0,0) {$q_1$};
+\node[state] (q2) at (1,0) {$q_2$};
+\path[->] (q1) edge [loop,out=200,in=160,looseness=10] node[left] {$\frac12 (\frac14 a + \frac34 b)$} (q1);
+\path[->] (q1) edge [bend left] node[above] {$\frac12 (a)$} (q2);
+\path[->] (q2) edge [loop,out=20,in=-20,looseness=10] node[right] {$\frac23 (b)$} (q2);
+\path[->] (q2) edge [bend left] node[below] {$\frac13 (a)$} (q1);
+\end{tikzpicture}
+\end{center}
+In state~$q_1$, the successor state is $q_1$ or~$q_2$, with probability~$\frac12$ each.
+Upon transitioning from $q_1$ to itself, observation~$a$ is drawn with probability~$\frac14$ and observation~$b$ is drawn with probability~$\frac34$; upon transitioning from $q_1$ to~$q_2$, observation~$a$ is drawn surely.
+
+In this way, a HMM, together with an initial distribution on states, generates a random infinite sequence of observations.
+In the example above, if the initial distribution is the Dirac distribution on~$q_1$, the probability that the observation sequence starts with~$a$ is $\frac12 \cdot \frac14 + \frac12$, and that it starts with~$a b$ is $\frac12 \cdot \frac14 \cdot \frac12 \cdot \frac34 + \frac12 \cdot \frac23$.
+
+In the example above the observations are drawn from a finite observation alphabet $\Sigma = \{a,b\}$.
+Indeed, in the literature HMMs most commonly have a finite observation alphabet.
+In this paper we lift this restriction and consider \emph{continuous-observation} HMMs, by which we mean HMMs as described above, but with continuous observation set~$\Sigma$.
+For example, instead of the three different distributions on~$\{a,b\}$ in the picture above (written there as $(\frac14 a + \frac34 b)$, $(a)$, $(b)$, respectively), we may have three different distributions on the nonnegative reals, such as exponential distributions and uniform distributions on intervals~$[0,c]$.
+
+HMMs, both with finite and infinite observation sets, are widely employed in fields such as speech recognition (see~\cite{Rabiner89} for a tutorial),
+gesture recognition~\cite{Gesture},
+%musical score following~\cite{MusicalScore},
+signal processing~\cite{SignalProcessing},
+and climate modeling~\cite{Weather}.
+HMMs are heavily used in computational biology~\cite{HMM-comp-biology},
+more specifically in DNA modeling~\cite{DNA-modeling} and biological sequence analysis~\cite{durbin1998biological},
+including protein structure prediction~\cite{ProteinStructure} %, detecting similarities in genomes~\cite{Homology}
+and gene finding~\cite{GeneFinding}.
+In computer-aided verification, HMMs are the most fundamental model for probabilistic systems; model-checking tools such as Prism~\cite{KNP11} or Storm~\cite{Storm} are based on analyzing HMMs efficiently.
+
+One of the most fundamental questions about HMMs is whether two HMMs with initial state distributions are \emph{(trace) equivalent}, i.e., generate the same distribution on infinite observation sequences.
+For finite observation alphabets this problem is very well studied and can be solved in polynomial time using algorithms that are based on linear algebra~\cite{schut61,Paz71,Tzeng92,CortesMRdistance}.
+The equivalence problem has applications in verification, e.g., of randomised anonymity protocols~\cite{kief11}.
+
+Although the generalisation to continuous observations (such as passed time, consumed energy, sensor readings) is natural, there has been little work on the algorithmics of such HMMs.
+One exception is \emph{continuous-time} Markov chains (CTMCs) \cite{BHHK03,CDKM11}, which are similar to HMMs as described above, but with two kinds of observations: on the one hand they emit observations from a finite alphabet, but on the other hand they also emit the \emph{time} spent in a state.
+Typically, each state-to-state transition is labelled with a parameter~$\lambda$; for each transition its time of ``firing'' is drawn from an exponential distribution with parameter~$\lambda$; the transition with the smallest firing time ``wins'' and causes the corresponding change of state.
+CTMCs have attractive properties: they are in a sense memoryless, and for many analyses, including model checking, an equivalent discrete-time model can be calculated using an efficient and numerically stable process called \emph{uniformization}~\cite{Grassmann91}.
+The HMM model considered in this paper includes CTMCs as a special case.
+
+In~\cite{HKK14} a stochastic model more general than ours was introduced, allowing not only for uncountable sets of observations (called \emph{labels} there), but also for infinite sets of states and actions.
+The paper~\cite{HKK14} focuses on bisimulation; trace equivalence is not considered there.
+
+For algorithmic purposes it is important how the density functions that are associated with the continuous observation distributions are (finitely) represented, and what kind of computations on the density functions are needed.
+We will show that in order to decide equivalence we need to compute a basis for the vector space spanned by the density functions that appear in the given continuous HMM.
+We identify the resulting computational requirements on the densities and show that they are met, e.g., by density functions that are obtained as finite linear combinations of exponential, normal, and piecewise polynomial (such as uniform) distributions.
+
+The main contribution of the paper is a polynomial-time algorithm for deciding equivalence in continuous-observation HMMs.
+We obtain this result by a polynomial-time reduction to equivalence in HMMs with finite observation alphabet.
+
+
+
+%A HMM with finite alphabet can be simulated on $\RR$, by first defining a disjoint set of intervals for each letter and then assigning said letter to a uniform distribution on that interval. It is clear that these uniform distributions cannot be simulated by linear combinations of any of the others, due to their disjoint support. Indeed, finite alphabets have a natural \emph{linear independence}.
+
+
+\section{Preliminaries}
+We write $\NN$ for the set of positive integers, $\QQ$ for the set of rationals and $\QQ_+$ for the set of positive rationals.
+For $d \in \NN$ and a finite set $Q$ we use the notation $[d] = \{1, \dots, d\}$ and $[Q] = \{1, \dots, |Q|\}$ where $|Q|$ is the number of elements in the set. Vectors $\mu \in \RR^N$ are viewed as row vectors and we write $\1 = (1, \dots, 1) \in \RR^N$.
+Superscript~$T$ denotes transpose; e.g., $\1^T$ is a column vector of ones.
+A matrix $M \in \RR^{N \times N}$ is \emph{stochastic} if $M$ is non-negative and $\sum_{j = 1}^{N} M_{i,j} = 1$ for all $i \in [N]$.
+For a domain $\Sigma$ and subset $E \subset \Sigma$ the \emph{characteristic} function $\chi_E : \Sigma \rightarrow \{0,1\}$ is the defined as $\chi_E(x) = 1$ if $x \in E$ and $\chi_E(x) = 0$ otherwise.
+
+Throughout this paper, we use $\Sigma$ to denote a set of \emph{observations}.
+We assume $\Sigma$ is a Polish space and $(\Sigma, \GG, \lambda)$ is a measure space where every open subset $E \in \GG$ has non-zero measure.
+The set $\Sigma^n$ contains the words over~$\Sigma$ of length $n$, so that $\Sigma^* = \bigcup_{n = 0}^\infty \Sigma^n$.
+
+
+A matrix valued function $\Psi : \Sigma \rightarrow [0,\infty)^{N \times N}$ can be integrated element-wise.
+We write $\int_E \Psi\,d\lambda$ for the matrix with $\left( \int_E \Psi\, d\lambda \right)_{i,j} = \int_E \Psi_{i,j}\, d\lambda$, where $\Psi_{i,j} : \Sigma \rightarrow [0,\infty)$ is defined by $\Psi_{i,j}(x) = \big( \Psi(x) \big)_{i,j}$ for all $x \in \Sigma$.
+
+
+A function $f : \Sigma \rightarrow \RR^m$ is \emph{piecewise continuous} if there is an open set $C \subset \Sigma$, called a \emph{set of continuity}, such that $f$ is continuous on $C$ and for every point $x \in  \Sigma \setminus C$ there is some sequence of points $x_n \in C$ such that $\lim_{n \rightarrow \infty} x_n = x$ and $\lim_{n \rightarrow \infty} f(x_n) = f(x)$. 
+
+
+\begin{definition}\label{HMMdef}
+A \emph{Hidden Markov Model} (HMM) is a triple $(Q, \Sigma, \Psi)$ where $Q$ is a finite set of states, $\Sigma$ is a set of observations, and the \emph{observation density matrix} $\Psi : \Sigma \rightarrow [0,\infty)^{|Q| \times |Q|}$ specifies the transitions such that $\int_\Sigma \Psi\, d\lambda$ is a stochastic matrix.
+\end{definition}
+
+In this paper we assume that $\Psi$ is piecewise continuous and extend $\Psi$ to the mapping $\Psi : \Sigma^* \rightarrow [0,\infty)^{|Q| \times |Q|}$ with $\Psi(x_1 \cdots x_n) = \Psi(x_1) \times \dots \times \Psi(x_n)$ for $x_1, \dots, x_n \in \Sigma$. If $C$ is a set the set of continuity for $\Psi : \Sigma \rightarrow [0,\infty)^{|Q| \times |Q|}$, then for fixed $n \in \NN$ the restriction $\Psi : \Sigma^n \rightarrow [0,\infty)^{|Q| \times |Q|}$ is piecewise continuous with set of continuity $C^n$. We say that $A \subseteq \Sigma^n$ is a \emph{cylinder set} if $A = A_1 \times \dots \times A_n$ and $A_i \in \GG$ for $i \in [n]$. For every $n$ there is an induced measure space $(\Sigma^n, \GG^n, \lambda^n)$ where $\GG^n$ is the smallest $\sigma$-algebra containing all cylinder sets in $\Sigma^n$ and $\lambda^n(A_1 \times \dots \times A_n) = \prod_{i = 1}^n \lambda(A_i)$ for any cylinder set $A_1 \times \dots \times A_n$. Let $A \subset \Sigma^n$ and write $A \Sigma^\omega$ for the set of infinite runs where the first $n$ observations fall in the set $A$. Given a HMM $(Q, \Sigma, \Psi)$ and initial distribution $\pi$ on $Q$ viewed as vector $\pi \in \RR^{|Q|}$, there is an induced probability space $(\Sigma^\omega, \GG^*, \PP_\pi)$ where $\Sigma^\omega$ is the set of infinite runs of $\Sigma$, $\GG^*$ is the smallest $\sigma$-algebra containing (for all $n \in \NN$) all sets $A \Sigma^\omega$ where $A\subseteq \Sigma^n$ is a cylinder set and $\PP_\pi$ is the unique probability measure such that
+\[\PP_\pi(A \Sigma^n) =  \pi \int_A \Psi\, d\lambda^n \1^T\]
+for any cylinder set $A \subseteq \Sigma^n$. For two distributions $\pi_1$ and $\pi_2$ and a HMM $C = (Q, \Sigma, \Psi)$, we say that $\pi_1 \equiv_C \pi_2$ if and only if $\PP_{\pi_1}(A) = \PP_{\pi_2}(A)$ for all measurable subsets $A \in \Sigma^\omega$.
+
+
+%A key concept used throughout this paper is that of \emph{functional decomposition}.
+Given an observation density matrix $\Psi$, a \emph{functional decomposition} consists of functions $f_k : \Sigma \rightarrow [0,\infty)$ and matrices $P_k \in \RR^{|Q| \times |Q|}$ for $k \in [d]$ such that $\Psi(x) = \sum_{k = 1}^d f_k(x) P_k$ for all $x \in \Sigma$ and $\int_{\Sigma} f_k\, d\lambda = 1$ for all $k \in [d]$. We sometimes abbreviate this decomposition as $\Psi = \sum_{k = 1}^d f_k P_k$.
+
+\begin{lemma}\label{stochasticPk}
+Let $(Q, \Sigma, \Psi)$ be a HMM.
+If $\Psi$ has functional decomposition $\Psi =  \sum_{k = 1}^d f_k P_k$ then $\sum_{k = 1}^d P_k$ is stochastic.
+\end{lemma}
+\begin{proof}
+By definition of a HMM, $\int_{\Sigma} \Psi\, d\lambda$ is stochastic, and we have
+\begin{equation*}
+\int_{\Sigma} \Psi\, d\lambda = \int_{\Sigma} \sum_{k = 1}^d f_k P_k\, d\lambda =  \sum_{k = 1}^d P_k  \int_{\Sigma} f_k\, d\lambda =  \sum_{k = 1}^d P_k.\qedhere
+\end{equation*}
+\end{proof}
+When $\Sigma$ is finite, it follows that $\int_\Sigma \Psi\, d\lambda = \sum_{a \in \Sigma} \Psi(a)$. Hence $\sum_{a \in \Sigma} \Psi(a)$ is stochastic.
+
+\subparagraph*{Encoding}
+For computational purposes we assume that rational numbers are represented as ratios of integers in binary.
+The initial distribution of a HMM with state set~$Q$ is given as a vector $\pi \in \QQ^{|Q|}$.
+We also need to encode continuous functions, in particular, density functions such as Gaussian, exponential or piecewise-polynomial functions.
+A \emph{profile} is a finite word (i.e., string) that describes of a continuous function.
+It may consist of (an encoding of) a function type and its parameters. For example, the profile  $(\mathcal{N}, \mu, \sigma)$ may denote a Gaussian (also called normal) distribution with mean $\mu \in \QQ$ and standard deviation $\sigma \in \QQ_+$. A profile may also consist of a description of a rational linear combination of such building blocks.
+For any profile~$\gamma$ we write $[\![\gamma]\!] : \Sigma \rightarrow [0,\infty)$ for the function it encodes.
+For example, a profile $\gamma = (\mathcal{N}, \mu, \sigma)$ with $\mu \in \QQ,\ \sigma \in \QQ_+$ may encode the function $[\![\gamma]\!](x) = \frac{1}{\sigma\sqrt{2\pi}} \exp{- \frac{(x - \mu)^2}{2\sigma^2}}$.
+Without restricting ourselves to any particular encoding, we assume that $\Gamma$ is a \emph{profile language}, i.e., a finitely presented but usually infinite set of valid profiles. For any $\Gamma_0 \subseteq \Gamma$ we use the notation $[\![\Gamma_0]\!] = \{[\![\gamma]\!] \mid \gamma \in \Gamma_0\}$.
+
+We use profiles to encode HMMs $C = (Q, \Sigma, \Psi)$:
+we say that $C$ is \emph{over}~$\Gamma$ if the observation density matrix~$\Psi$ is given as a matrix of pairs $(p_{i,j}, \gamma_{i,j}) \in \QQ_+  \times \Gamma$ such that $\Psi_{i,j} = p_{i,j} [\![\gamma_{i,j}]\!]$ and $\int_{\Sigma} [\![\gamma_{i,j}]\!]\,d\lambda = 1$ hold for all $i,j \in [Q]$.
+
+The observation density matrix~$\Psi$ of a HMM $(Q, \Sigma, \Psi)$ with \emph{finite}~$\Sigma$ can be given as a
+list of matrices $\Psi(a) \in \QQ_+^{|Q| \times |Q|}$ for all $a \in \Sigma$ such that $\sum_{a \in \Sigma} \Psi(a)$ is a stochastic matrix.
+
+\subparagraph*{Supports}
+For a non-negative function $f : \Sigma \rightarrow [0,\infty)$ we write $\supp~f = \{x \in \Sigma \mid f(x) > 0\}$. We generalise this notation to observation density matrices in the following way. We define $\supp : [0,\infty)^{|Q| \times |Q|} \rightarrow \{0,1\}^{|Q| \times |Q|}$ by \begin{equation*}
+\big(\supp ~M \big)_{i,j} = \begin{cases}
+1 & M_{i,j}>0 \\
+0 & M_{i,j}=0.
+\end{cases}
+\end{equation*}
+The $\supp$ function gives rise to the natural identity
+\[\supp ~AB = \supp \big(\supp~A \big)\big(\supp~B\big). \]
+\section{Equivalence as Orthogonality}
+
+For finite-observation HMMs it is well known~\cite{schut61,Paz71,Tzeng92,CortesMRdistance} that two initial distributions given as vectors $\pi_1, \pi_2 \in \RR^{|Q|}$ are equivalent if and only if $\pi_1 - \pi_2$ is orthogonal (written as~$\perp$) to a certain vector space.
+Indeed, this property holds more generally:
+
+\begin{proposition}\label{equivifperpspan}
+Consider a HMM $(Q, \Sigma, \Psi)$.
+For any $\pi_1, \pi_2 \in \RR^{|Q|}$ we have
+\[\pi_1 \equiv \pi_2 \ \iff \ \pi_1 - \pi_2 \perp \Span \{\Psi(w)\1^T \mid w \in \Sigma^*\}.\]
+\end{proposition}
+\begin{proof}
+We have:
+\begin{align*}
+\pi_1 \equiv \pi_2 & \iff \PP_{\pi_1}(E) = \PP_{\pi_2}(E) & & \forall E \in \GG^* \\
+& \iff (\pi_1 - \pi_2) \int_{E} \Psi\, d\lambda^n \1^T = 0 & & \forall E \in \GG^n,\ n \in \NN \\
+& \iff (\pi_1 - \pi_2) \Psi(w) \1^T = 0 & & \forall w \in \Sigma^n,\ n \in \NN\\
+& \iff (\pi_1 - \pi_2) \perp \Span \{\Psi(w) \1^T \mid w \in \Sigma^*\}\,,
+\end{align*}
+where the third equivalence follows from \Cref{pwcontinuousspanlemma} in the appendix.
+\end{proof}
+
+In the finite-observation case, \cref{equivifperpspan} leads to an efficient algorithm for deciding equivalence: it suffices to compute a basis for $\mathcal{V} = \Span \{\Psi(w)\1^T \mid w \in \Sigma^*\}$.
+This can be done using a fixed-point algorithm that computes a sequence of (bases of) increasing subspaces of~$\mathcal{V}$: start with $\mathcal{B} = \{\1^T\}$, and as long as there is $a \in \Sigma$ and $v \in \mathcal{B}$ such that $\Psi(a) v \not\in \Span \mathcal{B}$, add $\Psi(a) v$ to~$\mathcal{B}$.
+Since $\dim \mathcal{V} \le |Q|$, this algorithm terminates after at most $|Q|$ iterations, and returns $\mathcal{B}$ such that $\Span \mathcal{B} = \mathcal{V}$.
+It is then easy to check whether $\pi_1 - \pi_2 \perp \mathcal{V}$.
+It follows:
+\begin{proposition} \label{prop-finite-HMM}
+Given a HMM $(Q, \Sigma, \Psi)$ with finite~$\Sigma$ and initial distributions $\pi_1, \pi_2 \in \QQ^{|Q|}$, it is decidable in polynomial time whether $\pi_1 \equiv \pi_2$.
+\end{proposition}
+This is not an effective algorithm when $\Sigma$ is infinite.
+
+\section{Labelling Reductions}\label{finitelabred}
+Our goal is to reduce in polynomial time the equivalence problem in continuous-observation HMMs to the equivalence problem in finite-observation HMMs.
+Since the latter is decidable in polynomial time by \cref{prop-finite-HMM}, a polynomial time algorithm for deciding equivalence in continuous-observation HMMs follows.
+
+
+Towards this goal, in order to produce a finite-observation HMM, we first consider assigning a label to each unique observation density.
+Suppose $C = (Q, \Sigma, \Psi)$ is a HMM such that $\Psi$ is given as a matrix of coefficient-profile pairs $(p_{i,j}, \gamma_{i,j}) \in \QQ_+ \times \Gamma$, i.e., $\Psi_{i,j} = p_{i,j} [\![\gamma_{i,j}]\!]$ and $\int_{\Sigma} [\![\gamma_{i,j}]\!]\,d\lambda = 1$ hold for all $i,j \in [Q]$.
+Let $\beta_1, \ldots, \beta_K$ be distinct profiles such that $\{\beta_1, \ldots, \beta_K\} = \{\gamma_{i,j} \mid i,j \in [Q]\}$.
+Let $\hat{\Sigma} = \{a_1, \dots, a_K\}$ be an alphabet of fresh observations associated to each profile, and define the matrix valued function $\hat{M} : \hat{\Sigma} \rightarrow [0,1]^{|Q| \times |Q|}$ such that for all $i,j \in [Q]$ and all $k \in [K]$
+\[
+\hat{M}_{i,j}(a_k) = \begin{cases}
+p_{i,j} & \gamma_{i,j} = \beta_k \\
+0 & \text{otherwise}.
+\end{cases}
+\]
+The observation density function then has functional decomposition $\Psi = \sum_{k = 1}^K [\![\beta_k]\!] \hat{M}(a_k)$. It follows by \Cref{stochasticPk} that $\sum_{k = 1}^K \hat{M}(a_k)$ is stochastic.
+The triple $(Q, \hat{\Sigma}, \hat{M})$ is then a finite-observation HMM which we call the \emph{labelling reduction} of~$C$.
+Note that it can be computed in polynomial time.
+Equivalence in the labelling reduction implies equivalence in the original HMM:
+\begin{proposition}\label{redbydist}
+Let $C = (Q, \Sigma, \Psi)$ be a HMM with labelling reduction $L = (Q, \hat{\Sigma}, \hat{M})$. Then for any initial distributions $\pi_1$ and $\pi_2$
+$$\pi_1 \equiv_L \pi_2 \implies \pi_1 \equiv_C \pi_2.$$
+\end{proposition}
+For the proof we first show the following lemma, which will be reused in \cref{starredsec}:
+\begin{lemma}\label{langequiv}
+Let $C_1 = (Q, \Sigma_1, \Psi_1)$ and $C_2 = (Q, \Sigma_2, \Psi_2)$ be two HMMs with the same state space~$Q$.
+Suppose that $\Span \{\Psi_1(x) \mid x \in \Sigma_1\} \subseteq \Span \{\Psi_2(x) \mid x \in \Sigma_2\}$.
+Then, for any two initial distributions $\pi_1$ and $\pi_2$,
+\[\pi_1 \equiv_{C_2} \pi_2 \implies \pi_1 \equiv_{C_1} \pi_2.\]
+\end{lemma}
+
+\begin{proof}
+Let $w = x_1\cdots x_N \in \Sigma_1^*$.
+Then $\Psi_1(x_n) = \sum_{i = 1}^{I_n} \lambda_{i,n} \Psi_2(y_{i,n})$ for $n \in [N]$ and
+\begin{align*}
+\Psi_1(w) & = \Big(\sum_{i_1 = 1}^{I_1} \lambda_{i_1,1} \Psi_2(y_{i_1,1}) \Big) \dots \Big(\sum_{i_N = 1}^{I_N} \lambda_{i_N,N} \Psi_2(y_{i_N,N}) \Big) \\
+& = \sum_{i_1 = 1}^{I_1} \dots \sum_{i_N = 1}^{I_N} \lambda_{i_1, 1} \dots \lambda_{i_N,N} \Psi_2(y_{i_1, 1}) \dots \Psi_2(y_{i_N, N}) \\
+& \in \Span \{ \Psi_2(w) \mid w \in \Sigma_2^*\}.
+\end{align*}
+Thus, $\Span \{\Psi_1(w) \mid w \in \Sigma_1^*\} \subseteq \Span \{\Psi_2(w) \mid w \in \Sigma_2^*\}$. Therefore, by \Cref{equivifperpspan},
+\begin{align*}
+\pi_1 \equiv_{C_2} \pi_2 & \iff \pi_1 - \pi_2 \perp \Span \{\Psi_{2}(w) \1^T \mid w \in \Sigma_2^*\} \\
+& \implies \pi_1 - \pi_2 \perp \Span \{\Psi_{1}(w) \1^T \mid w \in \Sigma_1^*\} \\
+& \iff \pi_1 \equiv_{C_1} \pi_2. \tag*{\qedhere}
+\end{align*}
+\end{proof}
+We use \cref{langequiv} to prove \cref{redbydist}:
+\begin{proof}[Proof of \cref{redbydist}]
+$\Psi$ has functional decomposition $\Psi = \sum_{k = 1}^K [\![\beta_k]\!] \hat{M}(a_k)$.
+Thus, $\Span \{\Psi(x) \mid x \in \Sigma\} \subseteq \Span \{\hat{M}(a_k) \mid a_k \in \hat{\Sigma}\}$
+and the statement follows by \cref{langequiv}.
+\end{proof}
+
+\begin{example}\label{finiteredproblem}
+The reverse implication in \Cref{redbydist} does not hold.
+Indeed, consider the HMMs in the diagram below where $D$ and $D'$ are distributions on $[0,1]$ with probability density functions $f(x) = 2x \chi_{[0,1)}(x)$ and $f'(x) = 2(1 - x)\chi_{[0,1)}(x)$ respectively, and $U[a,b)$ is the uniform distribution on $[a,b)$.
+Since $U[0,1) = \frac{1}{2} D + \frac{1}{2} D'$, (the Dirac distributions on) states $q_1$ and $q_4$ are equivalent but as the distributions $U[0,1), D, D'$ are all different, they get assigned different labels $a, b, c$, respectively. Therefore, in the labelling reduction, $q_1$ and $q_4$ are not equivalent.
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (q1) at (0,0) {$q_1$};
+	\node[state] (q2) at (1,0.5) {$q_2$};
+	\node[state] (q3) at (1,-0.5) {$q_3$};
+	\node[state] (q4) at (2,0) {$q_4$};
+	\path[->] (q2) edge [loop,out=110,in=70,looseness=10] node[pos=0.75,right] {$1 U[0,2)$} (q2);
+	\path[->] (q4) edge node[pos=0.75,right,yshift=1mm] {$1 U[0,1)$} (q2);
+	\path[->] (q3) edge node[right,pos=0.4] {$1 U[0,2)$} (q2);
+	\path[->] (q1) edge node[above] {$\frac{1}{2} D$} (q2);
+	\path[->] (q1) edge node[above,yshift=1mm] {$\frac{1}{2} D'$} (q3);
+	
+	\node[state] (q5) at (3,0) {$q_1$};
+	\node[state] (q6) at (4,0.5) {$q_2$};
+	\node[state] (q7) at (4,-0.5) {$q_3$};
+	\node[state] (q8) at (5,0) {$q_4$};
+	\path[->] (q6) edge [loop,out=110,in=70,looseness=10] node[pos=0.75,right] {$1 (d)$} (q6);
+	\path[->] (q8) edge node[above,pos=0.4] {$1 (a)$} (q6);
+	\path[->] (q7) edge node[right,pos=0.4] {$1 (d)$} (q6);
+	\path[->] (q5) edge node[above] {$\frac{1}{2} (b)$} (q6);
+	\path[->] (q5) edge node[above,yshift=1mm] {$\frac{1}{2} (c)$} (q7);
+	\end{tikzpicture}
+\end{center}
+\end{example}
+
+
+
+
+\section{Linearly Decomposable Profile Languages} \label{sec-linearly-decomposable}
+
+\Cref{finiteredproblem} shows that the linear combination of two continuous distributions can ``imitate'' a single distribution. Therefore we consider the transition densities as part of a vector space of functions. In the usual way $\mathcal{L}_1(\Sigma, \lambda)$ is the quotient vector space where functions that differ only on a $\lambda$-null set are identified. In particular, when $\Sigma \subseteq \RR$ and $\lambda$ is the Lebesgue measure~$\Leb$, the functions $\chi_{[a,b)}$ and $\chi_{(a,b]}$ are considered the same.
+
+Let $\Gamma$ be a profile language with $[\![\Gamma]\!] \subseteq \mathcal{L}_1(\Sigma, \lambda)$. We say that $\Gamma$ is \emph{linearly decomposable} if for every finite set $\{\gamma_1, \dots, \gamma_n\} = \Gamma_0 \subseteq \Gamma$ one can compute in polynomial time profiles $\beta_1, \dots, \beta_m \in \Gamma_0$ such that $\{[\![\beta_1]\!], \dots, [\![\beta_m]\!]\}$ is a basis for $\Span \{[\![\gamma_1]\!], \dots, [\![\gamma_n]\!]\}$ (hence $m \leq n$), and further a set of coefficients $b_{i,j} \in \QQ$ for $i \in [n], j \in [m]$ such that
+\begin{equation*}
+[\![\gamma_i]\!] = \sum_{j = 1}^m b_{i,j}[\![\beta_j]\!] \text{ for all $i \in [n]$.}
+\end{equation*}
+The following theorem is the main result of this paper:
+\begin{theorem}\label{computationequivalencethm}
+Given a HMM $(Q, \Sigma, \Psi)$ over a linearly decomposable profile language, and initial distributions $\pi_1, \pi_2 \in \QQ^{|Q|}$, it is decidable in polynomial time whether $\pi_1 \equiv \pi_2$.
+\end{theorem}
+We prove \cref{computationequivalencethm} in \cref{starredsec}.
+To make the notion of linearly decomposable profile languages more concrete, we give a concrete example in the following subsection.
+
+\subsection{Example: Gaussian, Exponential, and Piecewise Polynomial Functions} \label{sub-profile-example}
+
+We describe a profile language, $\pl$, that can specify linear combinations of Gaussian, exponential, and piecewise polynomial density functions.
+
+We call a function of the form $x \mapsto x^k \chi_{I}(x)$ where $k \in \NN \cup \{0\}$ and $I \subset \RR$ is an interval an \emph{interval-domain monomial}.
+To avoid clutter, we often denote interval-domain monomials only by $x^k \chi_I$.
+Recall that $\mathcal{L}_1(\RR, \Leb)$ is a quotient space, so half open intervals~$I = [a,b)$ are sufficient. Any piecewise polynomial is a linear combination of interval-domain monomials.
+
+Let $M$ be a set of profiles encoding interval-domain monomials $x^k \chi_{[a,b)}$ in terms of $k \in \NN \cup \{0\}$ and $a,b \in \QQ$. Gaussian and exponential density functions can be fully described using their parameters, which we assume to be rational. We write $G$ and $E$ for corresponding sets of profiles, respectively.
+%
+Finally, we fix a profile language $\pl \supset G \cup E \cup M$ obtained by closing $G \cup E \cup M$ under linear combinations. That is, for any $\gamma_1, \dots, \gamma_k \in \pl$ and $\lambda_1, \dots, \lambda_k \in \QQ$, there exists a profile $\gamma \in \pl$ such that $[\![\gamma]\!] = \lambda_1 [\![\gamma_1]\!] + \dots + \lambda_k [\![\gamma_k]\!]$.
+This closure can be achieved using a specific constructor, say $\mathcal{S}$, for linear combinations, so that $\gamma = \mathcal{S}(\lambda_1, \gamma_1, \ldots, \lambda_k, \gamma_k)$.
+
+
+\begin{example}\label{profileexample}
+The HMM $(Q, \RR, \Psi)$ from \Cref{finiteredproblem} is over~$\pl$: the observation density matrix~$\Psi$ can be encoded as a matrix of coefficient-profile pairs
+\[
+\begin{pmatrix}
+0 & (\frac12, \gamma_1)  & (\frac12,\gamma_2) & 0 \\
+0 & (1,\gamma_3) & 0 & 0 \\
+0 & (1,\gamma_3) & 0 & 0 \\
+0 & (1,\gamma_4) & 0 & 0
+\end{pmatrix}
+\]
+with $\gamma_1, \gamma_2, \gamma_3, \gamma_4 \in \pl$ and
+$[\![\gamma_1]\!] = 2x\chi_{[0,1)}$ and
+$[\![\gamma_2]\!] = 2(1-x)\chi_{[0,1)}$ and
+$[\![\gamma_3]\!] = \frac12 \chi_{[0,2)}$ and
+$[\![\gamma_4]\!] = \chi_{[0,1)}$.
+\qed
+\end{example}
+
+\begin{lemma}\label{linindepofcommonfuncs}
+Let $H$ be a set of disjoint half open intervals.
+Suppose that $m_1, \dots, m_I$ are distinct interval-domain monomials such that $\supp~m_i \in H$ for all $i \in [I]$. In addition, let $g_1, \dots, g_J$ and $e_1, \dots, e_K$ be distinct Gaussian and exponential density functions, respectively. Then, the set $\{m_1, \dots, m_I, g_1, \dots, g_J, e_1, \dots, e_K\}$ is linearly independent.
+\end{lemma}
+For the proof of this lemma we need a result concerning \emph{alternant matrices}. Consider functions $f_1, \dots, f_n : \Sigma \rightarrow \RR$ and let $x_1, \dots, x_n \in \Sigma$. Then,
+\[M = \begin{pmatrix}
+f_1(x_1) &  f_2(x_1) &  \cdots  & f_n(x_1) \\
+f_1(x_2) & f_2(x_2) & \cdots  & f_n(x_2) \\
+\vdots & \vdots & \ddots & \vdots \\
+f_1(x_n) & f_2(x_n) & \dots  & f_n(x_n)
+\end{pmatrix}\]
+is called the alternant matrix for $f_1, \dots, f_n$ and \emph{input points} $x_1, \dots, x_n$.
+
+\begin{restatable}{lemma}{alternantexistence}\label{alternantexistence}
+Suppose $f_1, \dots, f_n \in \mathcal{L}_1(\Sigma, \lambda)$.
+Then, the $f_i$ are linearly dependent if and only if all alternant matrices for the $f_i$ are singular.
+\end{restatable}
+We give the proof in the appendix.
+Now we can prove \Cref{linindepofcommonfuncs}.
+\begin{proof}[Proof of \Cref{linindepofcommonfuncs}]
+Towards a contradiction assume that  there is a linear dependence\begin{equation*}
+\sum_{i = 1}^{I} r_i m_i(x) + \sum_{j = 1}^J s_j g_j(x) + \sum_{k = 1}^K t_k e_k(x) = 0 \quad \forall x \in \RR.
+\end{equation*}
+By reordering if necessary, we may assume that the exponential functions $e_1, \dots, e_K$ have strictly decreasing rates $\lambda_1 > \dots > \lambda_K$. The function $e_K$ tends to $0$ at the slowest rate out of all other functions in the linear dependence and so
+\begin{equation*}
+\lim_{x \rightarrow \infty}  \frac{1}{e_K(x)}\Big[\sum_{i = 1}^{I} r_i m_i(x) + \sum_{j = 1}^J s_j g_j(x) + \sum_{k = 1}^K t_k e_k(x)\Big] = t_K\,,
+\end{equation*}
+which implies that $t_K = 0$. Repeating this argument for decreasing $k \in [K]$ it follows that $t_1 = \dots = t_K = 0$ and therefore
+\begin{equation*}
+\sum_{i = 1}^{I} r_i m_i(x) + \sum_{j = 1}^J s_j g_j(x) = 0 \quad \forall x \in \RR.
+\end{equation*}
+Suppose the Gaussian functions $g_1, \dots, g_J$ have mean and standard deviation $\mu_1, \dots, \mu_J$ and $\sigma_1, \dots, \sigma_J$, respectively. By defining the ordering $g_i <_{\text{lex}} g_j$ if and only if $\sigma_i < \sigma_j \lor (\sigma_i = \sigma_j \land \mu_i < \mu_j)$ we may assume without loss of generality that $g_1 <_{\text{lex}} \dots <_{\text{lex}} g_J$. It follows that for $1 \leq j < J$ the ratio
+
+\begin{equation*}
+	\begin{split}
+		\frac{g_j(x)}{g_J(x)} & = \left. \frac{1}{\sigma_j\sqrt{2\pi}} \exp\Big[ - \frac{(x - \mu_j)^2}{2\sigma_j^2}\Big] \middle/ \frac{1}{\sigma_J\sqrt{2\pi}} \exp\Big[- \frac{(x - \mu_J)^2}{2\sigma_J^2}\Big] \right. \\
+		& = \frac{\sigma_J}{\sigma_j} \exp{\Big[ \frac{(x - \mu_J)^2}{2\sigma_J^2} - \frac{(x - \mu_j)^2}{2\sigma_j^2} \Big]} \\
+		& = \frac{\sigma_J}{\sigma_j} \exp\Big[\frac{1}{2}\Big( \Big(\frac{1}{\sigma_J^2} - \frac{1}{\sigma_j^2} \Big)x^2 - 2\Big( \frac{\mu_J}{\sigma_J^2} - \frac{\mu_j}{\sigma_j^2}\Big)x  + \Big( \frac{\mu_J^2}{\sigma_J^2} - \frac{\mu_j^2}{\sigma_j^2}\Big)\Big)\Big]\\
+		& \rightarrow 0 \text{ as } x \rightarrow \infty\,,
+	\end{split}
+\end{equation*}
+as $g_j <_{\text{lex}} g_J$ implies that the dominant polynomial coefficient in the exponent is always negative. Any Gaussian density function tends to $0$ slower than any interval-domain monomial at $+\infty$, so similarly to the exponential densities,
+\begin{equation*}
+	0 = \lim_{x \rightarrow \infty} \frac{1}{g_J(x)}\Big[\sum_{i = 1}^{I} r_i m_i(x) + \sum_{j = 1}^J s_j g_j(x)\Big] = s_J\,.
+\end{equation*}
+By repeating this argument for decreasing $j \in [J]$, we obtain $s_1 = \dots = s_J = 0$. It remains to show the remaining interval-domain monomials are linearly independent. Since $H$ is finite, all interval-domain monomials on $[a,b)$ have a maximum exponent $R$. Since the intervals are disjoint, it suffices to consider a single interval $[a,b)$ and show that the set of monomials $\{x^k\chi_{[a,b)} \mid k \in \{0, \dots, R\}\}$ is linearly independent.
+Consider the alternant matrix for $1\chi_{[a,b)}, x\chi_{[a,b)}, \dots, x^R\chi_{[a,b)}$ and distinct input points $x_1, \dots, x_{R + 1} \in [a,b)$. This matrix is a Vandermonde matrix and by \cite[p.9]{milne33} has full rank. Therefore, by \Cref{alternantexistence} the set $\{1\chi_{[a,b)}, x\chi_{[a,b)}, \dots, x^R\chi_{[a,b)}\}$ is linearly independent.
+\end{proof}
+
+\begin{proposition}\label{commonfuncslineardecomp}
+The profile language $\pl$ is linearly decomposable.
+\end{proposition}
+\begin{proof}
+Let $\Gamma_0 \subseteq \pl$ be a finite set of profiles.
+Any profile in~$\Gamma_0$ encodes a linear combination of Gaussians, exponentials and interval-domain monomials.
+Collect in $G_0$ and~$E_0$ the profiles of Gaussians and exponentials, respectively, that appear in the description of at least one profile in~$\Gamma_0$.
+By sorting the start and end points of the intervals (that appear in the interval-domain monomials) in~$\Gamma_0$, we compute a finite set~$H$ of disjoint intervals such that every interval appearing in~$\Gamma_0$ is a union of intervals in~$H$.
+Further, collect in~$N$ the set of degrees of monomials in~$\Gamma_0$.
+Then we compute a set of profiles $M_0$ such that $[\![M_0]\!] = \{x^n \chi_{[a,b)} \mid n \in N,\ [a,b) \in H\}$.
+By \cref{linindepofcommonfuncs}, the set $[\![G_0 \cup E_0 \cup M_0]\!]$ is linearly independent.
+We compute the (unique) coordinates of all functions in~$[\![\Gamma_0]\!]$ in terms of that basis.
+
+With these coordinates at hand, we compute a subset $\mathcal{B} \subseteq \Gamma_0$ such that $[\![\mathcal{B}]\!]$ is a basis of $\Span [\![\Gamma_0]\!]$ as follows.
+Starting with the $\mathcal{B} = \emptyset$, go through $\Gamma_0$ one by one; whenever a profile $\gamma \in \Gamma_0$ is such that $[\![\mathcal{B} \cup \{\gamma\}]\!]$ is linearly independent then add $\gamma$ to~$\mathcal{B}$.
+The check for linear independence can be performed in terms of the computed coordinates of $[\![\Gamma_0]\!]$ in the basis $[\![G_0 \cup E_0 \cup M_0]\!]$.
+For the final set $\mathcal{B}$ we have that $[\![\mathcal{B}]\!]$ is a basis of $\Span [\![\Gamma_0]\!]$.
+The coefficients that express $[\![\Gamma_0]\!]$ as a linear combination of~$[\![\mathcal{B}]\!]$ can be computed similarly.
+All computations referred to in this proof are polynomial-time.
+\end{proof}
+Thus we obtain the following corollary of \cref{computationequivalencethm}:
+\begin{corollary}
+Given a HMM $(Q, \Sigma, \Psi)$ over~$\pl$, and initial distributions $\pi_1, \pi_2 \in \QQ^{|Q|}$, it is decidable in polynomial time whether $\pi_1 \equiv \pi_2$.
+\end{corollary}
+
+\begin{example}\label{lineardecompexample}
+We illustrate the proof of \Cref{commonfuncslineardecomp} by continuing \cref{profileexample} with $\Gamma_0 = \{\gamma_1, \gamma_2, \gamma_3, \gamma_4\} \subset \pl$.
+By ordering the start and end points in $[0,2), [1,2)$ we compute $H = \{[0,1), [1,2)\}$.
+The set of degrees is $N = \{0,1\}$.
+We then compute the set~$M_0$ of profiles such that $[\![M_0]\!] = \{\chi_{[0,1)}, x\chi_{[0,1)},\chi_{[1,2)}, x\chi_{[1,2)}\}$
+and express $[\![\gamma_1]\!], \dots, [\![\gamma_4]\!]$ as vectors of coordinates with respect to the basis~$[\![M_0]\!]$:
+\begin{alignat*}{3}
+&[\![\gamma_1]\!] && = 2x\chi_{[0,1)}      && = (0, 2, 0, 0) \\
+&[\![\gamma_2]\!] && = 2(1-x)\chi_{[0,1)}  && = (2, -2, 0, 0) \\
+&[\![\gamma_3]\!] && = \frac12\chi_{[0,2)} && = (\frac12, 0, \frac12, 0) \\
+&[\![\gamma_4]\!] && = \chi_{[0,1)}        && = (1,0,0,0)
+\end{alignat*}
+We then compute a basis for this set of vectors: $\{(0, 2, 0, 0), (2, -2, 0, 0), (\frac12,0,\frac12,0)\}$. This implies that with $\mathcal{B} = \{\gamma_1, \gamma_2, \gamma_3\}$, the set $[\![\mathcal{B}]\!]$ is a basis for $\Span [\![\Gamma_0]\!]$.
+Since $(1, 0, 0, 0) = \frac12(0, 2, 0, 0) + \frac12(2, -2, 0, 0)$, we express $[\![\gamma_4]\!]$ in terms of~$[\![\mathcal{B}]\!]$ by $[\![\gamma_4]\!] = \frac12 [\![\gamma_1]\!] + \frac12 [\![\gamma_2]\!]$.
+\qed
+\end{example}
+
+
+
+\section{Linear Reductions}\label{starredsec}
+
+Suppose that $\Psi$ has a functional decomposition $\sum_{k = 1}^d f_k P_k$ such that the set $\{f_1, \dots, f_d\}$ is linearly independent. Then, $\sum_{k = 1}^d f_k P_k$ is called an \emph{independent functional decomposition}.
+
+\begin{lemma}\label{spanpreserving}
+Suppose $\Psi : \Sigma \rightarrow [0,\infty)^{|Q| \times |Q|}$ has an independent functional decomposition $\Psi = \sum_{k = 1}^d f_k P_k$. Then, $\Span \{\Psi(x) \mid x \in \Sigma\} = \Span \{P_k \mid k \in [d]\}.$
+\end{lemma}
+\begin{proof}
+Since $\Psi(x) = \sum_{k = 1}^d f_k(x) P_k$, we have $\Span \{\Psi(x) \mid x \in \Sigma\} \subseteq \Span \{P_k \mid k \in [d]\}$. For the reverse inclusion, since the $f_i$ are linearly independent, by \Cref{alternantexistence} there exists an alternant matrix $M$ with full rank for $f_1, \dots, f_d$ with input points $x_1, \dots, x_d$.
+Hence, for each of the standard basis vectors $e_k \in \{0,1\}^d$, $k \in [d]$, there exists $v_k = (v_{1,k} ,\dots, v_{d,k}) \in \RR^d$ such that $v_k M = e_k$. Writing $\delta_{j,k}$ for the Kronecker delta function it follows that
+\begin{equation*}
+\begin{split}
+\sum_{i = 1}^d v_{i,k} \Psi(x_i) & \ = \ \sum_{i = 1}^d v_{i,k} \sum_{j = 1}^d f_j(x_i) P_j
+ \ = \ \sum_{j = 1}^d P_j \sum_{i = 1}^d v_{i,k} f_j(x_i)
+ \ = \ \sum_{j = 1}^d P_j \delta_{j,k}
+ \ = \ P_k\,,
+\end{split}
+\end{equation*}
+which implies that $\Span \{\Psi(x) \mid x \in \Sigma\} \supseteq \Span \{P_k \mid k \in [d]\}.$
+\end{proof}
+
+
+
+
+\begin{proposition}\label{nonnegreduction}
+Suppose that HMM $C = (Q, \Sigma, \Psi)$ has independent functional decomposition $\Psi = \sum_{k = 1}^d f_k P_k$ and that $P_k$ is non-negative for all $k \in [d]$. Define a set $\overline{\Sigma} = \{ a_1, \dots, a_d \}$ of fresh observations and the observation density matrix~$M$ with
+$M(a_k) = P_k$ for all $k \in [d]$. Then $F = (Q, \overline{\Sigma}, M)$ is a finite-observation HMM and for any initial distributions $\pi_1, \pi_2$
+\[\pi_1 \equiv_C \pi_2 \iff \pi_1 \equiv_F \pi_2. \]
+\end{proposition}
+
+\begin{proof}
+It follows by \Cref{stochasticPk} that $\sum_{k = 1}^d P_k$ is stochastic. Thus $F$ defines a HMM. By \Cref{spanpreserving},  $\Span \{\Psi(x)\1^T \mid x \in \Sigma\} = \Span \{M(a)\1^T \mid a \in \overline{\Sigma}\}$ which combined with \Cref{langequiv} gives the result.
+\end{proof}
+
+\begin{example}
+We use the HMM~$C$ discussed in \Cref{finiteredproblem,profileexample,lineardecompexample} to illustrate the construction of \Cref{nonnegreduction}.
+The basis $\{2x\chi_{[0,1)}, 2(1-x)\chi_{[0,1)}, \frac12\chi_{[0,2)}\}$ leads to the independent functional decomposition
+\begin{multline*}
+\Psi  = \begin{pmatrix}
+0 & x\chi_{[0,1)}  & (1-x)\chi_{[0,1)} & 0 \\
+0 & \frac12 \chi_{[0,2)} & 0 & 0 \\
+0 & \frac12 \chi_{[0,2)} & 0 & 0 \\
+0 & \chi_{[0,1)} & 0 & 0
+\end{pmatrix} \\
+ = 2x\chi_{[0,1)}\begin{pmatrix}
+0 & \frac12  & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & \frac12 & 0 & 0
+\end{pmatrix} + 2(1 - x)\chi_{[0,1)}\begin{pmatrix}
+0 & 0  & \frac12 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 \\
+0 & \frac12 & 0 & 0
+\end{pmatrix} + \frac12 \chi_{[0,2)}\begin{pmatrix}
+0 & 0  & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0
+\end{pmatrix}.
+\end{multline*}
+Therefore, \Cref{nonnegreduction} implies that two initial distributions $\pi_1, \pi_2 \in \RR^{|Q|}$ are equivalent in~$C$ if and only if they are equivalent in the following HMM:
+\begin{center}
+\begin{tikzpicture}[scale=2.5,LMC style]
+\node[state] (q1) at (0,0) {$q_1$};
+\node[state] (q2) at (1.2,0.35) {$q_2$};
+\node[state] (q3) at (1.2,-0.35) {$q_3$};
+\node[state] (q4) at (2.4,0) {$q_4$};
+\path[->] (q2) edge [loop,out=110,in=70,looseness=10] node[pos=0.75,right] {$1 (c)$} (q2);
+\path[->] (q4) edge node[pos=0.4,above,yshift=1mm] {$1(\frac12 a + \frac12 b)$} (q2);
+\path[->] (q3) edge node[right,pos=0.45] {$1 (c)$} (q2);
+\path[->] (q1) edge node[above] {$\frac{1}{2} (a)$} (q2);
+\path[->] (q1) edge node[above] {$\frac{1}{2} (b)$} (q3);
+\end{tikzpicture}
+\end{center}
+Here, states $q_1$ and~$q_4$ are equivalent.
+Hence, they are also equivalent in~$C$.
+\qed
+\end{example}
+
+
+\begin{example}\label{negdecompex}
+The assumption in the \Cref{nonnegreduction} that the $P_k$ are non-negative is necessary to construct the finite-observation HMM~$F$. There are in fact examples of HMMs where all independent functional decompositions contain matrices with negative entries. Consider the uniform distributions $U_1 = \frac{1}{2}\chi_{[0,2)}$, $U_2 = \frac{1}{2}\chi_{[1,3)}$, $U_3 = \frac{1}{2}\chi_{[2,4)}$ and $U_4 = \frac{1}{2}(\chi_{[0,1)} + \chi_{[3,4)})$ on $\Sigma = [0,4)$ and the following HMM:
+\begin{center}
+\begin{tikzpicture}[scale=2.5,LMC style]
+\node[state] (q1) at (0,0) {$q_1$};
+\node[state] (q2) at (+1,0) {$q_2$};
+\path[->] (q1) edge [loop,out=160,in=200,looseness=10] node[left] {$\frac{1}{2} U_1$}(q1);
+\path[->] (q1) edge [bend left] node[above] {$\frac{1}{2} U_2$} (q2);
+\path[->] (q2) edge [bend left] node[below] {$\frac{1}{2} U_3$} (q1);
+\path[->] (q2) edge [loop,out=20,in=340,looseness=10] node[right] {$\frac{1}{2} U_4$}(q2);
+\end{tikzpicture}
+\end{center}
+The uniform distributions are related by the linear dependence $U_1 + U_3 - U_2 - U_4 = 0$.
+Observing that $\{U_1, U_2, U_3\}$ is linearly independent, we see that $\dim \Span \{U_1, \dots, U_4\} = 3$. Suppose an independent functional decomposition exists for $\Psi = \frac12 \begin{psmallmatrix}U_1&U_2\\U_3&U_4\end{psmallmatrix}$ such that all matrices are non-negative. This decomposition exhibits a linear dependence
+\[U_i = \sum_{j \neq i} \lambda_j U_j \quad \text{ where each }\lambda_j \geq 0.\]
+For each $U_i$ there are exactly two other $U_{j_1}, U_{j_2}$ ($j_1, j_2 \neq i$) that share support with the $U_i$. Since these shared supports are disjoint, $\lambda_{j_1},\lambda_{j_2} > 0$, but then $\supp~U_i \subsetneq \supp~U_{j_1} \cup ~\supp~U_{j_2}$.
+It follows that the remaining $\lambda_j$, $j \notin \{i, j_1, j_2\}$ is negative, a contradiction.
+\qed
+\end{example}
+\Cref{negdecompex} shows that \Cref{nonnegreduction} cannot always produce a finite-observation HMM, as the resulting transition matrices may have negative entries.
+The following proposition avoids that problem:
+%
+\begin{proposition}\label{reductiontime}
+Let $C = (Q,\Sigma,\Psi)$ be a HMM with independent functional decomposition $\Psi = \sum_{k = 1}^d f_k P_k$. Let $P = \sum_{k = 1}^d P_k$ and
+\[\theta = \min \left\{ \frac12, \frac{\min \{(P)_{i,j} \mid (P)_{i,j} > 0\}}{\max \{ \big(P_k\big)_{i,j} \mid i,j \in [Q],\ k \in [d] \} } \right\}\,. \]
+Define an alphabet $\tilde{\Sigma} = \{a_1, \dots, a_d\}$ of fresh observations and the HMM $F = (Q, \tilde{\Sigma}, M)$ with $M(a_k) = \frac{1}{d - \theta}(P - \theta P_k)$. Then, for any initial distributions $\mu_1, \mu_2$
+\[\mu_1 \equiv_F \mu_2 \iff \mu_1 \equiv_C \mu_2.\]
+\end{proposition}
+
+\begin{proof}
+First we show that $F$ is a well-defined HMM. Matrix $\sum_{k=1}^d M(a_k)$ is stochastic as
+\begin{equation}\label{sumofps}
+\sum_{k=1}^d M(a_k) \ = \ \frac{1}{d - \theta}\sum_{k = 1}^d (P - \theta P_k) \ = \ \frac{dP - \theta \sum_{k=1}^d P_k}{d - \theta} \ = \ P\,,
+\end{equation}
+and by \Cref{stochasticPk}, $P$ is stochastic. In addition we must show that $M(a_k)$ is non-negative for each $k \in [d]$.
+Since $\theta \le \frac12$, it is enough to show that $P - \theta P_k$ is non-negative for each $k \in [d]$. Suppose that $(P)_{i,j} = 0$.
+Then, $\int_\Sigma \Psi_{i,j}\, d\lambda = (P)_{i,j} = 0$, which implies that $\Psi_{i,j} = 0$.
+Thus, $\sum_{k = 1}^d f_k (P_k)_{i,j} = \Psi_{i,j} = 0$.
+Since $\{f_k\}_{k=1}^d$ is linearly independent, it follows that $(P_k)_{i,j} = 0$ for all $k \in [d]$ and so $(P - \theta P_k)_{i,j} = 0$.
+Now suppose that $(P)_{i,j} > 0$. By the definition of $\theta$, it follows that $(\theta P_k)_{i,j} \leq (P)_{i,j}$. %and hence $M(a_k)$ is non-negative for all $k \in [d]$.
+Thus, $F$ is a well defined HMM.
+
+Observe that $\Span \left\{ P - \theta P_k \mid k \in [d] \right\} \subseteq \Span \{P_k \mid k \in [d]\}$.
+The opposite inclusion follows from the fact that, by \Cref{sumofps}, we have $P \in \Span \left\{ P - \theta P_k \mid k = 1, \dots, d \right\}$.
+Thus, by \Cref{spanpreserving},
+\[\Span\{M(a) \mid a \in \tilde{\Sigma}\} = \Span\{P - \theta P_k \mid k \in [d]\} = \Span\{P_k  \mid k \in [d]\} = \Span\{\Psi(x) \mid x \in \Sigma\}\,.\]
+Hence, the proposition follows from \Cref{langequiv}.
+\end{proof}
+
+Now we can prove \Cref{computationequivalencethm}:
+
+\begin{proof}[Proof of \Cref{computationequivalencethm}]
+Suppose the HMM $C=(Q, \Sigma, \Psi)$ is over the linearly decomposable profile language~$\Gamma$.
+%Thus, the profiles $\gamma_1, \dots, \gamma_n \in \Gamma$ appearing in the encoding of $(Q, \Sigma, \Psi)$ satisfy $\int_{\Sigma} [\![\gamma_{i}]\!]\,d\lambda = 1$.
+Let $\Gamma_0 = \{\gamma_1, \ldots, \gamma_n\}$ be the set of profiles appearing in the description of~$\Psi$.
+From the description of~$\Psi$ as a matrix of coefficient-profile pairs, we can easily compute matrices $P'_1, \dots, P'_n \in \QQ^{|Q| \times |Q|}$ such that $\Psi = \sum_{i=1}^n [\![\gamma_i]\!] P'_i$.
+Since $\Gamma$ is linearly decomposable, one can compute in polynomial time a subset $\{\beta_1, \dots, \beta_d\} \subseteq \Gamma_0$ such that $[\![\{\beta_1, \dots, \beta_d\}]\!]$ is linearly independent and also a set of coefficients $b_{i,k}$ such that $[\![\gamma_i]\!] = \sum_{k = 1}^d b_{i,k} [\![\beta_k]\!]$ for all $i \in [n]$.
+Hence:
+\[
+\Psi
+\ = \ \sum_{i=1}^n [\![\gamma_i]\!] P'_i
+\ = \ \sum_{i=1}^n \sum_{k=1}^d [\![\beta_k]\!] b_{i,k} P'_i
+\ = \ \sum_{k=1}^d [\![\beta_k]\!] \sum_{i=1}^n b_{i,k} P'_i
+\]
+Setting $P_k = \sum_{i=1}^n b_{i,k} P'_i$ for all $k \in [d]$, we thus obtain the independent functional decomposition $\Psi = \sum_{k=1}^d [\![\beta_k]\!] P_k$.
+Now it is straightforward to compute the finite-observation HMM~$F$ from \Cref{reductiontime} in polynomial time, thus reducing the equivalence problem in~$C$ to the equivalence problem in the finite-observation HMM~$F$.
+By \Cref{prop-finite-HMM} the theorem follows.
+\end{proof}
+
+\begin{example}
+We illustrate aspects of the proof of \Cref{computationequivalencethm} with the HMM from \Cref{negdecompex}.
+From the description of~$\Psi$ as matrix of coefficient-profile pairs, we obtain the functional decomposition
+\[
+ \Psi \ = \
+ U_1 \begin{pmatrix}\frac12&0\\0&0\end{pmatrix} +
+ U_2 \begin{pmatrix}0&\frac12\\0&0\end{pmatrix} +
+ U_3 \begin{pmatrix}0&0\\\frac12&0\end{pmatrix} +
+ U_4 \begin{pmatrix}0&0\\0&\frac12\end{pmatrix}\,.
+\]
+In \Cref{negdecompex} we argued that $\{U_1, U_2, U_3\}$ is a spanning subset of $\{U_1, U_2, U_3, U_4\}$ and that $U_4 = U_1 + U_3 - U_2$.
+From this we obtain the independent functional decomposition
+\[
+ \Psi \ = \
+ U_1 \begin{pmatrix}\frac12&0\\0&\frac12\end{pmatrix} +
+ U_2 \begin{pmatrix}0&\frac12\\0&-\frac12\end{pmatrix} +
+ U_3 \begin{pmatrix}0&0\\\frac12&\frac12\end{pmatrix}\,.
+\]
+According to \Cref{reductiontime}, $P = \begin{psmallmatrix}\frac12&\frac12\\\frac12&\frac12\end{psmallmatrix}$.
+Further we compute $\theta = \frac12$ and $d - \theta = \frac52$ and
+\begin{alignat*}{3}
+& M(a) &&= \frac25 \Big[\begin{pmatrix}
+\frac12&\frac12\\\frac12&\frac12
+\end{pmatrix} - \frac12\begin{pmatrix}
+\frac12&0\\0&\frac12
+\end{pmatrix}\Big] && = \begin{pmatrix}
+\frac1{10}&\frac15\\\frac15&\frac1{10}
+\end{pmatrix} \\
+& M(b) && = \frac25\Big[\begin{pmatrix}
+\frac12&\frac12\\\frac12&\frac12
+\end{pmatrix} - \frac12\begin{pmatrix}
+0&\frac12\\0&-\frac12
+\end{pmatrix}\Big] && = \begin{pmatrix}
+\frac15&\frac1{10}\\\frac15&\frac3{10}
+\end{pmatrix} \\
+& M(c) && = \frac25\Big[\begin{pmatrix}
+\frac12&\frac12\\\frac12&\frac12
+\end{pmatrix} - \frac12\begin{pmatrix}
+0&0\\\frac12&\frac12
+\end{pmatrix}\Big] && = \begin{pmatrix}
+\frac15&\frac15\\\frac1{10}&\frac1{10}
+\end{pmatrix}.
+\end{alignat*}
+It follows that any initial distributions $\pi_1$ and $\pi_2$ are equivalent in $(Q, \Sigma, \Psi)$ if and only if they are equivalent in the following HMM:
+\begin{center}
+	\begin{tikzpicture}[scale=2.5,LMC style]
+	\node[state] (q1) at (0,0) {$q_1$};
+	\node[state] (q2) at (+1.5,0) {$q_2$};
+	\path[->] (q1) edge [loop,out=160,in=200,looseness=10] node[left] {$\frac12 (\frac15 a + \frac25 b + \frac25 c)$} (q1);
+	\path[->] (q1) edge [bend left=20] node[above] {$\frac12 (\frac25 a + \frac15 b + \frac25 c)$} (q2);
+	\path[->] (q2) edge [bend left=20] node[below] {$\frac12 (\frac25 a + \frac25 b + \frac15 c)$} (q1);
+	\path[->] (q2) edge [loop,out=20,in=340,looseness=10] node[right] {$\frac12 (\frac15 a + \frac35 b + \frac15 c)$} (q2);
+	\end{tikzpicture}
+\end{center}
+For any initial distributions $\pi_1, \pi_2 \in \QQ^2$ this can be checked with \Cref{prop-finite-HMM}.
+(In this example $\pi_1 \equiv \pi_2$ holds only if $\pi_1 = \pi_2$.)
+\qed
+\end{example}
+
+\section{Distinguishability}
+
+\begin{lemma}\label{conconvergence}
+Let $(Q, \Sigma, \Psi)$ be a HMM and let $\pi_1, \pi_2$ be initial distributions. For $k \in \NN$ define the function $\con_k : \Sigma^k \rightarrow [0,\infty)$ as 
+\[\con_k(x) = \sup \{\mu_1 \1^T \mid \mu_1 \leq \pi_1 \Psi(x), \exists \mu_2 \leq \pi_2 \Psi(x), \mu_1 \equiv \mu_2\}.\]
+It follows that $\con_k$ is measurable and integrable with respect to $\lambda$ and
+\[\int_{\Sigma^k} \con_k d\lambda^k \uparrow 1 - d(\pi_1, \pi_2) \]
+as $k \rightarrow \infty$.
+\end{lemma}
+
+\begin{lemma}\label{distance1preserving}
+Let $C_1 = (Q, \Sigma_1, \Psi_1)$ and $C_2 = (Q, \Sigma_2, \Psi_2)$ be two HMMs with the same state space~$Q$.
+Suppose that $\Span \{\Psi_1(x) \mid x \in \Sigma_1\} \subseteq \Span \{\Psi_2(x) \mid x \in \Sigma_2\}$ and $\{\supp~ \Psi_1(x) \mid x \in \Sigma_1 \} \supseteq \{\supp~ \Psi_2(x) \mid x \in \Sigma_2 \}$.
+Then, for any two initial distributions $\pi_1$ and $\pi_2$,
+\[d_{C_1}(\pi_1,\pi_2) = 1 \implies d_{C_2}(\pi_1,\pi_2) = 1.\]
+\end{lemma}
+
+\begin{proof}
+By \Cref{conconvergence} $d_{C_2}(\pi_1,\pi_2) < 1$ implies that there exists $k \in \NN$ and $w = b_1 \cdots b_k \in \Sigma^k$ such that $\con_k(w) > 0$ in $C_2$. This implies that there are vectors $0 \neq \mu_1 \leq \pi_1 \Psi_2(w)$ and $\mu_2 \leq \pi_2 \Psi_2(w)$ such that $\mu_1 \equiv_{C_2} \mu_2$. By assumption there is $v = a_1 \cdots a_k \in \Sigma_1^k$ such that $\supp~ \Psi_1(a_i) = \supp ~\Psi_2(b_i)$ for all $i \in [k]$. Therefore
+\begin{align*}
+\supp~ \Psi_1(a_1 \cdots a_k) & = \supp~ \big(\supp~ \Psi_1(a_1)\big) \dots \big(\supp~\Psi_1(a_k)\big) \\
+& = \supp~ \big(\supp~ \Psi_2(b_1)\big) \dots \big(\supp~\Psi_2(b_k)\big) \\
+& = \supp~ \Psi_2(b_1 \cdots b_k).
+\end{align*}
+A consequence is that there exists an $\alpha > 0$ such that $\alpha \mu_1 \leq \pi_1 \Psi_1(v)$ and $\alpha \mu_2 \leq \pi_2 \Psi_1(v)$. It follows by \Cref{langequiv} that $\alpha \mu_1 \equiv_{C_1} \alpha \mu_2$ and therefore $\con_k(v) > 0$ in $C_1$ which implies that $d_{C_1}(\pi_1,\pi_2) < 1$.
+\end{proof}
+
+\subsection{Support-Preserving Reductions}
+An observation density matrix $\Psi$ naturally defines a partition of $\Sigma$ given by the discontinuities of $\supp~ \circ \Psi$. More specificially we define the partition $\Lambda_{\Psi} = \{(\supp~ \circ \Psi)^{-1}(\{x\}) \mid x \in (\supp~ \circ \Psi)(\Sigma) \}$.
+
+
+Suppose that $\Psi$ has an independent functional decomposition $\sum_{E \in \Lambda_{\Psi}} \sum_{k = 1}^{d_E} f_{E,k} P_{E,k}$ such that $\supp f_{E, k} = E$ for all $k \in [d]$ then $\sum_{E \in \Lambda_{\Psi}} \sum_{k = 1}^{d_E} f_{E,k} P_{E,k}$ is called a \emph{support-preserving independent functional decomposition}.
+
+\begin{proposition}
+Let $C = (Q, \Sigma, \Psi)$ be a HMM with support-preserving independent functional decomposition $\sum_{E \in \Lambda_{\Psi}} \sum_{k = 1}^{d_E} f_{E,k} P_{E,k}$. Let $P_E = \sum_{k = 1}^{d_E} P_{E,k}$ and 
+\[\theta_E = \frac12 \min \left\{ 1, \frac{\min \{(P_E)_{i,j} \mid (P_E)_{i,j} > 0\}}{\max \{ \big(P_{E,k}\big)_{i,j} \mid i,j \in [Q],\ k \in [d] \} } \right\}\,. \]
+Define an alphabet $\tilde{\Sigma} = \{a_{E, k} \mid E \in \Lambda_{\Psi}, k \in [d_E] \}$ of fresh observations and the HMM $F = (Q, \tilde{\Sigma}, M)$ with $M(a_{E, k}) = \frac{1}{d_E - \theta_E} (P_E - \theta_E P_{E, k})$. Then, for any initial distributions $\pi_1, \pi_2$
+\[d_F(\pi_1, \pi_2) = 1 \iff d_C(\pi_1, \pi_2) = 1.\]
+\end{proposition}
+
+\begin{proof}
+First we show that $F$ is a well-defined HMM. Matrix $\sum_{E \in \Lambda_\Psi}\sum_{k=1}^{d_E} M(a_{E,k})$ is stochastic as
+\begin{equation}\label{sumofps}
+\sum_{E \in \Lambda_\Psi}\sum_{k=1}^{d_E} M(a_{E,k}) \ = \ \sum_{E \in \Lambda_\Psi}\frac{1}{d_E - \theta_E}\sum_{k=1}^{d_E}(P_E - \theta P_{k,E}) \ = \ \sum_{E \in \Lambda_\Psi} \frac{d_E P_E - \theta_E \sum_{k=1}^d P_{k,E}}{d_E - \theta_E} \ = \ \sum_{E \in \Lambda_E} P_E\,,
+\end{equation}
+and by \Cref{stochasticPk}, $\sum_{E \in \Lambda_E} P_E$ is stochastic. In addition we must show that $M(a_{E,k})$ is non-negative for each $E \in \Lambda_\Psi$ and $k \in [d_E]$.
+Fix $E \in \Lambda_\Psi$. 
+
+
+Since $\theta_E \le \frac12$, it is enough to show that $P_E - \theta P_{k,E}$ is non-negative for each $k \in [d_E]$. Suppose that $(P_E)_{i,j} = 0$.
+Then, $\int_E \Psi_{i,j}\, d\lambda = (P_E)_{i,j} = 0$, which implies that $\Psi_{i,j} = 0$ on $E$.
+Thus, $\sum_{k = 1}^{d_E} f_{E,k}(x) (P_{E,k})_{i,j} = \Psi_{i,j}(x) = 0$ for $x \in E$.
+Since $\{f_{E,k}\}_{k=1}^{d_E}$ is linearly independent and has common support $E$, it follows that $(P_{E,k})_{i,j} = 0$ for all $k \in [d_E]$ and so $(P_E - \theta P_{E,k})_{i,j} = 0$.
+Now suppose that $(P_E)_{i,j} > 0$. By the definition of $\theta_E$, it follows that $(\theta_E P_{E,k})_{i,j} < (P_E)_{i,j}$. Thus, $F$ is a well defined HMM and further 
+\begin{equation}\label{supporteq}
+\supp~ P_E = \supp~ \big(P_E - \theta_E P_{E,k}\big)
+\end{equation}
+for $k \in [d_E]$.
+
+Observe that $\Span \left\{ P_E - \theta P_{E,k} \mid k \in [d_E] \right\} \subseteq \Span \{P_{E,k} \mid k \in [d_E]\}$.
+The opposite inclusion follows from the fact that, by \Cref{sumofps}, we have $P_E \in \Span \left\{ P_E - \theta P_{E,k} \mid k = 1, \dots, d \right\}$.
+Thus, by \Cref{spanpreserving},
+\begin{align*}
+\Span\{M(a) \mid a \in \tilde{\Sigma}\} & = \Span\{P_{E} - \theta P_{E,k} \mid E \in \Lambda_\Psi, k \in [d_E]\}\\
+& = \Span\{P_{E,k}  \mid E \in \lambda_\Psi, k \in [d]\} \\
+& = \Span\{\Psi(x) \mid x \in \Sigma\}\,.	
+\end{align*}
+We now show that $\{\supp~ \Psi(x) \mid x \in \Sigma \} = \{\supp~ M(a_{E,k}) \mid E \in \Lambda_{\Psi}, k \in [d_E] \}$.
+Fix $E \in \Lambda_\Psi$ and $x \in E$. $\Psi(x) = \sum_{k = 1}^{d_E} f_{E,k} P_{E,k}$ and by definition of $\Lambda_\Psi$, \[\supp~ \Psi(x) = \supp~ \int_{E} \Psi d\lambda = \supp~ \int_{E} \sum_{k = 1}^{d_E} f_{E,k} P_{E,k} = \supp~ \sum_{k = 1}^{d_E} P_{E,k} = \supp~ P_E\]
+since $\int_E f_{E,k} = \int_\Sigma f_{E,k} = 1$ for all $k \in d_E$. Combining this with (\ref{supporteq}) we may invoke \Cref{distance1preserving} in both directions which yields the result.
+\end{proof}
+
+
+
+
+\section{Conclusions}
+
+We have developed a polynomial-time algorithm for equivalence checking of continuous-observation HMMs.
+Our algorithm uses two main ingredients:
+On the one hand, it employs the known, linear-algebra based, equivalence-checking algorithm for finite-observation HMMs.
+On the other hand, our algorithm is based on computations on density functions, considering them as elements of a vector space.
+We have formalised the resulting computational requirements in the notion of linear decomposable profile languages; our algorithm is efficient if and only if the observation density functions are encoded in terms of such a profile language.
+We have described the language~$\pl$ as an example of a profile language that meets the requirements.
+Our algorithm does not (explicitly) integrate the density functions.
+
+The authors believe that the developed computational framework may be useful for further work on the algorithmics of continuous-observation HMMs.
+For example, one may want to compute the total-variation distance of two continuous-observation HMMs.
+Can Markov chains with continuous emissions be model-checked efficiently?
+
+\bibliography{continuousalphabethmcs}
+
+\appendix
+
+\section{Missing Proofs}\label{alternants}
+
+\subsection{Statement and Proof of Lemma~\ref{pwcontinuousspanlemma}}
+
+The following lemma is used in the proof of \cref{equivifperpspan}.
+
+\begin{lemma}\label{pwcontinuousspanlemma}
+Let $(Q, \Sigma, \Psi)$ be a HMM and let $\pi_1, \pi_2$ be initial distributions. As discussed in the preliminaries, $(\Sigma, \GG, \lambda)$ is a measure space such that any open set $E \in \GG$ has non-null measure. Fix $n \in \NN$. Then, $(\pi_1 - \pi_2) \Psi(w) \1^T = 0$ for all $w \in \Sigma^n$ if and only if $(\pi_1 - \pi_2)\int_{E} \Psi\,  d\lambda^n \1^T = 0$ for all $E \in \GG^n$.
+\end{lemma}
+
+\begin{proof}
+%The forward implication is clear. For the converse we prove the contrapositive statement. Fix $n \in \NN$. Since $\Psi$ is piecewise continuous when restricted to $\Sigma^n$ it has a set of continuity $C^n$ as described in the preliminaries and for every $\Psi(v)\1^T \in \{\Psi(w) \1^T \mid w \in \Sigma^*\}$, there is a sequence of words $v_k \in C^n$ such that $\lim_{k \rightarrow \infty} \Psi(v_k) \1^T = \Psi(v) \1^T$. $C^n$ is an open set and so there is a sequence of open balls $B(v_k, \epsilon_k) \subset C^n$. By assumption of $\Sigma$, $\lambda(B(v_k, \epsilon_k)) > 0$ so assuming $(\pi_1 - \pi_2) \Psi(v) \1^T > 0$ it follows that there is $k \in \NN$ such that $(\pi_1 - \pi_2) \Psi(w) \1^T > 0$ for all $w \in B(v_k, \epsilon_k)$ and therefore $(\pi_1 - \pi_2) \int_{\Sigma^n} \Psi\, d\lambda^n \1^T > 0$.
+The forward implication is clear.
+For the converse, suppose $v \in \Sigma^n$ is such that $(\pi_1 - \pi_2) \Psi(v) \1^T > 0$.
+Since $\Psi$ is piecewise continuous when restricted to $\Sigma^n$, it has a set of continuity $C^n$ as described in the preliminaries and there is a sequence of words $v_k \in C^n$ such that $\lim_{k \rightarrow \infty} \Psi(v_k) = \Psi(v)$.
+As $C^n$ is an open set, there is a sequence of open balls $B(v_k, \epsilon_k) \subset C^n$ with $\lim_{k \to \infty} \epsilon_k = 0$.
+Hence there is $k \in \NN$ such that $(\pi_1 - \pi_2) \Psi(w) \1^T > 0$ for all $w \in B(v_k, \epsilon_k)$.
+By the property of $(\Sigma, \GG, \lambda)$ stated in the proposition, we have $\lambda(B(v_k, \epsilon_k)) > 0$
+ and therefore $(\pi_1 - \pi_2) \int_{B(v_k, \epsilon_k)} \Psi\, d\lambda^n \1^T > 0$. A symmetrical argument can be applied in the case $(\pi_1 - \pi_2) \Psi(v) \1^T < 0$.
+\end{proof}
+
+\subsection{Proof of Lemma~\ref{alternantexistence}}
+Here is \Cref{alternantexistence} from the main text:
+\alternantexistence*
+
+\begin{proof}
+Suppose that the $f_1, \dots, f_n$ are linearly dependent. Then, there exist $\lambda_1, \dots, \lambda_n \in \RR$ that are not all $0$ such that $\sum_{i = 1}^n \lambda_i f_i(x) = 0$ for all $x \in \Sigma$. The same dependence holds for the columns of any alternant matrix for the $f_i$. This proves the forward implication.
+
+Write $M_{f_1, \dots, f_n}(x_1, \dots, x_n)$ for the alternant matrix generated by the functions $f_1, \dots, f_n$ and input points $x_1, \dots, x_n$ and let $G_{f_1, \dots, f_n} : \Sigma^n \rightarrow \RR$ be given by $G_{f_1, \dots, f_n}(x_1, \dots, x_n) = \det M_{f_1, \dots, f_n}(x_1, \dots, x_n)$.
+
+
+For the converse implication, it suffices to show that $G_{f_1, \dots, f_n} = 0$ on $\Sigma^n$ implies that $\{f_1, \dots, f_n\}$ is linearly dependent. We proceed by induction on the number~$n$ of functions. Suppose $n = 1$ with single function $f$. If for all $x \in \Sigma$, $0 = G_f(x) = f(x)$ then clearly $f = 0$ and $\{0\}$ is a linearly dependent set in any vector space.
+
+Now suppose that for $n \geq 1$ and arbitrary functions $g_1, \dots, g_n : \Sigma \rightarrow \RR$, $G_{g_1, \dots , g_n} = 0$ implies that $g_1, \dots, g_n$ are linearly dependent. Let $f_1, \dots, f_{n+1} : \Sigma \rightarrow \RR$ and $x_1, \dots, x_{n + 1}$. A Laplace expansion of $G_{f_1, \dots, f_{n+1}}(x_1, \dots, x_{n+1})$ along the first row of $M_{f_1, \dots, f_{n+1}}(x_1, \dots, x_{n+1})$ gives
+\begin{equation*}
+\begin{split}
+G_{f_1, \dots, f_{n+1}}(x_1, \dots, x_{n+1}) & = f_1(x_1) G_{f_2, \dots, f_{n+1}}(x_2, \dots, x_{n+1}) \\
+& +  \cdots \\
+& + (-1)^{n} f_{n+1}(x_1) G_{f_1, \dots, f_n}(x_2, \dots, x_{n+1}).
+\end{split}
+\end{equation*}
+Suppose $G_{f_1, \dots, f_{n+1}}(x_1, \dots, x_{n+1}) = 0$ holds for all $x_1, \dots, x_n$.
+We distinguish between two cases.
+\begin{itemize}
+\item Either there exist $x_2, \dots, x_{n+1} \in \Sigma$ such that the cofactors \[G_{f_2, \dots, f_{n+1}}(x_2, \dots, x_{n+1}), G_{f_1, f_3, \dots, f_{n+1}}(x_2, \dots, x_{n+1}), \dots, G_{f_1, \dots, f_n}(x_2, \dots, x_{n+1})\] are not all~$0$.
+    This establishes a linear dependence in $f_1, \dots, f_{n+1}$.
+\item Or all cofactors are $0$ for all $x_2, \dots, x_{n+1}$.
+ Then, in particular, $G_{f_2, \dots, f_{n+1}}(x_2, \dots, x_{n+1}) = 0$ for all $x_2, \dots, x_{n+1}$.
+ By the induction hypothesis it follows that the functions $f_2, \dots, f_{n+1}$ are linearly dependent.
+ Hence, so are $f_1, \dots, f_{n+1}$.
+\end{itemize}
+In either case it follows that $f_1, \dots, f_{n+1}$ are linearly dependent.
+\end{proof}
+\end{document}

@@ -1,0 +1,17 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Preliminaries}{}% 2
+\BOOKMARK [1][-]{section.3}{Sequential Probability Ratio Test}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Expectation of N, }{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Distribution of N, }{section.3}% 5
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Likelihood Exponent 0}{subsection.3.2}% 6
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Likelihood Exponent -}{subsection.3.2}% 7
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Likelihood Exponent in \(-, 0\)}{subsection.3.2}% 8
+\BOOKMARK [2][-]{subsection.3.3}{Qualitative Problems}{section.3}% 9
+\BOOKMARK [1][-]{section.4}{Stefan}{}% 10
+\BOOKMARK [2][-]{subsection.4.1}{Representing Likelihood Exponents}{section.4}% 11
+\BOOKMARK [1][-]{section.5}{Computational Aspects}{}% 12
+\BOOKMARK [2][-]{subsection.5.1}{Deterministic Chains}{section.5}% 13
+\BOOKMARK [2][-]{subsection.5.2}{Non-Deterministic Chains}{section.5}% 14
+\BOOKMARK [1][-]{appendix.A}{Proofs from liexpsubsect}{}% 15
+\BOOKMARK [2][-]{subsection.A.1}{Proof of nondetermconv}{appendix.A}% 16
+\BOOKMARK [2][-]{subsection.A.2}{Proof of the Asymptotic Wald Formula}{appendix.A}% 17

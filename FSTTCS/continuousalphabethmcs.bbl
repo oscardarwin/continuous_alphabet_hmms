@@ -1,0 +1,147 @@
+\begin{thebibliography}{10}
+
+\bibitem{Weather}
+P.~Ailliot, C.~Thompson, and P.~Thomson.
+\newblock Space-time modelling of precipitation by using a hidden {M}arkov
+  model and censored {G}aussian distributions.
+\newblock {\em Journal of the Royal Statistical Society}, 58(3):405--426, 2009.
+
+\bibitem{GeneFinding}
+M.~Alexandersson, S.~Cawley, and L.~Pachter.
+\newblock {SLAM}: Cross-species gene finding and alignment with a generalized
+  pair hidden {M}arkov model.
+\newblock {\em Genome Research}, 13:469--502, 2003.
+
+\bibitem{EquivForSecurity10}
+M.S. Alvim, M.E. Andr{\'e}s, C.~Palamidessi, and P.~van Rossum.
+\newblock Safe equivalences for security properties.
+\newblock In {\em Theoretical Computer Science}, pages 55--70. Springer, 2010.
+
+\bibitem{BHHK03}
+C.~Baier, B.~Haverkort, H.~Hermanns, and J.-P. Katoen.
+\newblock Model-checking algorithms for continuous-time {M}arkov chains.
+\newblock {\em IEEE Transactions on Software Engineering}, 29(6):524--541,
+  2003.
+
+\bibitem{ModVerif17}
+M.S. Bauer, R.~Chadha, and M.~Viswanathan.
+\newblock Modular verification of protocol equivalence in the presence of
+  randomness.
+\newblock In {\em Computer Security -- ESORICS 2017}, pages 187--205. Springer,
+  2017.
+
+\bibitem{braun2015robust}
+B.A. Braun, S.~Jana, and D.~Boneh.
+\newblock Robust and efficient elimination of cache and timing side channels,
+  2015.
+\newblock \href {http://arxiv.org/abs/1506.00189} {\path{arXiv:1506.00189}}.
+
+\bibitem{Gesture}
+F.-S. Chen, C.-M. Fu, and C.-L. Huang.
+\newblock Hand gesture recognition using a real-time tracking method and hidden
+  {M}arkov models.
+\newblock {\em Image and Vision Computing}, 21(8):745--758, 2003.
+
+\bibitem{CDKM11}
+T.~Chen, M.~Diciolla, M.Z. Kwiatkowska, and A.~Mereacre.
+\newblock Time-bounded verification of {CTMCs} against real-time
+  specifications.
+\newblock In {\em Proceedings of Formal Modeling and Analysis of Timed Systems
+  (FORMATS)}, volume 6919 of {\em LNCS}, pages 26--42. Springer, 2011.
+
+\bibitem{DNA-modeling}
+G.A. Churchill.
+\newblock Stochastic models for heterogeneous {DNA} sequences.
+\newblock {\em Bulletin of Mathematical Biology}, 51(1):79--94, 1989.
+
+\bibitem{CortesMRdistance}
+C.~Cortes, M.~Mohri, and A.~Rastogi.
+\newblock {$L_p$} distance and equivalence of probabilistic automata.
+\newblock {\em International Journal of Foundations of Computer Science},
+  18(04):761--779, 2007.
+
+\bibitem{SignalProcessing}
+M.S. Crouse, R.D. Nowak, and R.G. Baraniuk.
+\newblock Wavelet-based statistical signal processing using hidden {M}arkov
+  models.
+\newblock {\em IEEE Transactions on Signal Processing}, 46(4):886--902, April
+  1998.
+
+\bibitem{darkief20tech}
+Oscar Darwin and Stefan Kiefer.
+\newblock Equivalence of hidden markov models with continuous observations.
+\newblock Technical report, arXiv.org, 2020.
+\newblock Available at http://arxiv.org/abs/2009.12978.
+
+\bibitem{Storm}
+C.~Dehnert, S.~Junges, J.-P. Katoen, and M.~Volk.
+\newblock A {Storm} is coming: A modern probabilistic model checker.
+\newblock In {\em Proceedings of Computer Aided Verification (CAV)}, pages
+  592--600. Springer, 2017.
+
+\bibitem{durbin1998biological}
+R.~Durbin.
+\newblock {\em Biological Sequence Analysis: Probabilistic Models of Proteins
+  and Nucleic Acids}.
+\newblock Cambridge University Press, 1998.
+
+\bibitem{HMM-comp-biology}
+S.R. Eddy.
+\newblock What is a hidden {M}arkov model?
+\newblock {\em Nature Biotechnology}, 22(10):1315--1316, October 2004.
+
+\bibitem{Grassmann91}
+W.K. Grassmann.
+\newblock Finding transient solutions in {M}arkovian event systems through
+  randomization.
+\newblock In {\em Numerical solution of {M}arkov chains}, pages 357--371, 1991.
+
+\bibitem{HKK14}
+H.~Hermanns, J.~Kr{\v{c}}{\'a}l, and J.~K{\v{r}}et{\'i}nsk{\'y}.
+\newblock Probabilistic bisimulation: Naturally on distributions.
+\newblock In {\em CONCUR 2014 -- Concurrency Theory}, pages 249--265. Springer,
+  2014.
+
+\bibitem{kief11}
+S.~Kiefer, A.S. Murawski, J.~Ouaknine, B.~Wachter, and J.~Worrell.
+\newblock Language equivalence for probabilistic automata.
+\newblock In {\em Proceedings of the 23rd International Conference on Computer
+  Aided Verification (CAV)}, volume 6806 of {\em LNCS}, pages 526--540.
+  Springer, 2011.
+
+\bibitem{ProteinStructure}
+A.~Krogh, B.~Larsson, G.~von Heijne, and E.L.L. Sonnhammer.
+\newblock Predicting transmembrane protein topology with a hidden {Markov}
+  model: Application to complete genomes.
+\newblock {\em Journal of Molecular Biology}, 305(3):567--580, 2001.
+
+\bibitem{KNP11}
+M.~Kwiatkowska, G.~Norman, and D.~Parker.
+\newblock {PRISM} 4.0: Verification of probabilistic real-time systems.
+\newblock In {\em Proceedings of Computer Aided Verification (CAV)}, volume
+  6806 of {\em LNCS}, pages 585--591. Springer, 2011.
+
+\bibitem{Paz71}
+A.~Paz.
+\newblock {\em Introduction to Probabilistic Automata (Computer Science and
+  Applied Mathematics)}.
+\newblock Academic Press, Inc., Orlando, FL, USA, 1971.
+
+\bibitem{Rabiner89}
+L.R. Rabiner.
+\newblock A tutorial on hidden {M}arkov models and selected applications in
+  speech recognition.
+\newblock {\em Proceedings of the IEEE}, 77(2):257--286, 1989.
+
+\bibitem{schut61}
+M.P. Schützenberger.
+\newblock On the definition of a family of automata.
+\newblock {\em Information and Control}, 4(2):245--270, 1961.
+
+\bibitem{Tzeng92}
+W.-G. Tzeng.
+\newblock A polynomial-time algorithm for the equivalence of probabilistic
+  automata.
+\newblock {\em SIAM J. Comput.}, 21(2):216--227, April 1992.
+
+\end{thebibliography}

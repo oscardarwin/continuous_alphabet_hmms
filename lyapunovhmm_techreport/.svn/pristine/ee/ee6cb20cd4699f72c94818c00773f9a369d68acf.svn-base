@@ -1,0 +1,73 @@
+\section{Stefan} 
+
+\subsection{Qualitative Problems}
+
+\begin{theorem} \label{thm:qual-prob}
+Given an HMM and initial distributions $\pi_1, \pi_2$,
+\begin{enumerate}
+\item one can compute $\PP_{\pi_2}(E_{-\infty})$ and $\PP_{\pi_2}(E_0)$ in PSPACE;
+\item one can decide whether $\PP_{\pi_2}(E_0)=0$ (i.e., $0 \not\in \Lambda_{\pi_1,\pi_2}$) in polynomial time;
+\item deciding whether $\PP_{\pi_2}(E_0)=1$, whether $\PP_{\pi_2}(E_{-\infty})=0$, and whether $\PP_{\pi_2}(E_{-\infty})=1$ are all PSPACE-complete problems.
+\end{enumerate} 
+\end{theorem}
+
+
+the \emph{mortality} problem, which asks, given a finite set of states~$Q$, a finite alphabet~$\Sigma$, and a function $\Phi : \Sigma \to \{0,1\}^{Q \times Q}$, whether there exists a word $w \in \Sigma^*$ such that $\Phi(w)$ is the zero matrix.
+The mortality problem can be viewed as a special case of the NFA universality problem (given an NFA, does it accept every word?).
+Like NFA universality, the mortality problem is PSPACE-complete [CITE SHALLIT].
+
+Concerning $\PP_{\pi_2}(E_{-\infty})$ (cf.\ \cref{thm:qual-prob}.3), we actually show a stronger result, namely that any nontrivial approximation of $\PP_{\pi_2}(E_{-\infty})$ is PSPACE-hard.
+The proof is also based on the mortality problem.
+\begin{proposition} \label{prop:nontrivial-approx}
+There is a polynomial-time computable function that maps any instance of the mortality problem to an HMM and initial distributions $\pi_1, \pi_2$ so that if the instance is positive then $\PP_{\pi_2}(E_{-\infty})=1$ and if the instance is negative then $\PP_{\pi_2}(E_{-\infty})=0$.
+Thus, any nontrivial approximation of $\PP_{\pi_2}(E_{-\infty})$ is PSPACE-hard.
+\end{proposition}
+\begin{proof}[Proof sketch]
+Given an instance~$\Phi$ of the mortality problem, construct an HMM $(Q,\Sigma,\Psi)$ so that $\Phi$ and~$\Psi$ have the same graph [DEFINED?] and $\sum_{a \in \Sigma} \Psi(a)$ is stochastic.
+Define $\pi_1$ as a uniform distribution on~$Q$.
+Define $\pi_2$ as a Dirac distribution on a fresh state that emits letters from~$\Sigma$ uniformly at random.
+Thus, if $\Phi$ is a positive instance of the mortality problem then $\PP_{\pi_2}(E_{-\infty})=1$, and if $\Phi$ is a negative instance then $\PP_{\pi_2}(E_{-\infty})=0$.
+\end{proof}
+
+
+\subsection{Representing Likelihood Exponents}
+
+In the following we show that, although it is hard to \emph{compute} likelihood exponents, one can efficiently represent them in terms of \emph{Lyapunov exponents}.
+The definition of Lyapunov exponents is based on the following definition.
+
+\begin{definition} \label{lem:lyapunov-exponent}
+A \emph{Lyapunov system} is a quadruple $(Q, \Sigma, \Psi, \rho)$ where $Q$ is a finite set of states, $\Sigma$ is a finite set of observations, $\psi: \Sigma \rightarrow \mathbb{R}_{\ge 0}^{Q \times Q}$ specifies the transitions, and $\rho : \Sigma \to [0,1]$ is a probability distribution on~$\Sigma$ [PROBABLY INTRODUCE A NOTATION FOR A PROBABILITY DISTRIBUTION IN THE PRELIMINARIES.], such that the directed graph $(Q,E)$ with $E = \{(q,r) \mid \sum_{a \in \Sigma} \Psi_{q,r}(a) > 0\}$ is strongly connected.
+\end{definition}
+
+Let $(Q, \Sigma, \Psi, \rho)$ be a Lyapunov system.
+We can identify $\rho$ with the single-state HMM $(\{s\}, \Sigma, \Psi_\rho)$ where $\Psi_\rho(a)_{s,s} = \rho(a)$ for all $a \in \Sigma$.
+In this way, $\rho$ produces a random infinite word from $\Sigma^\omega$.
+For $w \in \Sigma^\omega$ we write $w_n$ for the length-$n$ prefix of~$w$.
+The following lemma is known from [CITE].
+
+\begin{lemma}[{[CITE]}] \label{lem:lyapunov-exponent}
+Let $(Q, \Sigma, \Psi, \rho)$ be a Lyapunov system.
+Then there is $\ell \in \RR$ such that, $\PP_{\rho}$-a.s., for all $q \in Q$, the limit $\lim_{n \to \infty} \| e_q \Psi(w_n) \|$ exists and equals~$\ell$.
+\end{lemma}
+\renewcommand{\S}{\mathcal{S}}
+For a Lyapunov system~$\S$ we call $\ell(S) = \ell$ from the lemma the \emph{Lyapunov exponent} defined by~$\S$.
+We prove the following theorem.
+\begin{theorem} \label{thm:likelihood-to-lyapunov}
+Given an HMM $(Q, \Sigma, \Psi)$ we can compute in polynomial time $2 K \le 2 |Q|^2$ Lyapunov systems $\S_1^1, \S_1^2, \S_2^1, \S_2^2, \ldots, \S_K^1, \S_K^2$ such that
+\[ 
+\Lambda \ \subseteq \ \{-\infty\} \cup \{\ell(S_1^1) - \ell(S_1^2), \ldots, \ell(S_K^1) - \ell(S_K^2)\} \,.
+\]
+In particular, the HMM has at most $|Q|^2 + 1$ likelihood exponents.
+\end{theorem}
+
+In the rest of the section we provide more details on the construction underlying \cref{thm:likelihood-to-lyapunov}.
+
+It will be convenient to allow for \emph{lossy} HMMs $(Q,\Sigma,\Psi)$.
+These are defined like HMMs except that $\sum_{a \in \Sigma} \Psi(a)$ need not be stochastic but may be substochastic, i.e, for all $q \in Q$ we have $\sum_{r \in Q} \sum_{a \in \Sigma} \Psi(a)_{q,r} \in [0,1]$.
+We view a lossy HMM $(Q,\Sigma,\Psi)$ as a shorthand for an HMM $(Q \cup \{\bot\},\Sigma \cup \{\$\},\overline\Psi)$, where $\bot \not\in Q$ is a fresh (sink) state, $\$ \not \in \Sigma$ is a fresh letter, and $\overline\Psi$ is obtained from~$\Psi$ by adding $\$$-labelled transitions into~$\bot$; i.e., for all $q \in Q$ we have $\overline\Psi(\$)_{q,\bot} = 1 - \sum_{r \in Q} \sum_{a \in \Sigma} \Psi(a)_{q,r}$ and $\overline\Psi(\$)_{\bot,\bot} = 1$.
+
+Given an HMM $(Q, \Sigma, \Psi)$, define a directed graph~$G$ as follows.
+The vertex set is $Q \times Q$.
+There is an edge from $(q_1,q_2)$ to $(r_1,r_2)$ if there is $a \in \Sigma$ with $\Psi(a)_{q_1,r_1} > 0$ and $\Psi(a)_{q_2,r_2} > 0$.
+An SCC [DEFINED?] $S \subseteq Q \times Q$ of~$G$ is called a \emph{right-bottom} SCC if $\{q_2 \mid (q_1,q_2) \in S\}$ is a bottom SCC of~$\Psi$ [DEFINED?].
+

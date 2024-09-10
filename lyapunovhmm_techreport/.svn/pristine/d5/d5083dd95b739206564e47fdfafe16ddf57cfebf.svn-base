@@ -1,0 +1,1030 @@
+\documentclass[a4paper,UKenglish,cleveref, autoref,mathscr]{lipics-v2019}
+%This is a template for producing LIPIcs articles.
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling cleveref support, use "autoref"
+\usepackage{bbm, tikz, mathtools, thm-restate}
+\usetikzlibrary{arrows,calc,automata,intersections}
+\tikzset{LMC style/.style={>=angle 60,every edge/.append style={thick},every state/.style={thick,minimum size=20,inner sep=0.5}}}
+
+\usepackage{asymptote}
+
+\newcommand{\eow}{\$}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Epsilon}{\mathcal{E}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\Bor}{\mathscr{B}}
+\newcommand{\BorC}{\mathscr{C}}
+\newcommand{\GG}{\mathscr{G}}
+\newcommand{\HH}{\mathscr{H}}
+\newcommand{\Norm}{\mathscr{N}}
+%\newcommand{\FF}{\mathscr{F}}
+\newcommand{\DD}{\mathscr{D}}
+\newcommand{\LL}{\mathscr{L}}
+\newcommand{\Exp}{\mathit{Exp}}
+\newcommand{\MM}{\mathscr{M}}
+\newcommand{\Basis}{\mathscr{B}}
+\newcommand{\balph}{\boldsymbol{\alpha}}
+\newcommand{\bpldP}{\boldsymbol{P}}
+\newcommand{\stoch}{\boldsymbol{S}}
+\newcommand{\TT}{\boldsymbol{T}}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\pem}{\mathbf{A}}
+\newcommand{\con}{\textbf{con}}
+\newcommand{\Con}{\overline{\textbf{con}}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\pl}{\Gamma_{\mathit{GEM}}}
+\newcommand{\MLeb}{\MM_{\mathit{Leb}}}
+\newcommand{\lyapexp}{\lim_{n\rightarrow\infty} \frac1n \ln \pi_1 \Psi(w) \1^T}
+\newcommand{\liexp}{\lim_{n\rightarrow\infty} \frac1n \ln L_n}
+\newcommand{\PPind}{\PP_{\text{ind}}}
+\newcommand{\PPsi}{\overline{\Psi}}
+\newcommand{\Psimin}{\Psi_{\text{min}}}
+\newcommand{\SPRT}{\mathrm{SPRT}}
+
+\renewcommand{\H}{\mathcal{H}}
+\newcommand{\M}{\mathcal{M}}
+\renewcommand{\S}{\mathcal{S}}
+\renewcommand{\epsilon}{\varepsilon}
+\newcommand{\uparr}[1]{#1\mathord{\uparrow}}
+
+\graphicspath{ {images/} }
+
+\DeclareMathOperator{\Span}{span\,}
+
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newcommand{\stefan}[1]{\marginpar{\textcolor{blue}{#1}}}
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{On the Sequential Probability Ratio Test in Hidden Markov Models}
+
+\author{Oscar Darwin}{Department of Computer Science, Oxford University, United Kingdom }{}{https://orcid.org/0000-0001-5016-014X}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\author{Stefan Kiefer}{Department of Computer Science, Oxford University, United Kingdom}{}{https://orcid.org/0000-0003-4173-6877}{}
+
+\authorrunning{O. Darwin and S. Kiefer}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{John Q. Public and Joan R. Public}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+%\ccsdesc[100]{General and reference~General literature}
+%\ccsdesc[100]{General and reference}%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm
+\ccsdesc[500]{Theory of computation~Random walks and Markov chains}
+\ccsdesc[500]{Mathematics of computing~Stochastic processes}
+\ccsdesc[300]{Theory of computation~Logic and verification}
+
+\keywords{Markov chains, hidden Markov models, probabilistic systems, verification}%TODO mandatory; please add comma-separated list of keywords
+
+\category{}%optional, e.g. invited paper
+
+\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversion{A full version of the paper is available at \url{...}.}
+
+\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%\acknowledgements{I want to thank \dots}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sloppy
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We consider the Sequential Probability Ratio Test applied to Hidden Markov Models. Given two Hidden Markov Models and a sequence of observations generated by one of them, the Sequential Probability Ratio Test attempts to decide which model produced the sequence. We show relationships between the execution time of such an algorithm and Lyapunov exponents of random matrix systems. Further, we give complexity results about the execution time taken by the Sequential Probability Ratio Test.
+\end{abstract}
+
+\section{Introduction}
+
+A (discrete-time, finite-state) \emph{Hidden Markov Model (HMM)} (often called \emph{labelled Markov chain}) has a finite set $Q$ of states and for each state a probability distribution over its possible successor states.
+Every state is associated with a probability transition over a successor state and an emitted letter (\emph{observation}).
+For example, consider the following HMM:
+\begin{center}
+\begin{tikzpicture}[scale=2.5,LMC style]
+\node[state] (q1) at (0,0) {$q_1$};
+\node[state] (q2) at (1,0) {$q_2$};
+\path[->] (q1) edge [loop,out=200,in=160,looseness=10] node[left] {$\frac13 a$} (q1);
+\path[->] (q1) edge [bend left] node[above] {$\frac23 b$} (q2);
+\path[->] (q2) edge [loop,out=20,in=-20,looseness=10] node[right] {$\frac23 a$} (q2);
+\path[->] (q2) edge [bend left] node[below] {$\frac13 b$} (q1);
+\end{tikzpicture}
+\end{center}
+In state~$q_1$, the probability of emitting~$a$ and the next state being also~$q_1$ is~$\frac13$, and the probability of emitting~$b$ and the next state being~$q_2$ is~$\frac23$.
+An HMM is typically viewed as a producer of a finite or infinite word of emitted observations.
+For example, starting in~$q_1$, the probability of producing a word with prefix $a b a$ is $\frac13 \cdot \frac23 \cdot \frac23$, whereas starting in~$q_2$, the probability of $a b a$ is $\frac23 \cdot \frac13 \cdot \frac13$.
+The random sequence of states is considered not observable (which explains the term \emph{hidden} in HMM).
+
+HMMs are widely employed in fields such as speech recognition (see~\cite{Rabiner89} for a tutorial),
+gesture recognition~\cite{Gesture},
+%musical score following~\cite{MusicalScore},
+signal processing~\cite{SignalProcessing},
+and climate modeling~\cite{Weather}.
+HMMs are heavily used in computational biology~\cite{HMM-comp-biology},
+more specifically in DNA modeling~\cite{DNA-modeling} and biological sequence analysis~\cite{durbin1998biological},
+including protein structure prediction~\cite{ProteinStructure} %, detecting similarities in genomes~\cite{Homology}
+and gene finding~\cite{GeneFinding}.
+In computer-aided verification, HMMs are the most fundamental model for probabilistic systems; model-checking tools such as Prism~\cite{KNP11} or Storm~\cite{Storm} are based on analyzing HMMs efficiently.
+
+One of the most fundamental questions about HMMs is whether two initial distributions are \emph{(trace) equivalent}, i.e., generate the same distribution on infinite observation sequences.
+In the example above, we argued that (the Dirac distributions on) the states $q_1, q_2$ are not equivalent.
+The equivalence problem is very well studied and can be solved in polynomial time using algorithms that are based on linear algebra~\cite{schut61,Paz71,Tzeng92,CortesMRdistance}.
+The equivalence problem has applications in verification, e.g., of randomised anonymity protocols~\cite{kief11}.
+
+Equivalence is a strong notion, and a natural question about nonequivalent distributions in a given HMM is \emph{how} different they are.
+For initial distributions $\pi_1, \pi_2$ on the states of the HMM, let us write $\PP_{\pi_1}, \PP_{\pi_2}$ for the induced probability measure on infinite observation sequences; i.e., $\PP_{\pi_i}(E)$, for a measurable event $E \subseteq \Sigma^\omega$, is the probability that the random infinite word~$w \in \Sigma^\omega$ produced starting from~$\pi_i$ is in~$E$.
+Then, the \emph{total variation distance} between $\PP_{\pi_1}, \PP_{\pi_2}$ is defined as
+\[
+ d(\pi_1,\pi_2) \ := \ \sup~\{ |\PP_{\pi_1}(E) - \PP_{\pi_2}(E)| \mid \text{measurable } E \subseteq \Sigma^\omega\}\,.
+\]
+One can show that this supremum is a maximum; i.e., there always exists a ``maximizing event'' $E \subseteq \Sigma^\omega$ with $d(\pi_1,\pi_2) = \PP_{\pi_1}(E) - \PP_{\pi_2}(E)$.
+In these terms, initial distributions $\pi_1, \pi_2$ are equivalent if and only $d(\pi_1, \pi_2) = 0$.
+The total variation distance was studied in more detail in~\cite{kief14}.
+There it was shown that the problem whether $d(\pi_1, \pi_2) = 1$ holds can also be decided in polynomial time.
+Call distributions $\pi_1, \pi_2$ \emph{distinguishable} if $d(\pi_1, \pi_2) = 1$.
+Distinguishability was then used for runtime monitoring~\cite{kief16} and diagnosability~\cite{BertrandHL16,AkshayBFG19} of stochastic systems.
+
+%Although it is easy to come up with HMMs and distributions $\pi_1,\pi_2$ such that $0 < d(\pi_1,\pi_2) < 1$,
+Distributions $\pi_1, \pi_2$ that are distinguishable (i.e., $d(\pi_1,\pi_2) = 1$) can nevertheless be ``hard'' to distinguish.
+In our example above, (the Dirac distributions on) $q_1, q_2$ are distinguishable.
+If we replace the transition probabilities $\frac13, \frac23$ in the HMM by $\frac12-\varepsilon, \frac12+\varepsilon$, respectively, states $q_1, q_2$ remain distinguishable for every $\varepsilon>0$, although, intuitively, the smaller $\varepsilon > 0$ the more observations are needed to define an event~$E$ such that $\PP_{\pi_1}(E) - \PP_{\pi_2}(E)$ is close to~$1$.
+
+To make this more precise, for initial distributions $\pi_1, \pi_2$, a word $w \in \Sigma^\omega$ and $n \in \NN$ consider the \emph{likelihood ratio}
+\[
+L_n(w) \ := \ \frac{\PP_{\pi_1}(w_n \Sigma^\omega)}{\PP_{\pi_2}(w_n \Sigma^\omega)}\,,
+\]
+where $w_n$ denotes the length-$n$ prefix of~$w$.
+In the example above, we argued that $\PP_{q_1}(a b a \Sigma^\omega) = \frac13 \cdot \frac23 \cdot \frac23$ and $\PP_{q_2}(a b a \Sigma^\omega) = \frac23 \cdot \frac13 \cdot \frac13$.
+Thus, for any word $w$ starting with $a b a$ we have $L_n(w) = 2$.
+Since the word~$w$ is produced randomly, the likelihood ratio~$L_n$ is a random variable for every $n \in \NN$.
+It turns out more natural to focus on the \emph{log-likelihood ratio} $\ln L_n$.
+One can show that the limit $\lim_{n \to \infty} \ln L_n \in [-\infty, \infty]$ exists $\PP_{\pi_1}$-almost surely and $\PP_{\pi_2}$-almost surely (see, e.g., \cite[Proposition~6]{kief14}).
+%Moreover, the event $\{\overline{L} \ge 0\}$ is a ``maximizing event'' referred to above, i.e., $d(\pi_1,\pi_2) = \PP_{\pi_1}(\{\overline{L} \ge 0\}) - \PP_{\pi_2}(\{\overline{L} \ge 0\})$ (see, e.g., \cite[Theorem~11]{kief14}).
+%In the case of distinguishable $\pi_1, \pi_2$ it follows that $\PP_{\pi_1}(\{\overline{L} \ge 0\}) = 1$ and $\PP_{\pi_2}(\{\overline{L} \ge 0\}) = 0$;
+In fact, one can show that $\{\lim_{n \to \infty} \ln L_n = \infty\}$ occurs $\PP_{\pi_1}$-almost surely and $\{\lim_{n \to \infty} \ln L_n = -\infty\}$ occurs $\PP_{\pi_2}$-almost surely.
+This suggests the ``average slope'' of increase or decrease of~$\ln L_n$ as a measure of \emph{how} distinguishable two distinguishable distributions $\pi_1,\pi$ are.
+
+The log-likelihood ratio plays a central role in the \emph{sequential probability ratio test (SPRT)}~\cite{wald45}, which is  optimal~\cite{WaldWolfowitz48} among sequential hypothesis tests (such tests attempt to decide between two hypotheses without fixing the sample size in advance).
+In terms of an HMM and two initial distributions $\pi_1, \pi_2$, the SPRT attempts to decide, given longer and longer prefixes of an observation sequence $w \in \Sigma^\omega$, which of $\pi_1, \pi_2$ is more likely to emit~$w$.
+The SPRT works as follows: fix a lower and an upper threshold (which determine type-I and type-II errors); given increasing prefixes of~$w$ keep track of $\ln L_n(w)$, and when the upper threshold is crossed output~$\pi_1$ and stop, and when the lower threshold is crossed output~$\pi_2$ and stop.
+Again, it is natural to assume that the ``average slope'' of increase or decrease of~$\ln L_n$ determines how long the SPRT needs to cross one of the thresholds.
+
+Indeed, we show that for any HMM and distributions $\pi_1, \pi_2$, the ``average slope'' $\liexp$ exists $\PP_{\pi_2}$-almost surely.
+For $\ell \in \RR \cup \{-\infty\}$, if $\PP_{\pi_2}(\liexp = \ell) > 0$ for some $\pi_1, \pi_2$, then we call $\ell$ a \emph{likelihood exponent} of the HMM.
+The term is motivated by a close relationship to \emph{Lyapunov exponents}, which characterise the growth rate of certain random matrix products, as we explain later.
+As suggested above, we prove a tight connection between the SPRT and likelihood exponents; i.e., the time taken by the SPRT depends on the likelihood exponents of the HMM.
+We also show that every HMM with $k$~states has at most $k^2 + 1$ likelihood exponents, and we can express them efficiently in terms of Lyapunov exponents.
+Finally, we prove complexity results on decision problems concerning the probability of certain likelihood exponents in a given HMM.
+
+
+
+\section{Preliminaries} \label{sec:prelims}
+We write $\NN$ for the set of non-negative integers. %, $\QQ$ for the set of rationals and $\QQ_+$ for the set of positive rationals.
+For $d \in \NN$ we write %and a finite set $Q$ we use the notation $|Q|$ for the number of elements in $Q$,
+$[d] = \{1, \dots, d\}$. % and $[Q] = \{1, \dots, |Q|\}$.
+For a finite set~$Q$, vectors $\mu \in \RR^Q$ are viewed as row vectors, and their transpose (a column vector) is denoted by $\mu^\top$.
+The norm $\|\mu\|$ is assumed to be the $l_1$ norm: $\| \mu \| = \sum_{q \in Q} | \mu_q |$.
+We write $\vec{0}, \vec{1}$ for the vectors all whose entries are $0$, $1$, respectively.
+For $q \in Q$, we denote by~$e_q \in \{0,1\}^Q$ the vector with $(e_q)_q = 1$ and $(e_q)_{q'} = 0$ for $q' \ne q$.
+A matrix $M \in [0,1]^{Q \times Q}$ is \emph{stochastic} if $\vec{1}^\top = M \vec{1}^\top$.
+We often identify vectors $\mu \in [0,1]^Q$ such that $\| \mu \| = 1$ with the corresponding probability distribution on~$Q$.
+For $\mu \in [0,\infty)^Q$ we write $\supp(\mu) := \{q \in Q \mid \mu_q > 0\}$.
+
+For a finite alphabet~$\Sigma$ and $n \in \NN$ we denote by $\Sigma^n, \Sigma^*, \Sigma^\omega$ the sets of length-$n$ words, finite words, infinite words, respectively.
+For $w \in \Sigma^\omega$ we write $w_n$ for the length-$n$ prefix of~$w$.
+
+A \emph{Hidden Markov Model} (HMM) is a triple $\H = (Q, \Sigma, \Psi)$ where $Q$ is a finite set of states, $\Sigma$ is a set of observations (or ``letters''), and the function $\Psi : \Sigma \rightarrow [0,1]^{Q \times Q}$ specifies the transitions such that $\sum_{a \in \Sigma} \Psi(a)$ is stochastic.
+A \emph{Markov chain} is a pair $(Q, T)$ where $Q$ is a finite set of states and $T \in [0,1]^{Q \times Q}$ is a stochastic matrix.
+A Markov chain $(Q,T)$ is naturally associated with its directed \emph{graph} $(Q,\{(q,r) \mid T_{q,r} > 0\})$, and so we may use graph concepts, such as strongly connected components (SCCs), in the context of a Markov chain.
+The \emph{embedded} Markov chain of an HMM $(Q, \Sigma, \Psi)$ is the Markov chain $(Q, \sum_{a \in \Sigma} \Psi(a))$.
+We say that an HMM is \emph{strongly connected} if the graph of its embedded Markov chain is.
+\begin{example} \label{ex-HMMdef}
+The HMM from the introduction is the triple $\H = (\{q_1, q_2\}, \{a,b\}, \Psi)$ with $\Psi(a) = \begin{pmatrix} \frac13 & 0 \\ 0 & \frac23 \end{pmatrix}$ and $\Psi(b) = \begin{pmatrix} 0 & \frac23 \\ \frac13 & 0 \end{pmatrix}$.
+The embedded Markov chain is $(\{q_1,q_2\}, \begin{pmatrix} \frac13 & \frac23 \\ \frac13 & \frac23 \end{pmatrix})$.
+\end{example}
+
+Fix an HMM $\H = (Q, \Sigma, \Psi)$ for the rest of the section.
+We extend $\Psi$ to the mapping $\Psi : \Sigma^* \rightarrow [0,1]^{Q \times Q}$ with $\Psi(a_1 \cdots a_n) = \Psi(a_1) \cdot \ldots \cdot \Psi(a_n)$ and $\Psi(\epsilon) = I$, where $\epsilon$ is the empty word and $I$ the $Q \times Q$ identity matrix.
+We call a finite sequence $v = q_0 a_1 q_1 \cdots a_n q_n \in Q (\Sigma Q)^*$ a \emph{path} and $v (\Sigma Q)^\omega$ a \emph{cylinder set} and an infinite sequence $q_0 a_1 q_1 a_2 q_2 \cdots \in Q (\Sigma Q)^\omega$ a \emph{run}.
+To~$\H$ and an \emph{initial probability distribution} $\pi \in [0,1]^Q$ we associate the probability space $(Q(\Sigma Q)^\omega, \GG^*, \PP_\pi)$ where $\GG^*$ is the $\sigma$-algebra generated by the cylinder sets and $\PP_\pi$ is the unique probability measure with $\PP_\pi(q_0 a_1 q_1 \cdots a_n q_n (\Sigma Q)^\omega) = \pi_q \prod_{i=1}^{n} \Psi(a_i)_{q_{i-1},q_i}$.
+As the states are often irrelevant, for $E \subseteq \Sigma^\omega$ and $\uparr{E} := \{q_0 a_1 q_1 a_2 q_2 \cdots \mid a_1 a_2 \cdots \in E\} \in \GG^*$ we view also $E$ as an event and may write $\PP_{\pi}(E)$ to mean $\PP_{\pi}(\uparr{E})$.
+In particular, for $w \in \Sigma^*$ we have $\PP_{\pi}(w \Sigma^\omega) = \| \pi \Psi(w) \|$.
+For $E \subseteq \Sigma^\omega$ we write $\1_E$ for the indicator random variable with $\1_E(w) = 1$ if $w \in E$ and $\1_F(w) = 0$ if $w \not\in E$.
+By~$\EE_\pi$ we denote the expectation with respect to~$\PP_{\pi}$.
+
+%We say that $A \subseteq \Sigma^n$ is a \emph{cylinder set} if $A = A_1 \times \dots \times A_n$ and $A_i \in \GG$ for $i \in [n]$. For every $n$ there is an induced measure space $(\Sigma^n, \GG^n, \lambda^n)$ where $\GG^n$ is the smallest $\sigma$-algebra containing all cylinder sets in~$\Sigma^n$ and $\lambda^n(A_1 \times \dots \times A_n) = \prod_{i = 1}^n \lambda(A_i)$ for any cylinder set $A_1 \times \dots \times A_n$. Let $A \subset \Sigma^n$ and write $A \Sigma^\omega$ for the set of infinite words over~$\Sigma$ where the first $n$ observations fall in the set~$A$. Given a HMM $(Q, \Sigma, \Psi)$ and initial distribution $\pi$ on $Q$ viewed as vector $\pi \in \RR^{|Q|}$, there is an induced probability space $(\Sigma^\omega, \GG^*, \PP_\pi)$ where $\Sigma^\omega$ is the set of infinite words over~$\Sigma$, and $\GG^*$ is the smallest $\sigma$-algebra containing (for all $n \in \NN$) all sets $A \Sigma^\omega$ where $A\subseteq \Sigma^n$ is a cylinder set and $\PP_\pi$ is the unique probability measure such that
+%$\PP_\pi(A \Sigma^\omega) =  \sum_{w \in A} \| \pi  \Psi(w) \|$ for any cylinder set $A \subseteq \Sigma^n$.
+
+A Markov chain $(Q,T)$ and an initial distribution $\iota \in [0,1)^Q$ are associated with a probability measure $\PP_{\iota}$ on measurable subsets of $Q^\omega$; the construction of the probability space is similar to HMMs, without the observation alphabet~$\Sigma$.
+
+Let $(Q, \Sigma, \Psi)$ be an HMM and let $\pi_1, \pi_2$ be two initial distributions. The \emph{total variation distance} is
+$d(\pi_1, \pi_2) := \sup_{\uparr{E} \in \GG^*} | \PP_{\pi_1}(E) - \PP_{\pi_2}(E) |$.
+This supremum is actually a maximum due to Hahn's decomposition theorem; i.e., there is an event $E \subseteq \Sigma^\omega$ such that $d(\pi_1, \pi_2) = \PP_{\pi_1}(E) - \PP_{\pi_2}(E)$.
+We call $\pi_1$ and $\pi_2$ \emph{distinguishable} if $d(\pi_1, \pi_2) = 1$.
+Distinguishability is decidable in polynomial time~\cite{kief14}.
+
+%One could define the distinguishability of two pairs $(C_1,\pi_1)$ and $(C_2,\pi_2)$ where $C_i = (Q_i, \Sigma, \Psi_i)$ are HMMs and $\pi_i$ are initial distributions for $i=1,2$.
+%We do not need that though, as we can define, in a natural way, a single HMM over the disjoint union of $Q_1$ and~$Q_2$ and consider instead the distinguishability of $\pi_1$ and~$\pi_2$ (where $\pi_1,\pi_2$ are appropriately padded with zeros).
+
+%-- For the rest of the paper we assume that $(Q, \Sigma, \Psi)$ is an HMM. $L_n$ depending on $\pi_i$ etc.
+
+Let $\pi_1$ and $\pi_2$ be initial distributions.
+For $n \in \NN$, the \emph{likelihood ratio} $L_n$ is a random variable on $\Sigma^\omega$ given by $L_n(w) = \frac{\| \pi_1 \Psi(w_n) \|}{\| \pi_2 \Psi(w_n) \|}$.
+%By \cite[Proposition 6]{kief14} we have that $L_0, L_1, \ldots$ is a martingale and the following lemma holds due to Doob's forward convergence theorem\cite{will91}.
+By \cite[Proposition~6]{kief14} the limit $\lim_{n \rightarrow \infty} L_n$ exists $\PP_{\pi_2}$-almost surely and lies in $[0,\infty)$
+Using another result from~\cite{kief14} one can show the following lemma characterizing when the limit is~$0$.
+\begin{restatable}{lemma}{convergenceLn}\label{convergenceLn}
+We have $\lim_{n \rightarrow \infty} L_n = 0 \ \ \PP_{\pi_2}$-almost surely if and only if $\pi_1$ and $\pi_2$ are distinguishable.
+\end{restatable}
+
+\begin{example}\label{sleepcycles}
+We illustrate convergence of the likelihood ratio using an example from \cite{rockhart13} where the authors use HMMs to model sleep cycles.
+They took measurements of 51 healthy and 51 diseased individuals and using electrodes attached to the scalp, they read electrical signal data as part of an electroencephalography (EEG) during sleep.
+They split the signal into 30 second intervals and mapped each interval onto the simplex $\Delta^3 = \{(x_1, x_2, x_3, x_4) \in [0,1]^4 \mid \sum_{i = 1}^4 x_i = 1\}$.
+For each individual this results in a time series of points in $\Delta^3$.
+They modelled this data using two HMMs, each with 5 states, for healthy and diseased individuals using a numerical maximum likelihood estimate.
+Each state is associated with a probability density function describing the distribution of observations in~$\Delta^3$.
+We describe in \cref{app:sleepcycles} how we obtained from this an HMM $\H = (Q, \Sigma, \Psi)$ with (finite) observation alphabet $\Sigma = \{a_1, \ldots, a_5\}$ and two initial distributions $\pi_1, \pi_2$ corresponding to healthy and diseased individuals, respectively.
+Using the algorithm from \cite{kief14} one can show that $\pi_1$ and $\pi_2$ are distinguishable.
+
+We sampled runs of~$\H$ started from $\pi_1$ and $\pi_2$ and plotted the corresponding sequences of $\ln L_n$.
+We refer to each of these two plots as a \emph{log-likelihood plot}; see \Cref{loglikes}.
+\begin{center}
+	\begin{figure}[h]
+		\includegraphics[width=\textwidth/2]{loglikepositiveruns100000_100.jpg}	
+		\includegraphics[width=\textwidth/2]{loglikenegativeruns100000_100.jpg}
+		\caption{The two images show two log-likelihood plots of sample runs produced by $\pi_1$ and $\pi_2$, respectively.}\label{loglikes}
+	\end{figure}
+\end{center}
+By \Cref{convergenceLn} it follows that $\ln L_n$ converges $\PP_{\pi_1}$-a.s.\ (almost-surely) to $\infty$ and $\PP_{\pi_2}$-a.s.\ to~$-\infty$.
+This is affirmed by \Cref{loglikes}.
+Both log-likelihood plots also appear to follow a particular slope.
+This suggests that we can distinguish between words produced by $\pi_1$ and $\pi_2$ by tracking the value of $\ln L_n$ to see whether it crosses a lower or upper threshold.
+This is the intuition behind the \emph{Sequential Probability Ratio Test} (SPRT).
+%The amount of steps this process takes should also be related to the slope of the slopes.
+\end{example}
+
+\section{Sequential Probability Ratio Test}\label{liexpsubsect}
+
+Fix an HMM $H = (Q,\Sigma,\Psi)$ for the rest of the paper.
+Given initial distributions $\pi_1, \pi_2$ and error bounds $\alpha, \beta \in (0,1)$, the SPRT runs as follows.
+%We specify two error probabilities $\alpha, \beta \in (0,1)$ such that the SPRT gives the (wrong) result ``$\pi_2$'' from observations produced by~$\pi_1$ with probability at most~$\alpha$, and the (wrong) result ``$\pi_1$'' from observations produced by~$\pi_2$ with probability at most~$\beta$.
+It continues to read observations and computes the value of $\ln L_n$ until $\ln L_n$ leaves the interval $[A,B]$, where $A := \ln \frac{\alpha}{1 - \beta}$ and $B := \ln \frac{1 - \alpha}{\beta}$.
+If $\ln L_n \leq A$ the test outputs ``$\pi_2$'' and if $\ln L_n \geq B$ the test outputs ``$\pi_1$''.
+We may view the SPRT as a random variable $\SPRT_{\alpha, \beta} : \Sigma^\omega \rightarrow \{\pi_1, \pi_2, ?\}$, where $?$ denotes that the SPRT does not terminate, i.e., $\ln L_n \in [A,B]$ holds for all~$n$.
+We have the following correctness property.
+\begin{restatable}{proposition}{sprtcorrectness}\label{sprtcorrectness}
+Suppose $\pi_1$ and $\pi_2$ are distinguishable.
+Let $\alpha, \beta \in (0,1)$.
+By choosing $A = \ln \frac{\alpha}{1 - \beta}$ and $B = \ln \frac{1 - \alpha}{\beta}$, we have $\PP_{\pi_1} (\SPRT_{\alpha, \beta} = \pi_2) \leq \alpha$ and $\PP_{\pi_2} (\SPRT_{\alpha, \beta} = \pi_1) \leq \beta$.
+\end{restatable}
+In the following we consider the SPRT with respect to the measure $\PP_{\pi_2}$.
+This is without loss of generality as there is a dual version of the $\SPRT$, say $\overline{\SPRT}$ with $\overline{L}_n = 1/L_n$ instead of $L_n$, such that $ \overline{\SPRT}_{\beta, \alpha} = \SPRT_{\alpha, \beta}$.
+%
+Define the stopping time
+\begin{equation*}
+N_{\alpha, \beta} \ := \ \min \{n \in \NN \mid \ln L_n \not\in [A, B]\} \ \in \ \NN \cup \{\infty\}\,.
+\end{equation*}
+We have that $N_{\alpha, \beta}$ is monotone decreasing in the sense that for $\alpha \leq \alpha'$ and $\beta \leq \beta'$ we have $N_{\alpha, \beta} \geq N_{\alpha', \beta'}$.
+When $\pi_1$ and $\pi_2$ are distinguishable, $N_{\alpha, \beta}$ is $\PP_{\pi_2}$-a.s.\ finite by \Cref{convergenceLn}.
+
+\subsection{Expectation of $N_{\alpha, \beta}$}
+Consider the two-state HMM where $p_1 \neq p_2$.
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-1.25,0) {$s_1$};
+	\node[state] (s1) at (1.25,0) {$s_2$};
+	
+	\path[->] (s0) edge [loop,out=200,in=160,looseness=10] node[pos=0.5,left] {$p_1 : a$} (s0);
+	\path[->] (s0) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$(1 - p_1) : b$} (s0);
+	\path[->] (s1) edge [loop,out=200,in=160,looseness=10] node[pos=0.5,left] {$p_2 : a$} (s1);
+	\path[->] (s1) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$(1 - p_2) : b$} (s1);
+	\end{tikzpicture}
+\end{center}
+(The Dirac distributions on) $s_1$ and $s_2$ are distinguishable. Further, the increments $\ln L_{n + 1} - \ln L_n$ are independent and identically distributed (i.i.d.) and $0 > \EE_{s_2}[\ln L_{n+1} - \ln L_n] = p_2 \ln \frac{p_1}{p_2} + (1 - p_2)\ln \frac{1 - p_1}{1 - p_2} =: \ell$. Intuitively as $\ell$ gets more negative, the HMMs become more different.\footnote{In fact, $\ell$ is the \emph{KL-divergence} of the distributions $f_1, f_2$ where $f_i(a) = p_i$ and $f_i(b) = 1 - p_i$ for $i = 1, 2$.} Indeed, Wald~\cite{wald45} shows that the expected stopping time $\EE_{s_2}[N_{\alpha, \beta}]$ and $\ell$ are inversely proportional:
+\begin{equation}\label{singletonexptime}
+\EE_{s_2}[N_{\alpha, \beta}] = \frac{\beta \ln \frac{1 - \alpha}{\beta} + (1 - \beta) \ln \frac{\alpha}{1 - \beta}}{\ell}.
+\end{equation}
+This Wald formula cannot hold general for (multi-state) HMMs. The increments $\ln L_{n+1} - \ln L_n$ need not be independent and $\EE_{s_1}[\ln L_{n+1} - \ln L_n]$ can be different for different $n$. Further, $| \ln L_{n+1} - \ln L_n |$ can be unbounded; cf.~\cite[Example~6]{kief16}.
+
+Nevertheless, in \Cref{loglikes} we observed that $\ln L_n$ appears to decrease linearly (on the $\pi_2$ plot).
+Indeed, we show in \Cref{liexplimits} below that the limit $\liexp$ exists $\PP_{\pi_2}$-almost surely.
+Intuitively it corresponds to the average slope of the log-likelihood plot for $\pi_2$.
+In the two-state case, there is a simple proof of this using the law of large numbers:
+\begin{equation*}
+\liexp = \lim_{n \rightarrow \infty}\frac1n \sum_{i = 0}^{n - 1} \ln L_{i + 1} - \ln L_i = \EE_{\pi_2} [\ln L_1 - \ln L_0] = \ell \ \ \PP_{\pi_2}\text{-a.s.}
+\end{equation*}
+The number $\ell$ is called a likelihood exponent, as defined generally in the following definition.
+\begin{definition}
+For initial distributions $\pi_1, \pi_2$, a number $\ell \in [-\infty, 0]$ is a \emph{likelihood exponent} if $\PP_{\pi_2}(\liexp = \ell) > 0$.
+\end{definition}
+We write $\Lambda_{\pi_1, \pi_2} \subseteq [-\infty,0)$ for the set of likelihood exponents for $\pi_1, \pi_2$ and define $\Lambda := \bigcup_{\pi_1, \pi_2} \Lambda_{\pi_1, \pi_2}$; i.e., $\Lambda$ depends only on the HMM~$\H$.
+For $\ell \in \Lambda$ we define the event $E_\ell = \{\liexp = \ell\}$.
+
+\begin{example}\label{estimatingsleepcyclelikelihood}
+In the case of \Cref{sleepcycles} we have $\Lambda_{\pi_1, \pi_2} = \{\ell\}$ where the slope of the right hand side of \Cref{loglikes} suggests that $\ell \approx -\frac{80}{10000} = -0.008$.
+\end{example}
+
+\begin{example}\label{multilimitliexp}
+Even for fixed $\pi_1, \pi_2$ there may be multiple likelihood exponents.
+Consider the following HMM with initial Dirac distributions $\pi_1 = e_{s_1}$ and $\pi_2 = e_{s_4}$.
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-1.25,0) {$s_1$};
+	\node[state] (s1) at (-2,0) {$s_2$};
+	\node[state] (s2) at (-0.5,0) {$s_3$};
+	\node[state] (s3) at (1.25,0) {$s_4$};
+	
+	\path[->] (s0) edge node[pos=0.5,above] {$\frac14 a$} (s1);
+	\path[->] (s0) edge node[pos=0.5,above] {$\frac34 b$} (s2);
+	
+	\path[->] (s1) edge [loop,out=250,in=290,looseness=10] node[pos=0.5,below] {$\frac23 b$} (s1);
+	\path[->] (s1) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac13 a$} (s1);
+	
+	\path[->] (s2) edge [loop,out=250,in=290,looseness=10] node[pos=0.5,below] {$\frac12 b$} (s2);
+	\path[->] (s2) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac12 a$} (s2);
+	
+	\path[->] (s3) edge [loop,out=200,in=160,looseness=10] node[pos=0.5,left] {$\frac12 a$} (s3);
+	\path[->] (s3) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$\frac12 b$} (s3);
+	\end{tikzpicture}
+\end{center}
+We observe two different likelihood exponents depending on the first letter produced.
+%If the first letter is $a$ then $L_1 = \frac12$ and if the first letter is $b$ then $L_1 = \frac32$.
+If the first letter is~$a$ then $\ln L_{n + 1} - \ln L_n$ are i.i.d.\ for $n \ge 1$ and $\liexp = \frac12 \ln \frac{1/3}{1/2} +  \frac12 \ln \frac{2/3}{1/2} = \frac12 \ln \frac89 =: \ell$ like the two-state example above.
+If the first letter is $b$ then $L_n = \frac32$ for all $n \ge 1$ and $\liexp = 0$.
+Thus, $\Lambda_{\pi_1,\pi_2} = \{\ell, 0\}$ and $\PP_{\pi_2}(E_{\ell}) = \PP_{\pi_2}(E_0) = \frac12$.
+\end{example}
+
+The following theorem is perhaps the most fundamental contribution of this paper.
+\begin{restatable}{theorem}{liexplimits}\label{liexplimits}
+For any initial distributions $\pi_1, \pi_2$ the limit $\liexp$ exists $\PP_{\pi_2}$-a.s.
+Furthermore, we have $|\Lambda| \le |Q|^2+1$.
+%The set of likelihood exponents satisfies $\Lambda \subset [-\infty, 0]$ and $|\Lambda| \leq |Q|^2$. Further $\liexp$ exists (and by definition is in $\Lambda$) $\PP_{\pi_2}$-almost surely for any $\pi_1, \pi_2$.
+\end{restatable}
+It follows from a stronger theorem, \cref{thm:likelihood-to-lyapunov}, which we prove in \cref{sec:rep}.
+
+Returning to the SPRT, we investigate how $\liexp$ influences the performance of the SPRT for small $\alpha$ and~$\beta$.
+Intuitively we expect a steeper slope in the likelihood plot (cf.~\Cref{loglikes}) to lead to faster termination.
+In the two-state case, Wald's formula \eqref{singletonexptime} becomes%
+\begin{equation}\label{asymptoticwaldeq}
+\EE_{s_2}[N_{\alpha, \beta}] = \frac{\beta \ln \frac{1 - \alpha}{\beta} + (1 - \beta) \ln \frac{\alpha}{1 - \beta}}{\ell} \sim \frac{\ln \alpha}{\ell} \ (\text{as } \alpha, \beta \rightarrow 0),
+\end{equation}
+where we use the notation $\sim$ defined as follows.
+\stefan{Please check. Perhaps move.} 
+For a functions $f,g : (0,\infty) \times (0, \infty) \to (0,\infty)$ we write ``$f(x,y) \sim g(x,y)$ (as $x,y \to 0$)'' to denote that for all $\epsilon > 0$ there is $\delta > 0$ such that for all $x,y \in (0,\delta)$ we have $f(x,y)/g(x,y) = [1-\epsilon,1+\epsilon]$.
+
+In \Cref{asymptoticwald} below we generalise \Cref{asymptoticwaldeq} to arbitrary HMMs.
+Indeed a very similar asymptotic identity holds.
+In the case that $\Lambda = \{\ell\}$ and $\ell \in (-\infty, 0)$ we have $\EE_{s_2}[N_{\alpha, \beta}] \sim \frac{\ln \alpha}{\ell}$ as $\alpha, \beta \rightarrow 0$.
+If $|\Lambda| > 1$ then we condition our expectation on $\liexp$.
+\begin{restatable}[Generalised Wald Formula]{theorem}{asymptoticwald}\label{asymptoticwald}
+Let $\ell$ be a likelihood exponent and let $\pi_1$ and $\pi_2$ be initial distributions. If $\ell \in (-\infty, 0)$ then
+\begin{equation*}
+\EE_{\pi_2} \Big[ N_{\alpha,\beta} \mid E_{\ell}\Big] \sim \frac{\ln \alpha}{\ell} \ \ (\text{as } \alpha, \beta \rightarrow 0).
+\end{equation*}
+If $\ell = 0$ then there exist $\alpha, \beta > 0$ such that
+\begin{equation}
+\EE_{\pi_2} \Big[ N_{\alpha,\beta} \mid E_\ell\Big] = \infty.
+\end{equation}
+If $\ell = -\infty$ then
+\begin{equation*}
+\sup_{\alpha, \beta}~\EE_{\pi_2} \Big[ N_{\alpha,\beta} \mid E_\ell \Big] < \infty.
+\end{equation*}
+\end{restatable}
+
+The theorem above pertains to the expectation of $N_{\alpha, \beta}$.
+In the next subsection we give additional information about the distribution of $N_{\alpha, \beta}$, further strengthening the connection between $N_{\alpha, \beta}$ and likelihood exponents.
+
+\subsection{Distribution of $N_{\alpha, \beta}$}
+\subsubsection{Likelihood Exponent $0$}
+\begin{example}
+We continue with \Cref{multilimitliexp} to illustrate the second case in \Cref{asymptoticwald}.
+By picking $\alpha = \frac14, \beta = \frac14$ the thresholds for the SPRT are $A = \ln \frac13$ and $B = \ln 3$.
+If the first letter is $b$, then $\ln L_n = \ln \frac32$ for all $n > 1$, thus never crosses the SPRT bounds and $\liexp = 0$.
+Hence with probability $\frac12$ the SPRT fails to terminate  and $N_{\alpha, \beta} = \infty$.
+It follows that $\PP_{\pi_2}(E_0) = \frac12$ and $E_{\pi_2}[N_{\alpha, \beta} \mid E_0] = \infty$ and, thus, $E_{\pi_2}[N_{\alpha, \beta}] = \infty$.
+\end{example}
+The second part of \Cref{asymptoticwald} says that the expectation of $N_{\alpha, \beta}$ conditioned under $E_0$ is infinite.
+The following proposition strengthens this statement.
+Conditioning under~$E_0$, the probability that $N_{\alpha, \beta}$ is infinite converges to~$1$ as $\alpha, \beta \rightarrow 0$.
+Recall that $N_{\alpha, \beta}$ is monotone decreasing.
+It follows that $\{ N_{\alpha', \beta'} = \infty \} \subset \{ N_{\alpha, \beta} = \infty \}$ if $\alpha \leq \alpha'$ and $\beta \leq \beta'$.
+\begin{proposition}\label{probexp0}
+The following equalities hold up to $\PP_{\pi_2}$-null sets:
+\begin{equation*}
+E_0 ~=~ \left\{\lim_{n \rightarrow 0} L_n > 0 \right\} ~=~ \bigcup_{\alpha, \beta > 0} \left\{N_{\alpha, \beta} = \infty\right\}.
+\end{equation*}
+Thus, $\lim_{\alpha, \beta \rightarrow 0} \PP_{\pi_2}(N_{\alpha, \beta} = \infty) = \PP_{\pi_2}(E_0)$.
+\end{proposition}
+
+
+It follows with \Cref{convergenceLn} that $\pi_1$ and $\pi_2$ are distinguishable if and only if $\PP_{\pi_2}(E_0) = 0$ if and only if $\PP_{\pi_2}(N_{\alpha, \beta} < \infty) = 1$ holds for all $\alpha, \beta > 0$.
+
+\subsubsection{Likelihood Exponent $-\infty$}
+
+\begin{example}\label{mortalitywaldex}
+Consider now a modification of \Cref{multilimitliexp} where state $s_3$ has the $b$ loop removed.
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-1.25,0) {$s_1$};
+	\node[state] (s1) at (-2,0) {$s_2$};
+	\node[state] (s2) at (-0.5,0) {$s_3$};
+	\node[state] (s3) at (1.25,0) {$s_4$};
+	
+	\path[->] (s0) edge node[pos=0.5,above] {$\frac14 a$} (s1);
+	\path[->] (s0) edge node[pos=0.5,above] {$\frac34 b$} (s2);
+	
+	\path[->] (s1) edge [loop,out=250,in=290,looseness=10] node[pos=0.5,below] {$\frac23 b$} (s1);
+	\path[->] (s1) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac13 a$} (s1);
+	
+	\path[->] (s2) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$1 a$} (s2);
+	
+	\path[->] (s3) edge [loop,out=200,in=160,looseness=10] node[pos=0.5,left] {$\frac12 a$} (s3);
+	\path[->] (s3) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$\frac12 b$} (s3);
+	\end{tikzpicture}
+\end{center}
+The likelihood exponents are $-\infty$ and $\ell := \frac12 \ln \frac89$ so that $\Lambda = \{-\infty, \ell\}$. Also, $\PP_{s_4}(E_{-\infty}) = \PP_{s_4}(E_\ell) =\frac12$. Up to $\PP_{s_4}$-null sets the events $E_{-\infty}$, $b\Sigma^\omega$ and $ba^*b\Sigma^\omega$ are equal. The event $ba^*b\Sigma^\omega$ represents the right chain producing an observation which the left chain cannot produce, causing the SPRT to terminate for any $\alpha, \beta$.
+Therefore conditioned on $E_{-\infty}$, the random variable $N_{\alpha, \beta} - 1$ is bounded by a geometric random variable with parameter $\frac12$. Hence $\sup_{\alpha, \beta} \EE_{\pi_2}~ \Big[ N_{\alpha,\beta} \mid E_{-\infty} \Big] \leq 1 + 2$.
+\end{example}
+We define the stopping time $N_\perp = \min\{n \in \NN \mid L_n = 0\}$. Note that $\sup_{\alpha, \beta}N_{\alpha, \beta} \leq N_\perp$ since $\{L_n = 0\} \subseteq \{L_n \leq \frac{\alpha}{1 - \beta}\}$ for all $\alpha, \beta$. The following proposition states that the reverse inequality also holds.
+\begin{proposition}
+We have $\sup_{\alpha, \beta} N_{\alpha, \beta} = N_\perp$. Thus, $\lim_{\alpha, \beta \rightarrow 0}\PP_{\pi_2}(N_{\alpha, \beta} < \infty) = \PP_{\pi_2}(E_{-\infty})$.
+\end{proposition}
+Applying this to \Cref{mortalitywaldex}, we obtain $\sup_{\alpha, \beta} \EE_{\pi_2}\big[ N_{\alpha,\beta} \mid E_{-\infty}\big] = 3$.
+
+\subsubsection{Likelihood Exponent in $(-\infty, 0)$}
+Conditioned on $E_\ell$ where $\ell \in (-\infty, 0)$, \Cref{asymptoticwald} states that $N_{\alpha, \beta}$ scales with $\frac{\ln \alpha}{\ell}$ in expectation.  The following result shows that this relationship also holds $\PP_{\pi_2}$-almost surely.
+%
+\begin{restatable}{proposition}{liexpmotivation}\label{liexpmotivation}
+Let $\ell \in \Lambda$ and assume $\ell \in (-\infty, 0)$. We have
+\begin{equation*}
+\PP_{\pi_2}\left( N_{\alpha,\beta} \sim \frac{\ln \alpha}{\ell} \ \ (\text{as } \alpha, \beta \rightarrow 0) \;\Big\vert\; E_{\ell}\right) ~=~ 1.
+\end{equation*}
+\end{restatable}
+%
+In fact, we prove the first part of \cref{asymptoticwald} using \Cref{liexpmotivation}.
+If there were a bound $M \in \NN$ such that $\PP_{\pi_2}$-a.s.\ $\frac{N_{\alpha, \beta}}{- \ln \alpha} \leq M$, the first part of \Cref{asymptoticwald} would follow from \Cref{liexpmotivation} by the dominated convergence theorem.
+However this is not the case in general.
+Instead we show in \cref{app:liexpmotivation} that the set of random variables $\{\frac{N_{\alpha, \beta}}{-\ln \alpha}\mid 0 < \alpha, \beta \leq \frac12\}$ is uniformly integrable with respect to the measure $\PP_{\pi_2}$ and then use Vitali's convergence theorem.
+
+\begin{example}
+Recall \Cref{sleepcycles}, where $\Lambda = \{\ell\}$.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.65\textwidth]{l100000_i50.jpg}	
+\end{center}
+\caption{The time taken by the SPRT for $0 \leq -\ln \alpha = -\ln \beta \leq 1000$.}\label{sprttimevslnalpha}
+\end{figure}
+\Cref{sprttimevslnalpha} demonstrates the asymptotic relationship in \Cref{liexpmotivation}. Each of the $50$ lines correspond to a sample run and we record the value of $N_{\alpha, \beta}$ for $0 \leq - \ln \alpha = - \ln \beta \leq 1000$. From the figure we estimate $-\frac{1}{\ell}$ as $\frac{10^5}{800} = 125$. This coincides with the estimate given in \Cref{estimatingsleepcyclelikelihood}.
+\end{example}
+
+We conclude from this section that the performance of the SPRT, in terms of its termination time $N_{\alpha,\beta}$, is tightly connected to likelihood exponents.
+This motivates our study of likelihood exponents in the rest of the paper.
+
+\section{Decision Problems} \label{sec:qual}
+
+In this section we aim at computing $\PP_{\pi_2}(E_\ell)$ for a likelihood exponent~$\ell$.
+In particular, we want to compare this probability with $0$ or~$1$, especially for the extreme cases $\ell \in \{-\infty,0\}$.
+
+\begin{example}
+Consider another adaption of \Cref{multilimitliexp}.
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-1.25,0) {$s_1$};
+	\node[state] (s1) at (-2,0) {$s_2$};
+	\node[state] (s2) at (-0.5,0) {$s_3$};
+	\node[state] (s3) at (1.25,0) {$s_4$};
+	\node[state] (s4) at (-2.75,0) {$s_5$};
+	
+	\path[->] (s0) edge node[pos=0.5,above] {$\frac14 a$} (s1);
+	\path[->] (s0) edge node[pos=0.5,above] {$\frac34 b$} (s2);
+	
+	\path[->] (s2) edge [loop,out=250,in=290,looseness=10] node[pos=0.5,below] {$\frac12 b$} (s2);
+	\path[->] (s2) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac12 a$} (s2);
+	
+	\path[->] (s3) edge [loop,out=200,in=160,looseness=10] node[pos=0.5,left] {$\frac12 a$} (s3);
+	\path[->] (s3) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$\frac12 b$} (s3);
+	
+	\path[->] (s4) edge [loop,out=250,in=290,looseness=10] node[pos=0.5,below] {$\frac13 b$} (s4);
+	\path[->] (s4) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac13 a$} (s4);
+	
+	\path[->] (s1) edge [bend left] node[below] {$1 a$} (s4);
+\path[->] (s4) edge [bend left] node[above] {$\frac13 a$} (s1);
+	
+	\end{tikzpicture}
+\end{center}
+If the first letter produced by~$s_4$ is~$b$, then $L_n = \frac32$ for all $n \in \NN$.
+If the first two letters are~$ab$, then $L_1 = \frac12$ and $L_n = 0$ for $n \geq 2$.
+If the first two letters are~$aa$, then $s_5 \in \supp(e_{s_1} \Psi(aaw))$ for all $w \in \Sigma^*$, and therefore, up to a $\PP_{s_4}$-null set, $L_n > 0$ holds for all $n \in \NN$, which implies (as shown in the appendix \stefan{say where}) that there is $\ell \in (-\infty, 0)$ such that $\liexp = \ell$.
+Thus, $\Lambda_{s_1, s_4} = \{-\infty, \ell, 0\}$.
+
+The likelihood ratio~$L_n$ is~$0$ if and only if $\supp(\pi_1 \Psi(w_n)) = \emptyset$.
+In order to track the support of $\pi_1 \Psi(w_n)$, we consider the left part of the HMM as an NFA with $s_1$ as the initial state and its determinisation as shown in the DFA below.
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-1.25,0) {$\{s_1\}$};
+	\node[state] (s1) at (-2,0) {$\{s_2\}$};
+	\node[state] (s2) at (-0.5,0) {$\{s_3\}$};
+	\node[state] (s4) at (-2.75,0) {$\{s_5\}$};
+	\node[state] (s5) at (-2.75,-0.75) {$\{s_2,s_5\}$};
+	\node[state] (s6) at (-2,-0.75) {$\emptyset$};
+	
+	\path[->] (s0) edge node[pos=0.5,above] {$a$} (s1);
+	\path[->] (s0) edge node[pos=0.5,above] {$b$} (s2);
+	
+	\path[->] (s2) edge [loop,out=250,in=290,looseness=10] node[pos=0.5,below] {$b$} (s2);
+	\path[->] (s2) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$a$} (s2);
+	
+	\path[->] (s4) edge [loop,out=160,in=200,looseness=10] node[pos=0.5,left] {$b$} (s4);
+	
+	\path[->] (s1) edge node[pos=0.5,above] {$a$} (s4);
+	\path[->] (s1) edge node[pos=0.5,right] {$b$} (s6);
+	
+	\path[->] (s4) edge [bend left] node[right] {$a$} (s5);
+	\path[->] (s5) edge [bend left] node[left] {$b$} (s4);	
+	
+	\path[->] (s5) edge [loop,out=160,in=200,looseness=5] node[pos=0.5,left] {$a$} (s5);
+	\end{tikzpicture}
+\end{center}
+Almost surely, $s_4$ produces a word that drives this DFA into a bottom SCC, which then determines $\liexp$: concretely, the bottom SCC $\{\{s_5\},\{s_2,s_5\}\}$ is associated with~$\ell$, the bottom SCC $\{\emptyset\}$ is associated with~$-\infty$, and the bottom SCC $\{\{s_3\}\}$ is associated with~$0$.
+\end{example}
+
+In general, the observations need not be produced uniformly at random but by an HMM.
+Therefore, in the following construction, we also keep track of the ``current'' state of the HMM which produces the observations.
+For $S \subseteq Q$ and $a \in \Sigma$, define $\delta(S,a) := \{q' \in Q \mid \exists\,q \in S: \Psi(a)_{q,q'} > 0\}$.
+Define the Markov chain $\M := (2^Q \times Q, T)$ where
+\[
+T_{(S,q),(S',q')} \ := \ \sum_{\delta(S,a) = S'} \Psi(a)_{q,q'} \,.
+\]
+Given initial distributions $\pi_1, \pi_2$ on~$Q$ as before, define an initial distribution $\iota$ on $2^Q \times Q$ by $\iota((\supp(\pi_1),q)) := (\pi_2)_q$.
+Intuitively, the left part~$S$ of a state $(S,q)$ tracks the support of $\pi_1 \Psi(w_n)$, and the right part~$q$ tracks the current state of the HMM that had been initialised at a random state from~$\pi_2$.
+The following lemma states important properties of this construction.
+
+\begin{restatable}{lemma}{lemexpoprop} \label{lem:expoprop}
+Consider the Markov chain $\M = (2^Q \times Q, T)$ defined above.
+\begin{enumerate}
+\item
+Every bottom SCC of~$\M$ is associated with a single likelihood exponent; i.e., for every bottom SCC $C \subseteq 2^Q \times Q$ there is $\ell(C) \in [-\infty,0]$ such that for any initial distribution $\pi_1 \in [0,1]^Q$ and any state $q_2 \in Q$ with $(\supp(\pi_1),q_2) \in C$ we have $\Lambda_{\pi_1,e_{q_2}} = \{\ell(C)\}$.
+\item
+Let $(S,q) \in C$ for a bottom SCC~$C$.
+If $S = \emptyset$ then $\ell(C) = -\infty$; otherwise, if $e_q$ and the uniform distribution on~$S$ are not distinguishable then $\ell(C) = 0$; otherwise $\ell(C) \in (-\infty,0)$.
+\item
+We have $\PP_{\pi_2}(E_\ell) = \PP_{\iota}(\{\text{visit bottom SCC $C$ with $\ell(C) = \ell$}\})$.
+\end{enumerate}
+\end{restatable}
+
+All parts of the lemma rely on the observation that $\liexp$ depend only on the support of~$\pi_1$ and on the support of~$\pi_2$.
+The first part of the lemma follows from L\'evy's 0-1 law. 
+
+\begin{theorem} \label{thm:qual-prob}
+Given an HMM and initial distributions $\pi_1, \pi_2$,
+\begin{enumerate}
+\item one can compute $\PP_{\pi_2}(E_{-\infty})$ and $\PP_{\pi_2}(E_0)$ in PSPACE;
+\item one can decide whether $\PP_{\pi_2}(E_0)=0$ (i.e., $0 \not\in \Lambda_{\pi_1,\pi_2}$) in polynomial time;
+\item deciding whether $\PP_{\pi_2}(E_0)=1$, whether $\PP_{\pi_2}(E_{-\infty})=0$, and whether $\PP_{\pi_2}(E_{-\infty})=1$ are all PSPACE-complete problems.
+\end{enumerate}
+\end{theorem}
+
+
+the \emph{mortality} problem, which asks, given a finite set of states~$Q$, a finite alphabet~$\Sigma$, and a function $\Phi : \Sigma \to \{0,1\}^{Q \times Q}$, whether there exists a word $w \in \Sigma^*$ such that $\Phi(w)$ is the zero matrix.
+The mortality problem can be viewed as a special case of the NFA universality problem (given an NFA, does it accept every word?).
+Like NFA universality, the mortality problem is PSPACE-complete [CITE SHALLIT].
+
+Concerning $\PP_{\pi_2}(E_{-\infty})$ (cf.\ \cref{thm:qual-prob}.3), we actually show a stronger result, namely that any nontrivial approximation of $\PP_{\pi_2}(E_{-\infty})$ is PSPACE-hard.
+The proof is also based on the mortality problem.
+\begin{proposition} \label{prop:nontrivial-approx}
+There is a polynomial-time computable function that maps any instance of the mortality problem to an HMM and initial distributions $\pi_1, \pi_2$ so that if the instance is positive then $\PP_{\pi_2}(E_{-\infty})=1$ and if the instance is negative then $\PP_{\pi_2}(E_{-\infty})=0$.
+Thus, any nontrivial approximation of $\PP_{\pi_2}(E_{-\infty})$ is PSPACE-hard.
+\end{proposition}
+\begin{proof}[Proof sketch]
+Given an instance~$\Phi$ of the mortality problem, construct an HMM $(Q,\Sigma,\Psi)$ so that $\Phi$ and~$\Psi$ have the same graph [DEFINED?] and $\sum_{a \in \Sigma} \Psi(a)$ is stochastic.
+Define $\pi_1$ as a uniform distribution on~$Q$.
+Define $\pi_2$ as a Dirac distribution on a fresh state that emits letters from~$\Sigma$ uniformly at random.
+Thus, if $\Phi$ is a positive instance of the mortality problem then $\PP_{\pi_2}(E_{-\infty})=1$, and if $\Phi$ is a negative instance then $\PP_{\pi_2}(E_{-\infty})=0$.
+\end{proof}
+
+
+\section{Representing Likelihood Exponents} \label{sec:rep}
+
+In the following we show that, although it is hard to \emph{compute} likelihood exponents, one can efficiently represent them in terms of \emph{Lyapunov exponents}.
+The definition of Lyapunov exponents is based on the following definition.
+
+\begin{definition} \label{df:lyapunov-exponent}
+A \emph{matrix system} is a triple $\M = (Q, \Sigma, \Psi)$ where $Q$ is a finite set of states, $\Sigma$ is a finite set of observations, and $\Psi: \Sigma \to \RR_{\ge 0}^{Q \times Q}$ specifies the transitions.
+(Note that an HMM is a matrix system.)
+A \emph{Lyapunov system} is a pair $\S = (\M, \rho)$ where $\M = (Q, \Sigma, \Psi)$ is a matrix system and $\rho \in (0,1]^\Sigma$ is a probability distribution with full support, such that the directed graph $(Q,E)$ with $E = \{(q,r) \mid \sum_{a \in \Sigma} \Psi_{q,r}(a) > 0\}$ is strongly connected.
+\end{definition}
+
+%Let $((Q, \Sigma, \Psi), \rho)$ be a Lyapunov system.
+We can identify the probability distribution $\rho$ from this definition with the single-state HMM $(\{s\}, \Sigma, \Psi_\rho)$ where $\Psi_\rho(a)_{s,s} = \rho(a)$ for all $a \in \Sigma$.
+In this way, $\rho$ produces a random infinite word from $\Sigma^\omega$.
+For $w \in \Sigma^\omega$ we write $w_n$ for the length-$n$ prefix of~$w$.
+The following lemma is known from [CITE].
+
+\begin{lemma}[{[CITE]}] \label{lem:lyapunov-exponent}
+Let $((Q, \Sigma, \Psi), \rho)$ be a Lyapunov system.
+Then there is $\ell \in \RR$ such that, for all $q \in Q$, $\PP_{\rho}$-a.s., either $e_q \Psi(w_n) = \vec{0}$ [NOTATION DEFINED?] for some $n \in \NN$ or the limit $\lim_{n \to \infty} \frac1n \ln \| e_q \Psi(w_n) \|$ exists and equals~$\ell$.
+\end{lemma}
+For a Lyapunov system~$\S$ we call $\ell(\S) = \ell$ from the lemma the \emph{Lyapunov exponent} defined by~$\S$.
+We prove the following theorem, which implies \cref{liexplimits}.
+\begin{theorem} \label{thm:likelihood-to-lyapunov}
+Given an HMM $(Q, \Sigma, \Psi)$ we can compute in polynomial time $2 K \le 2 |Q|^2$ Lyapunov systems $\S_1^1, \S_1^2, \S_2^1, \S_2^2, \ldots, \S_K^1, \S_K^2$ such that for any initial distributions $\pi_1, \pi_2$ the limit $\liexp$ exists $\PP_{\pi_2}$-a.s.\ and lies in
+\[
+\Lambda \ \subseteq \ \{-\infty\} \cup \{\ell(\S_1^1) - \ell(\S_1^2), \ldots, \ell(\S_K^1) - \ell(\S_K^2)\}\,.
+\]
+In particular, the HMM has at most $|Q|^2 + 1$ likelihood exponents.
+\end{theorem}
+
+In the rest of the section we provide more details on the construction underlying \cref{thm:likelihood-to-lyapunov}.
+As an intermediate concept (between the given HMM and the Lyapunov systems from \cref{thm:likelihood-to-lyapunov}) we define \emph{generalized Lyapunov systems}.
+
+First, for two matrix systems $\M_1 = (Q_1,\Sigma,\Psi_1)$ and $\M_2 = (Q_2,\Sigma,\Psi_2)$ with finite $Q_1, Q_2, \Sigma$ and transitions $\Psi_1,\Psi_2 : \Sigma \to \RR_{\ge 0}^{Q \times Q}$ we define the directed graph $G_{\M_1,\M_2} = (Q_1 \times Q_2, E)$ such that there is an edge from $(q_1,q_2)$ to $(r_1,r_2)$ if there is $a \in \Sigma$ with $\Psi_1(a)_{q_1,r_1} > 0$ and $\Psi_2(a)_{q_2,r_2} > 0$.
+
+A \emph{generalized Lyapunov system} is a triple $\S = (\M,\H,C)$ where $\M = (Q_1, \Sigma, \Psi_1)$ is matrix system and $\H = (Q_2, \Sigma, \Psi_2)$ is a strongly connected [DEFINED?] HMM and $C \subseteq Q_1 \times Q_2$ is a bottom SCC of $G_{\M, \H}$.
+Given a generalized Lyapunov system, one can efficiently compute an ``equivalent'' Lyapunov system:
+\begin{lemma} \label{from-gen-to-nongen}
+Let $\S = ((Q_1, \Sigma, \Psi_1),(Q_2, \Sigma, \Psi_2),C)$ be a generalized Lyapunov system.
+\begin{enumerate}
+\item
+There is $\ell(\S) \in \RR$ such that, for all $\pi_1 \in [0,\infty)^{Q_1}$ and all probability distributions $\pi_2 \in [0,1]^{Q_2}$ with $\supp(\pi_1) \times \supp(\pi_2) \subseteq C$, we have $\PP_{\pi_2}$-a.s.\ that either $\pi_1 \Psi_1(w_n) = \vec{0}$ for some $n \in \NN$ or the limit $\lim_{n \to \infty} \frac1n \ln \| \pi_1 \Psi_1(w_n) \|$ exists and equals~$\ell(\S)$.
+\item
+One can compute in polynomial time a Lyapunov system $\S'$ such that $\ell(\S) = \ell(\S')$.
+\end{enumerate}
+\end{lemma}
+
+Let $\H = (Q,\Sigma,\Psi)$ be an HMM.
+Let $R \subseteq Q \times Q$ be a (not necessarily bottom) SCC of the graph $G_{\H,\H}$ such that $Q_2 := \{q_2 \in Q \mid \exists\,q_1 \in Q : (q_1,q_2) \in R\}$ is a bottom SCC of the graph of $\sum_{a \in \Sigma} \Psi(a)$.
+We call such~$R$ a \emph{right-bottom} SCC.
+Clearly there are at most $|Q|^2$ right-bottom SCCs.
+Towards \cref{thm:likelihood-to-lyapunov} we want to define, for each right-bottom SCC~$R$, two generalized Lyapunov systems $\S_R^1, \S_R^2$.
+
+For a function of the form $\Phi : \Sigma \to \RR^{Q \times Q}$ and $P \subseteq Q$ we write $\Phi_{|P} : \Sigma \to \RR^{P \times P}$ for the function with $\Phi_{|P}(a)(q,r) = \Phi(a)(q,r)$ for all $a \in \Sigma$ and $q,r \in P$; i.e., $\Phi_{|P}(a)$ denotes the principal submatrix obtained from~$\Phi(a)$ by restricting it to the rows and columns indexed by~$P$.
+
+Define $\Psi'(a,r)_{q,r} := \Psi(a)_{q,r}$ for all $a \in \Sigma$ and $q,r \in Q$.
+Then $(Q, \Sigma \times Q, \Psi')$ is an HMM, which is similar to~$\H$, but which emits, in addition to an observation from~$\Sigma$, also the next state.
+Since $Q_2$ is a bottom SCC of the graph of $\sum_{a \in \Sigma} \Psi(a)$, the HMM $\H_2 := (Q_2, \Sigma \times Q_2, \Psi'_{|Q_2})$ is strongly connected.
+This HMM~$\H_2$ will be used both in $\S_R^1$ and in~$\S_R^2$.
+
+Next, define $\overline{\Psi} : (\Sigma \times Q) \to [0,1]^{(Q \times Q) \times (Q \times Q)}$ by
+\[
+ \overline{\Psi}(a,r_2)_{(q_1,q_2),(r_1,r_2)} \ := \ \Psi(a)_{q_1,r_1} \quad \text{for all } a \in \Sigma\ \text{ and } q_1, q_2, r_1, r_2 \in Q\,.
+\]
+Now define $\S_R^1 := (\M^1, \H_2, C^1)$, where $\M^1 := (R, \Sigma \times Q_2, \overline{\Psi}_{|R})$ %and
+%\[
+% \Psi^1(a,r_2)_{(q_1,q_2),(r_1,r_2)} \ := \ \Psi(a)_{q_1,r_1} \quad \text{for all } (a,r_2) \in \Sigma \times Q_2\ \text{ and }\ (q_1,q_2), (r_1,r_2) \in R
+%\]
+and $C^1 := \{((q_1,q_2),q_2) \mid (q_1,q_2) \in R\}$.
+%
+Finally, denoting by $R' \subseteq Q_2 \times Q_2$ the SCC of the graph $G_{\H,\H}$ that contains the ``diagonal'' vertices $(q,q) \in Q_2 \times Q_2$, define $\S_R^2 := (\M^2, \H_2, C^2)$, where $\M^2 := (R', \Sigma \times Q_2, \overline{\Psi}_{|R'})$
+and $C^2 := \{((q_1,q_2),q_2) \mid (q_1,q_2) \in R'\}$.
+
+For sets $U, V \subseteq Q \times Q$ write $U \longrightarrow^*_{G_{\H,\H}} V$ denote that there are $u \in U$ and $v \in V$ such that $v$ is reachable from~$u$ in~$G_{\H,\H}$.
+We are ready to state the following key technical lemma:
+%\begin{lemma} \label{lem:construct-L-systems}
+%Given an HMM $(Q, \Sigma, \Psi)$, let $\mathcal{R} \subseteq 2^{Q \times Q}$ be the set of its right-bottom SCCs, and, for $R \in \mathcal{R}$, let $\S_{R}^1, \S_{R}^2$ be the generalized Lyapunov systems defined above.
+%Then,
+%\[
+%\Lambda \ \subseteq \ \{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R}\} \,.
+%\]
+%\end{lemma}
+%NEW AND STRONGER VERSION:
+\begin{lemma} \label{lem:construct-L-systems}
+Given an HMM $(Q, \Sigma, \Psi)$, let $\mathcal{R} \subseteq 2^{Q \times Q}$ be the set of its right-bottom SCCs, and, for $R \in \mathcal{R}$, let $\S_{R}^1, \S_{R}^2$ be the generalized Lyapunov systems defined above.
+Then, for any initial distributions $\pi_1, \pi_2$, the limit $\liexp$ exists $\PP_{\pi_2}$-a.s.\ and lies in
+\[
+\{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R},\ \supp(\pi_1) \times \supp(\pi_2) \longrightarrow^*_{G_{\H,\H}} R\} \,.
+\]
+Thus,
+$\Lambda_{\pi_1,\pi_2} \subseteq \{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R},\ \supp(\pi_1) \times \supp(\pi_2) \longrightarrow^*_{G_{\H,\H}} R\}$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+Let $\pi_1, \pi_2$ be initial distributions.
+%Recall the definition of likelihood ratio $L_n(w) = \frac{\| \pi_1 \Psi(w_n) \|}{\| \pi_2 \Psi(w_n) \|}$.
+Very loosely speaking, we show in the appendix that on $\PP_{\pi_2}$-almost every run~$w$ there is a right-bottom SCC~$R$ which ``traps'' ``most'' of the mass of $\pi_1 \Psi(w_n)$ and $\pi_2 \Psi(w_n)$.
+This can be made meaningful and formal using (the cross-product systems) $\S_R^1, \S_R^2$.
+We then show that on $\PP_{\pi_2}$-almost every such run~$w$, for both $i=1,2$, the limit $\lim_{n \to \infty} \frac{1}{n} \ln \| \pi_i \Psi(w_n) \|$ exists and equals $\ell(\S_R^i)$ (or $\pi_1 \Psi(w_n) = \vec{0}$ for some~$n$).
+It follows that
+\[
+ \liexp \ = \ \lim_{n \to \infty} \frac{1}{n} \ln \frac{\| \pi_1 \Psi(w_n) \|}{\| \pi_2 \Psi(w_n) \|} \ = \ \ell(\S_R^1) - \ell(\S_R^2) \,. \qedhere
+\]
+\end{proof}
+With \cref{lem:construct-L-systems} at hand, the proof of \cref{thm:likelihood-to-lyapunov} is easy:
+\begin{proof}[Proof of \cref{thm:likelihood-to-lyapunov}]
+As argued before, the set $\mathcal{R}$ of right-bottom SCCs of the given HMM has at most $|Q|^2$ elements.
+These right-bottom SCCs $R$ and the associated generalized Lyapunov systems $\S_R^1, \S_R^2$ can be computed in polynomial time.
+By \cref{lem:construct-L-systems} we have $\Lambda = \bigcup_{\pi_1,\pi_2} \Lambda_{\pi_1,\pi_2} \subseteq \{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R}\}$.
+By \cref{from-gen-to-nongen}.2, for each $R \in \mathcal{R}$ one can compute in polynomial time an equivalent Lyapunov system.
+\end{proof} 
+
+\section{Deterministic HMMs} \label{sec:det}
+
+A HMM $(Q, \Sigma, \Psi)$ is deterministic if for all $a \in \Sigma$, all rows of $\Psi(a)$ contain exactly one non-zero entry. If $q$ is a starting state, for any word in $w \in \Sigma$ the vector $\delta_q \Psi(w)$ contains at most one non-zero entry. A simple example of a deterministic chain is the following example.
+
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-0.5,0) {$q_1$};
+	\node[state] (s1) at (0.5,0) {$q_2$};
+	
+	\path[->] (s0) edge [loop,out=200,in=160,looseness=10] node[pos=0.5,left] {$\frac23 a$} (s0);
+	\path[->] (s0) edge [out=20,in=170,bend left] node[pos=0.5,above] {$\frac13 b$} (s1);
+	\path[->] (s1) edge [out=200,in=340,bend left] node[pos=0.5,below] {$\frac23 b$} (s0);
+	\path[->] (s1) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$\frac13 a$} (s1);
+	\end{tikzpicture}.
+\end{center}
+
+Suppose two copies of the chain are started from states $q_1$ and $q_2$ respectively, if the chains emit the same word, they will be in opposite states.
+Let the chain started from $q_1$ emit word $aab \in \Sigma^3$. The chain will now be in state $q_2$. Suppose the next letter emitted is $b$. The value of $L_4 = L_3 \times \frac23 / \frac13 = 2 L_3$ and $\ln L_4 = \ln L_3 + \ln 2$. In general deterministic chains have the property that $\ln L_n = R_n + \ln L_{n - 1}$ where $R_n$ is a random variable depending only the transition chosen. In the example above, we can build a Markov chain to characterise the joint distribution of states. We are interested in $\liexp$ with words produced from starting state $q_2$ so the transition probabilities are lifted from the second chain. In the diagram below we also include the value of $R_n$ on each transition.
+
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-0.5,0) {$q_2, q_1$};
+	\node[state] (s1) at (0.5,0) {$q_1, q_2$};
+	
+	\path[->] (s0) edge [loop,out=200,in=160,looseness=10] node[pos=0.5,left] {$\frac23 \ln \frac12$} (s0);
+	\path[->] (s0) edge [out=20,in=170,bend left] node[pos=0.5,above] {$\frac13 \ln 2$} (s1);
+	\path[->] (s1) edge [out=200,in=340,bend left] node[pos=0.5,below] {$\frac23 \ln \frac12$} (s0);
+	\path[->] (s1) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$\frac13 \ln 2$} (s1);
+	\end{tikzpicture}.
+\end{center}
+
+The Markov chain has stationary distribution $(\frac23, \frac13)$. By the strong ergodic theorem for Markov chains, $\liexp = \frac13 \ln2 + \frac23 \ln \frac12 = - \frac13 \ln2$.
+
+In general there may be a finite number of possible limits of $\liexp$. Moreover, these limits may not be rational numbers but expressible as linear combinations of natural logarithms of rational numbers. We say a possible limit of $\liexp$ is $\ln$-symbolically computable if we can compute a set of $2M$ rational numbers where $M \leq |Q|^2$, $\alpha_1, \dots, \alpha_M$ and $\beta_1, \dots, \beta_M$ such that
+\begin{equation*}
+\liexp = \sum_{l = 1}^M \alpha_m \ln \beta_m.
+\end{equation*}
+
+We write $T$ for the set of transitions of $M$. Let $C_0 = \{\perp\}$ and let $C_1, \dots, C_K$ be the remaining bottom connected components of $M$. It follows that the sets $C_0, \dots, C_K$ are disjoint.
+
+\begin{theorem}
+Let $(Q, \Sigma, \Psi)$ be a strongly connected deterministic HMM and let $i_0, j_0$ be the indices of starting states then we may compute a symbollic number $\ell \in [-\infty, 0]$ such that $\PP_{\delta_{j_0}}$-almost surely
+\begin{equation*}
+\liexp = \ell
+\end{equation*}
+\end{theorem}
+
+\begin{proof}
+-- NEEDS FIXING!!
+First assume that the pair $(i_0, j_0)$ is in the bottom connected component $C_k$ with $k \geq 1$ of $M$. Fix $n\in\NN$ then for any $a_1\cdots a_n \in \Sigma^n$, since $\Psi$ is deterministic, there are unique sets of states indexed by $i_1, \dots, i_n$ and $j_1, \dots, j_n$ such that
+\begin{equation*}
+\frac1n \ln L_n = \frac1n \ln \frac{\Psi(a_1)_{i_0, i_1} \Psi(a_2)_{i_1, i_2} \dots \Psi(a_n)_{i_{n-1}, i_n}}{\Psi(a_1)_{j_0, j_1} \Psi(a_2)_{j_1, j_2} \dots \Psi(a_n)_{j_{n-1}, j_n}} = \frac1n \sum_{m = 1}^n \ln \frac{\Psi(a_m)_{(i_{m - 1}, i_m)}}{\Psi(a_m)_{(j_{m - 1}, j_m)}}.
+\end{equation*}
+The state pair $(i_m, j_m)$ has the same distribution under $\PP_{\delta_{j_0}}$ as the state distribution of the sub-Markov chain $M$ started from $(i_0 , j_0)$ after $m$ transitions. For each transition in $M$ there is a mapping $l : T  \rightarrow (-\infty, 0]$ given by
+\begin{equation*}
+l\big( (i,j) \rightarrow (i^*, j^*) \big) = \ln \frac{\Psi(a)_{(i, i^*)}}{\Psi(a)_{(j, j^*)}}.
+\end{equation*}
+$l$ is well defined because $\Psi$ is deterministic and so $a$ is unique to each transition. Let $\mu^k$ be the unique stationary distribution of the BCC $C_k$. Then by the strong Ergodic theorem, $\liexp$ converges to
+\begin{equation*}
+\sum_{(i, j) \rightarrow (i^*, j^*) \in T} \mu^k_{(i, j)} M_{(i,j), (i^*, j^*)} l((i, j) \rightarrow (i^*, j^*)).
+\end{equation*}
+If the starting state $(i_0, j_0)$ is in $C_0$, then for all possible transitions from $j_0$ in $\Psi$, there are no transitions from $i_0$ and so it follows that $\liexp = -\infty$. Computing the bottom connected components can be done using Tarjan's algorithm in $O(|Q|^2)$ time. Then, computing the stationary distributions $\mu^k$ for $k = 1, \dots, K$ takes $O(|Q|^6)$ time. Therefore, computing the possible $\lambda_1, \dots, \lambda_K$ takes $O(|Q|^6)$ time.
+
+We may write $-\infty = \lambda_0, \dots, \lambda_K$ for the possible limits of $\frac1n \ln L_n$ starting in $C_0, \dots, C_K$ respectively. We write $C^{-1}(\lambda_k)$ for the union of bottom connected components associated with the likelihood exponent $\lambda_k$. In general, for starting states $(i,j)$, $\liexp = \lambda_k$ when the Markov chain $M$ hits any of the states in $C^{-1}(\lambda_k)$. Therefore computing $p_1, \dots, p_k$ is equivalent to computing a hitting probability which can be done in $O(|Q|^6)$ because $M$ has dimension at most $|Q|^2$. This makes the whole algorithm $O(|Q|^8)$ since $K \leq |Q|^2$.
+\end{proof}
+
+\begin{corollary}
+$(\mathcal{S}, P)$ has at most $|Q|^2$ reachable states and also $|Q|^2$ reachable end components in the deterministic case.
+\end{corollary}
+
+
+Let $(p_2, p_5)$ be the state distributions on $s_2$ and $s_5$ respectively. We have $\|(p_2, p_5)\Psi(a)\| = \|(\frac13 p_5 + p_2, \frac13 p_5)\| \leq \|(p_2, p_5)\|$ and $\|(p_2, p_5)\Psi(b)\| = \|(\frac13 p_5, 0)\| \leq \frac13 \|(p_2, p_5)\|$.
+
+
+
+
+
+\section{Computational Aspects}
+
+
+
+
+-- We may define a mapping on this Markov chain onto a set of at most $|Q|^2$ HMMs such that
+
+-- In the case of deterministic HMM, this exponential markov chain has at most $|Q|^2$ reachable states.
+
+
+\begin{lemma}
+Let $(Q, \Sigma, \Psi)$ be a strongly connected HMM with initial distribution $\pi_1$ and let $(\{q\}, \Sigma, \rho)$ be an HMM with a single state with initial distribution $e_q$. Then the likelihood exponent $\liexp$ exists and $\PP_{e_q}$-almost surely.
+\end{lemma}
+
+\begin{equation}
+\liexp = \lim \frac1n \ln \frac{\|\pi_1 \times \pi_2 \overline{\Psi}\|}{\|\pi_2 \times \pi_2 \overline{\Psi}\|} = \lim \frac1n \ln \frac{\|\pi_1 \times \pi_2 \overline{\Psi}\|}{\|e_q\rho\|} - \lim \frac1n \ln \frac{\|\pi_2 \times \pi_2 \overline{\Psi}\|}{\|e_q\rho\|}
+\end{equation}
+
+
+
+
+
+
+For the general HMMs we simulate the joint state distribution using a new HMM $(\overline{Q}, \overline{\Sigma}, \overline{\Psi})$. This HMM has state space $\overline{Q} = (Q \cup \{\perp\}) \times Q$ where the states $(\perp, q)$ are fresh states for each $q \in Q$. The set of observations is $\overline{\Sigma} = \Sigma$. Let $a \in \Sigma$ and let $l_1, l_2 \in Q \cup \{\perp\}$ and $r_1, r_2 \in Q$. We define
+\begin{equation*}
+\overline{\Psi}(a, r)_{(l_1, r_1), (l_2, r_2)} = \begin{cases}
+\Psi(a)_{l_1, l_2} & l_1, l_2 \in Q,~ r = r_2,~ \Psi(a)_{r_1, r_2} > 0 \\
+1 & l_1 \in Q,~ l_2 = \perp,~ r = r_2,~  \sum_{s \in Q}\Psi(a)_{l_1, s} = 0 \\
+1 & l_1 = l_2 = \perp,~ r = r_2 \\
+0 & \text{else.}
+\end{cases}
+\end{equation*}
+
+\begin{lemma}
+The triple $(\overline{Q}, \overline{\Sigma}, \overline{\Psi})$ is an HMM and $\| \pi_1 \times \pi_2 \overline{\Psi}\Big((a_1,r_1), \dots, (a_n, r_n) \Big) \| = \| \pi_1 \Psi(a_1 \dots a_n)\|$
+\end{lemma}
+
+\begin{proof}
+In the case that $l_1 \in Q$ and $\sum_{s \in Q}\Psi(a)_{l_1, s} > 0$ we have
+\begin{align*}
+\sum_{a \in \Sigma} \sum_{r \in Q} \sum_{l_2 \in Q \cup \{\perp\}} \sum_{r_2 \in Q} \overline{\Psi}(a, r)_{(l_1, r_1),(l_2, r_2)} & = \sum_{a \in \Sigma} \sum_{r \in Q} \sum_{l_2 \in Q} \sum_{r_2 \in Q} \delta_{r = r_1} \Psi(a)_{l_1, l_2}\sum_{b \in \Sigma}\Psi(b)_{r_1, r_2} \\
+& = \sum_{a \in \Sigma} \sum_{l_2 \in Q}  \Psi(a)_{l_1, l_2}\sum_{b \in \Sigma}\sum_{r_2 \in Q} \Psi(b)_{r_1, r_2} \\
+& = 1. \\
+\end{align*}
+In the case that $l_1 \in Q$  and $\sum_{s \in Q}\Psi(a)_{l_1, s} = 0$ or in the case that $l_1 = \perp$,
+\begin{align*}
+\sum_{a \in \Sigma} \sum_{r \in Q} \sum_{l_2 \in Q \cup \{\perp\}} \sum_{r_2 \in Q} \overline{\Psi}(a, r)_{(l_1, r_1),(l_2, r_2)} & = \sum_{a \in \Sigma} \sum_{r \in Q} \sum_{r_2 \in Q} \delta_{r = r_2}  \Psi(a)_{r_1, r_2} \\
+& = \sum_{a \in \Sigma} \sum_{r_2 \in Q} \Psi(a)_{r_1, r_2} \\
+& = 1.
+\end{align*}
+Now consider a word $(a_1, r_2), (a_2, r_3), \dots, (a_n, r_{n + 1}) \in (\Sigma \times Q)^n$. We have
+\end{proof}
+
+\begin{lemma}
+
+\end{lemma}
+
+
+
+Write $O : (Q \cup \{\perp\}) \times Q \rightarrow Q$ for the function $O(l,r) = r$. Let $\mathcal{R}$ be the set of strongly connected components of $(\overline{Q}, \overline{\Sigma}, \overline{\Psi})$. The image $O(\mathcal{R})$ is a set of strongly connected components of $(Q, \Sigma, \Psi)$. We define $\mathcal{R'} = \{R \in \mathcal{R} \mid O(R) \text{ is a bottom connected component of }(Q, \Sigma, \Psi)\}$.
+
+For $R \in \mathcal{R'}$ we may define an associated HMM $(R, \Sigma', \Psi')$ where $\Sigma' = \Sigma \times Q \cup \{\$\}$ and
+\begin{equation}
+\Psi'(a)_{(l_1, r_1), (l_2, r_2)} = \begin{cases}
+
+\end{cases}
+\end{equation}
+
+
+\begin{proposition}
+Whether $0 \in \Lambda$ can be decided in polynomial time. If $0 \in \Lambda$ then $\sup_{\alpha, \beta} \PP_{\pi_2}(N_{\alpha, \beta} = \infty) = \PP_{\pi_2}(E_0)$ can be computed in PSPACE. It is PSPACE-complete to decide whether $\PP_{\pi_2}(E_0) = 1$.
+\end{proposition}
+
+
+
+$\pi_1 \times \pi_2 = \pi_1^T \pi_2$ we have $\|\pi_1 \times \pi_2 \overline{\Psi}(a, r_2) \| = \|\pi_1 \Psi(a)\|$
+
+
+
+\begin{lemma}
+It is PSPACE-hard to decide whether $\PP_{\pi_2}(E_0) = 1$.
+\end{lemma}
+
+
+
+\begin{proof}
+We reduce from the universality decision problem in NFAs. Let $\mathcal{N} = (Q, \Sigma, \delta, q_0, F)$ be an NFA. Define the HMM $(Q', \Sigma', \Psi)$ where $Q' = Q \cup \{q_\$, q_1\}$ and $\Sigma' = \Sigma \cup \{\$\}$. Then, we may define $\Psi$ as
+\begin{equation*}
+\Psi(a)_{i,j} = \begin{cases}
+\delta(a)_{i,j} / \sum_{k = 1}^{|Q|} \delta(a)_{i,k} & a \in \Sigma,~ i \in Q/F,~ j \in Q \\
+\delta(a)_{i,j} / (1 + \sum_{k = 1}^{|Q|} \delta(a)_{i,k}) & a \in \Sigma',~ i \in F,~ j \in Q\\
+1 / (1 + \sum_{k = 1}^{|Q|} \delta(a)_{i,k}) & a \in \Sigma',~ i \in F,~ j = s_\$\\
+1/|\Sigma'| & a \in \Sigma,~ i = j = q_1 \\
+1/|\Sigma'| & a = \$,~ i = q_1,~ j = q_\$ \\
+1 & i = j = q_\$\\
+0 & \text{else}.\\
+\end{cases}
+\end{equation*}
+Next, let $\pi_1 = e_{q_0}$ and $\pi_2 = e_{q_1}$ be initial distributions. If every word is accepted by $\mathcal{N}$ then for every $w \in (\Sigma)^*$, the event $w\$ \Sigma^\omega = E_0$ since $\lim_{n\rightarrow\infty} L_n > 0$. But up to a $\PP_{\pi_2}$-null set, $\Sigma^* \$ (\Sigma')^\omega = \Sigma^*(\Sigma')^\omega$ which is the set of words that can be generated starting the HMM at $\pi_2$. it follows that $\PP_{\pi_2}(E_0) = 1$. If there is a word $w \in (\Sigma)^*$ which is not final, then the word $w \$$ can be generated with non-zero probability by $\pi_2$ but is a mortal word for $\pi_1$. Hence $\PP_{\pi_2}(E_0) < 1$.
+\end{proof}
+
+
+
+
+\begin{proposition}
+Deciding whether $-\infty \in \Lambda$ is PSPACE-complete. If $-\infty \in \Lambda$ then $\EE_{\pi_2}[N_\perp | E_{-\infty}] < \infty$ and both $\PP_{\pi_2}(E_{-\infty})$ and $\EE_{\pi_2}[N_\perp | E_{-\infty}]$ are computable in PSPACE. It is PSPACE-complete to decide whether $\PP_{\pi_2}(E_{-\infty}) = 1$.
+\end{proposition}
+
+\begin{proof}
+
+It follows that $\PP_{\pi_2}(N = n) = u_{\pi_1, \pi_2} P^n \chi_{\mathcal{K}}$ since
+\begin{equation*}
+\PP_{\pi_2}(N = n) = \PP_{\pi_2}(L_n(w) = 0) \iff \PP_{\pi_2}(\|\pi_1 \Psi(w) \| = 0) \iff \PP_{\pi_2}(\supp (\pi_1 \Psi(w)) = \bold{0}).
+\end{equation*}
+Therefore $\EE_{\pi_2}[N]$ is equal to the expected hitting time of $\mathcal{K}$ in the Markov chain $(\mathcal{S}, P)$ which has $|Q| \times 2^{|Q|}$ states.
+
+--system can be computed by a PSPACE transducer.
+-- Kemeny, Snell book citation
+\end{proof}
+
+\begin{lemma}
+Deciding whether $-\infty \in \Lambda$ is PSPACE-hard.
+\end{lemma}
+\begin{proof}
+Let the matrices $M_1, \dots, M_D \in \{0,1\}^{N \times N}$ be an instance of the mortality problem. If the $i$th row of $\sum_{d = 1}^D M_i$ is a zero row, we may define $M_1', \dots, M_D'$ as the set of matrices $M_1, \dots, M_D$ but with the $i$th row and column removed. $M_1', \dots, M_D'$ is mortal if and only if $M_1, \dots, M_D$ is mortal.
+
+-- if there is remaining state after the product M' then add an additional letter.
+
+Therefore, without loss of generality, we may assume $\sum_{d = 1}^D M_d$ contains no zero rows. The matrices $\overline{M}_1, \dots, \overline{M}_D$ defined by $\overline{M}_{i,j} = M_{i,j} / \sum_{k = 1}^N M_{i,k}$ are mortal if and only if $M_1, \dots, M_D$ are mortal. Finally, define the HMM $(Q, \Sigma, \Psi)$ where $Q = [N + 1]$, $\Sigma = \{a_1, \dots, a_d\}$ and $\Psi$ is defined in blocks
+\begin{equation*}
+\Psi(a_i) = \begin{pmatrix}
+\overline{M}_i & 0 \\
+0 & 1/|\Sigma|
+\end{pmatrix}.
+\end{equation*}
+Let $\pi_1 = (1/N, \dots, 1/N, 0)$ and $\pi_2 = (0, \dots, 0, 1)$. These initial distributions lead to a set of likelihood exponents $\Lambda$ and It follows that $-\infty \in \Lambda$ if and only if $M_1, \dots, M_d$ are mortal.
+\end{proof}
+
+%-=When $\phi \neq \psi$ then $d(s_0, s_1) = 1$, but the expected time for the SPRT is longer if $\lvert \phi - \psi \rvert$ is larger. This corresponds to a more steep slope of sample runs.
+
+
+
+Define an directed graph as follows. The vertex set is $V = (Q \cup \{\perp\}) \times Q$ where $\perp$ is a fresh state. There is an edge from $(q_1,q_2) \in V$ to $(r_1, r_2) \in V$ if any of the following three conditions hold.
+
+
+
+We say an HMM $(Q, \Sigma, \Psi)$ is strongly connected if the Markov chain $\sum_{a \in \Sigma} \Psi(a)$ is strongly connected.
+
+
+
+\begin{restatable}{theorem}{nondetermconv}\label{nondetermconv}
+We may compute in polynomial time a set of at most $|Q|^2$ strongly connected HMMs $(Q_k, \Sigma, \Psi_k)$ and pairs of initial states $(q_k, r_k)$ with corresponding likelihood ratios $L^k_n$ such that for all $\ell \in \Lambda$ there is $L^k_n$ such that $\liexp^k = \ell$.
+\end{restatable}
+
+
+
+
+
+
+
+
+
+
+ Markov chain has states labelled $(q_i, q_j)$ for $i,j = 1, \dots, |Q|$ and also a special absorbing state $\perp$. The transition probabilities are taken from the outgoing transitions from $q_j$. It may be that a letter produced from $q_j$ cannot be produced from $q_i$ in which case the Markov chain transitions to $\perp$. The full definition is
+
+
+
+
+\subsection{Deterministic Chains}
+
+
+\subsection{Non-Deterministic Chains}
+
+- show that it's atleast PSPACE hard to approximate and computing them is as hard as computing lyapunov exponents (known to be a hard problem).
+
+
+
+
+
+By introducing non-determinism, the likelihood ratio can no longer be split into a simple product of random variables depending only on the transitions in a Markov chain. It follows that we may not use the Strong ergodic theorem for Markov chains to show convergence of $\liexp$. We instead prove convergence using work by Protasov. The following theorem is proven in the appendix.
+
+
+
+There is no known algorithm for computing each limit $\liexp^k$. Moreover, even if we know the values of $\liexp^k$, we show that computing the distribution of $\liexp$ over the possible limits $\{\liexp^k \mid k = 1, \dots, K\}$ is PSPACE-complete. We therefore consider consider a series of problems leading up to the final result.
+
+The starting point is language inclusion for \emph{non-deterministic finite automata} (NFA). An NFA is a quintuple $(Q,\Sigma ,\Delta ,q_0,F)$ such that
+The starting point is language inclusion for \emph{non-deterministic finite automata} (NFA). An NFA is a quintuple $(Q,\Sigma ,\Delta ,q_0,F)$ such that
+\begin{itemize}
+\item a finite set of states $Q$.
+\item a finite set of input symbols $\Sigma$.
+\item a transition function $\Delta : Q \times \Sigma \rightarrow \mathscr{P}(Q)$.
+\item an initial state $q_0$
+\item a set of final states $F \subseteq Q$.
+\end{itemize}
+The language accepted by $M$, $L(M)$ is the set of $a_1\cdots a_n \in \Sigma^n$ such that there exists a sequence of states $q_1, \dots, q_n$ such that $q_i \in \Delta (q_{i - 1}, a_i)$ for $i = 1, \dots, n$ and $q_n \in F$.
+
+
+\bibliography{lyapunovhmm}
+
+\appendix
+
+\input{appendix}
+
+\end{document}

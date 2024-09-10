@@ -1,0 +1,261 @@
+\begin{thebibliography}{10}
+
+\bibitem{Weather}
+P.~Ailliot, C.~Thompson, and P.~Thomson.
+\newblock Space-time modelling of precipitation by using a hidden {M}arkov
+  model and censored {G}aussian distributions.
+\newblock {\em Journal of the Royal Statistical Society}, 58(3):405--426, 2009.
+
+\bibitem{AkshayBFG19}
+S.~Akshay, H.~Bazille, E.~Fabre, and B.~Genest.
+\newblock Classification among hidden {M}arkov models.
+\newblock In {\em Proceedings of the Annual Conference on Foundations of
+  Software Technology and Theoretical Computer Science (FSTTCS)}, volume 150 of
+  {\em LIPIcs}, pages 29:1--29:14. Schloss Dagstuhl - Leibniz-Zentrum f{\"{u}}r
+  Informatik, 2019.
+\newblock URL: \url{https://doi.org/10.4230/LIPIcs.FSTTCS.2019.29}, \href
+  {http://dx.doi.org/10.4230/LIPIcs.FSTTCS.2019.29}
+  {\path{doi:10.4230/LIPIcs.FSTTCS.2019.29}}.
+
+\bibitem{GeneFinding}
+M.~Alexandersson, S.~Cawley, and L.~Pachter.
+\newblock {SLAM}: Cross-species gene finding and alignment with a generalized
+  pair hidden {M}arkov model.
+\newblock {\em Genome Research}, 13:469--502, 2003.
+
+\bibitem{BertrandHL16}
+N.~Bertrand, S.~Haddad, and E.~Lefaucheux.
+\newblock Accurate approximate diagnosability of stochastic systems.
+\newblock In {\em Proceedings of Language and Automata Theory and Applications
+  (LATA)}, volume 9618 of {\em Lecture Notes in Computer Science}, pages
+  549--561. Springer, 2016.
+\newblock URL: \url{https://doi.org/10.1007/978-3-319-30000-9\_42}, \href
+  {http://dx.doi.org/10.1007/978-3-319-30000-9\_42}
+  {\path{doi:10.1007/978-3-319-30000-9\_42}}.
+
+\bibitem{bog2007}
+V.I. Bogachev.
+\newblock {\em Measure Theory}.
+\newblock Number v. 1 in Measure Theory. Springer Berlin Heidelberg, 2007.
+\newblock URL: \url{https://books.google.co.uk/books?id=CoSIe7h5mTsC}.
+
+\bibitem{Borodin77}
+A.~Borodin.
+\newblock On relating time and space to size and depth.
+\newblock {\em {SIAM} Journal of Computing}, 6(4):733--744, 1977.
+\newblock URL: \url{https://doi.org/10.1137/0206054}, \href
+  {http://dx.doi.org/10.1137/0206054} {\path{doi:10.1137/0206054}}.
+
+\bibitem{BorodinGathenHopcroft82}
+A.~Borodin, J.~von~zur Gathen, and J.E. Hopcroft.
+\newblock Fast parallel matrix and {GCD} computations.
+\newblock {\em Information and Control}, 52(3):241--256, 1982.
+\newblock URL: \url{https://doi.org/10.1016/S0019-9958(82)90766-5}, \href
+  {http://dx.doi.org/10.1016/S0019-9958(82)90766-5}
+  {\path{doi:10.1016/S0019-9958(82)90766-5}}.
+
+\bibitem{ChenWillett00}
+B.~Chen and P.~Willett.
+\newblock Detection of hidden {M}arkov model transient signals.
+\newblock {\em IEEE Transactions on Aerospace and Electronic Systems},
+  36(4):1253--1268, 2000.
+\newblock \href {http://dx.doi.org/10.1109/7.892673}
+  {\path{doi:10.1109/7.892673}}.
+
+\bibitem{Gesture}
+F.-S. Chen, C.-M. Fu, and C.-L. Huang.
+\newblock Hand gesture recognition using a real-time tracking method and hidden
+  {M}arkov models.
+\newblock {\em Image and Vision Computing}, 21(8):745--758, 2003.
+
+\bibitem{kief14}
+T.~Chen and S.~Kiefer.
+\newblock On the total variation distance of labelled {M}arkov chains.
+\newblock In {\em Proceedings of the Joint Meeting of the Twenty-Third EACSL
+  Annual Conference on Computer Science Logic (CSL) and the Twenty-Ninth Annual
+  ACM/IEEE Symposium on Logic in Computer Science (LICS)}, pages 33:1--33:10,
+  Vienna, Austria, 2014.
+
+\bibitem{DNA-modeling}
+G.A. Churchill.
+\newblock Stochastic models for heterogeneous {DNA} sequences.
+\newblock {\em Bulletin of Mathematical Biology}, 51(1):79--94, 1989.
+
+\bibitem{CortesMRdistance}
+C.~Cortes, M.~Mohri, and A.~Rastogi.
+\newblock {$L_p$} distance and equivalence of probabilistic automata.
+\newblock {\em International Journal of Foundations of Computer Science},
+  18(04):761--779, 2007.
+
+\bibitem{SignalProcessing}
+M.S. Crouse, R.D. Nowak, and R.G. Baraniuk.
+\newblock Wavelet-based statistical signal processing using hidden {M}arkov
+  models.
+\newblock {\em IEEE Transactions on Signal Processing}, 46(4):886--902, April
+  1998.
+
+\bibitem{Storm}
+C.~Dehnert, S.~Junges, J.-P. Katoen, and M.~Volk.
+\newblock A {Storm} is coming: A modern probabilistic model checker.
+\newblock In {\em Proceedings of Computer Aided Verification (CAV)}, pages
+  592--600. Springer, 2017.
+
+\bibitem{durbin1998biological}
+R.~Durbin.
+\newblock {\em Biological Sequence Analysis: Probabilistic Models of Proteins
+  and Nucleic Acids}.
+\newblock Cambridge University Press, 1998.
+
+\bibitem{HMM-comp-biology}
+S.R. Eddy.
+\newblock What is a hidden {M}arkov model?
+\newblock {\em Nature Biotechnology}, 22(10):1315--1316, October 2004.
+
+\bibitem{EtessamiSY14}
+K.~Etessami, A.~Stewart, and M.~Yannakakis.
+\newblock A note on the complexity of comparing succinctly represented
+  integers, with an application to maximum probability parsing.
+\newblock {\em {ACM} Trans. Comput. Theory}, 6(2):9:1--9:23, 2014.
+\newblock URL: \url{https://doi.org/10.1145/2601327}, \href
+  {http://dx.doi.org/10.1145/2601327} {\path{doi:10.1145/2601327}}.
+
+\bibitem{Fuh03}
+C.-D. Fuh.
+\newblock {SPRT and CUSUM in hidden Markov models}.
+\newblock {\em The Annals of Statistics}, 31(3):942--977, 2003.
+\newblock URL: \url{https://doi.org/10.1214/aos/1056562468}, \href
+  {http://dx.doi.org/10.1214/aos/1056562468}
+  {\path{doi:10.1214/aos/1056562468}}.
+
+\bibitem{GrossiLops08}
+E.~Grossi and M.~Lops.
+\newblock Sequential detection of {M}arkov targets with trajectory estimation.
+\newblock {\em IEEE Transactions on Information Theory}, 54(9):4144--4154,
+  2008.
+\newblock \href {http://dx.doi.org/10.1109/TIT.2008.928261}
+  {\path{doi:10.1109/TIT.2008.928261}}.
+
+\bibitem{JuangRabiner85}
+B.-H. Juang and L.~R. Rabiner.
+\newblock A probabilistic distance measure for hidden {M}arkov models.
+\newblock {\em AT\&T Technical Journal}, 64(2):391--408, 1985.
+\newblock URL:
+  \url{https://onlinelibrary.wiley.com/doi/abs/10.1002/j.1538-7305.1985.tb00439.x},
+  \href {http://dx.doi.org/https://doi.org/10.1002/j.1538-7305.1985.tb00439.x}
+  {\path{doi:https://doi.org/10.1002/j.1538-7305.1985.tb00439.x}}.
+
+\bibitem{karasha09}
+J.-Y. Kao, N.~Rampersad, and J.~Shallit.
+\newblock On {NFA}s where all states are final, initial, or both.
+\newblock {\em Theoretical Computer Science}, 410(47):5010--5021, 2009.
+\newblock URL:
+  \url{https://www.sciencedirect.com/science/article/pii/S0304397509005477},
+  \href {http://dx.doi.org/https://doi.org/10.1016/j.tcs.2009.07.049}
+  {\path{doi:https://doi.org/10.1016/j.tcs.2009.07.049}}.
+
+\bibitem{kief11}
+S.~Kiefer, A.S. Murawski, J.~Ouaknine, B.~Wachter, and J.~Worrell.
+\newblock Language equivalence for probabilistic automata.
+\newblock In {\em Proceedings of the 23rd International Conference on Computer
+  Aided Verification (CAV)}, volume 6806 of {\em LNCS}, pages 526--540.
+  Springer, 2011.
+
+\bibitem{kief16}
+S.~Kiefer and A.P. Sistla.
+\newblock Distinguishing hidden {M}arkov chains.
+\newblock In {\em Proceedings of the 31st Annual Symposium on Logic in Computer
+  Science (LICS)}, pages 66--75, New York, USA, 2016. ACM.
+
+\bibitem{ProteinStructure}
+A.~Krogh, B.~Larsson, G.~von Heijne, and E.L.L. Sonnhammer.
+\newblock Predicting transmembrane protein topology with a hidden {Markov}
+  model: Application to complete genomes.
+\newblock {\em Journal of Molecular Biology}, 305(3):567--580, 2001.
+
+\bibitem{KNP11}
+M.~Kwiatkowska, G.~Norman, and D.~Parker.
+\newblock {PRISM} 4.0: Verification of probabilistic real-time systems.
+\newblock In {\em Proceedings of Computer Aided Verification (CAV)}, volume
+  6806 of {\em LNCS}, pages 585--591. Springer, 2011.
+
+\bibitem{rockhart13}
+R.~Langrock, B.~Swihart, B.~Caffo, N.~Punjabi, and C.~Crainiceanu.
+\newblock Combining hidden {M}arkov models for comparing the dynamics of
+  multiple sleep electroencephalograms.
+\newblock {\em Statistics in medicine}, 32, 08 2013.
+\newblock \href {http://dx.doi.org/10.1002/sim.5747}
+  {\path{doi:10.1002/sim.5747}}.
+
+\bibitem{Pap94}
+C.M. Papadimitriou.
+\newblock {\em Computational complexity}.
+\newblock Addison-Wesley, 1994.
+
+\bibitem{Paz71}
+A.~Paz.
+\newblock {\em Introduction to Probabilistic Automata (Computer Science and
+  Applied Mathematics)}.
+\newblock Academic Press, Inc., Orlando, FL, USA, 1971.
+
+\bibitem{prot13}
+V.Yu. Protasov.
+\newblock Asymptotics of products of nonnegative random matrices.
+\newblock {\em Functional Analysis and Its Applications}, 47:138--147, 2013.
+
+\bibitem{ProtasovJungers13}
+V.Yu. Protasov and R.M. Jungers.
+\newblock Lower and upper bounds for the largest {L}yapunov exponent of
+  matrices.
+\newblock {\em Linear Algebra and its Applications}, 438(11):4448--4468, 2013.
+\newblock URL:
+  \url{https://www.sciencedirect.com/science/article/pii/S002437951300089X},
+  \href {http://dx.doi.org/https://doi.org/10.1016/j.laa.2013.01.027}
+  {\path{doi:https://doi.org/10.1016/j.laa.2013.01.027}}.
+
+\bibitem{Rabiner89}
+L.R. Rabiner.
+\newblock A tutorial on hidden {M}arkov models and selected applications in
+  speech recognition.
+\newblock {\em Proceedings of the IEEE}, 77(2):257--286, 1989.
+
+\bibitem{schut61}
+M.P. Schützenberger.
+\newblock On the definition of a family of automata.
+\newblock {\em Information and Control}, 4(2):245--270, 1961.
+
+\bibitem{shes13}
+Theodore~J. Sheskin.
+\newblock Conditional mean first passage time in a markov chain.
+\newblock {\em International Journal of Management Science and Engineering
+  Management}, 8(1):32--37, 2013.
+\newblock \href {http://dx.doi.org/10.1080/17509653.2013.783187}
+  {\path{doi:10.1080/17509653.2013.783187}}.
+
+\bibitem{Sutter21}
+D.~Sutter, O.~Fawzi, and R.~Renner.
+\newblock Bounds on {L}yapunov exponents via entropy accumulation.
+\newblock {\em IEEE Transactions on Information Theory}, 67(1):10--24, 2021.
+\newblock \href {http://dx.doi.org/10.1109/TIT.2020.3026959}
+  {\path{doi:10.1109/TIT.2020.3026959}}.
+
+\bibitem{Tzeng92}
+W.-G. Tzeng.
+\newblock A polynomial-time algorithm for the equivalence of probabilistic
+  automata.
+\newblock {\em SIAM J. Comput.}, 21(2):216--227, April 1992.
+
+\bibitem{wald45}
+A.~Wald.
+\newblock {Sequential Tests of Statistical Hypotheses}.
+\newblock {\em The Annals of Mathematical Statistics}, 16(2):117 -- 186, 1945.
+\newblock URL: \url{https://doi.org/10.1214/aoms/1177731118}, \href
+  {http://dx.doi.org/10.1214/aoms/1177731118}
+  {\path{doi:10.1214/aoms/1177731118}}.
+
+\bibitem{WaldWolfowitz48}
+A.~Wald and J.~Wolfowitz.
+\newblock Optimum character of the sequential probability ratio test.
+\newblock {\em The Annals of Mathematical Statistics}, 19(3):326--339, 1948.
+\newblock URL: \url{http://www.jstor.org/stable/2235638}.
+
+\end{thebibliography}

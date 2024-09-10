@@ -1,0 +1,117 @@
+\renewcommand{\H}{\mathcal{H}}
+\newcommand{\M}{\mathcal{M}}
+\renewcommand{\S}{\mathcal{S}}
+
+\section{Stefan} 
+
+\subsection{Representing Likelihood Exponents}
+
+In the following we show that, although it is hard to \emph{compute} likelihood exponents, one can efficiently represent them in terms of \emph{Lyapunov exponents}.
+The definition of Lyapunov exponents is based on the following definition.
+
+\begin{definition} \label{lem:lyapunov-exponent}
+A \emph{matrix system} is a triple $\M = (Q, \Sigma, \Psi)$ where $Q$ is a finite set of states, $\Sigma$ is a finite set of observations, and $\Psi: \Sigma \to \RR_{\ge 0}^{Q \times Q}$ specifies the transitions.
+(Note that an HMM is a matrix system.)
+A \emph{Lyapunov system} is a pair $\S = (\M, \rho)$ where $\M = (Q, \Sigma, \Psi)$ is a matrix system and $\rho : \Sigma \to (0,1]$ is a probability distribution on~$\Sigma$ with full support [PROBABLY INTRODUCE A NOTATION FOR A PROBABILITY DISTRIBUTION IN THE PRELIMINARIES.], such that the directed graph $(Q,E)$ with $E = \{(q,r) \mid \sum_{a \in \Sigma} \Psi_{q,r}(a) > 0\}$ is strongly connected.
+\end{definition}
+
+%Let $((Q, \Sigma, \Psi), \rho)$ be a Lyapunov system.
+We can identify the probability distribution $\rho$ from this definition with the single-state HMM $(\{s\}, \Sigma, \Psi_\rho)$ where $\Psi_\rho(a)_{s,s} = \rho(a)$ for all $a \in \Sigma$.
+In this way, $\rho$ produces a random infinite word from $\Sigma^\omega$.
+For $w \in \Sigma^\omega$ we write $w_n$ for the length-$n$ prefix of~$w$.
+The following lemma is known from [CITE].
+
+\begin{lemma}[{[CITE]}] \label{lem:lyapunov-exponent}
+Let $((Q, \Sigma, \Psi), \rho)$ be a Lyapunov system.
+Then there is $\ell \in \RR$ such that, for all $q \in Q$, $\PP_{\rho}$-a.s., either $e_q \Psi(w_n) = \vec{0}$ [NOTATION DEFINED?] for some $n \in \NN$ or the limit $\lim_{n \to \infty} \frac1n \ln \| e_q \Psi(w_n) \|$ exists and equals~$\ell$.
+\end{lemma}
+For a Lyapunov system~$\S$ we call $\ell(\S) = \ell$ from the lemma the \emph{Lyapunov exponent} defined by~$\S$.
+We prove the following theorem, which implies \cref{liexplimits}. [CHECK $|Q|^2$ vs. $|Q|^2 + 1$]
+\begin{theorem} \label{thm:likelihood-to-lyapunov}
+Given an HMM $(Q, \Sigma, \Psi)$ we can compute in polynomial time $2 K \le 2 |Q|^2$ Lyapunov systems $\S_1^1, \S_1^2, \S_2^1, \S_2^2, \ldots, \S_K^1, \S_K^2$ such that for any initial distributions $\pi_1, \pi_2$ the limit $\liexp$ exists $\PP_{\pi_2}$-a.s.\ and lies in
+\[ 
+\Lambda \ \subseteq \ \{-\infty\} \cup \{\ell(\S_1^1) - \ell(\S_1^2), \ldots, \ell(\S_K^1) - \ell(\S_K^2)\}\,.
+\]
+In particular, the HMM has at most $|Q|^2 + 1$ likelihood exponents.
+\end{theorem}
+
+In the rest of the section we provide more details on the construction underlying \cref{thm:likelihood-to-lyapunov}.
+As an intermediate concept (between the given HMM and the Lyapunov systems from \cref{thm:likelihood-to-lyapunov}) we define \emph{generalized Lyapunov systems}.
+
+First, for two matrix systems $\M_1 = (Q_1,\Sigma,\Psi_1)$ and $\M_2 = (Q_2,\Sigma,\Psi_2)$ with finite $Q_1, Q_2, \Sigma$ and transitions $\Psi_1,\Psi_2 : \Sigma \to \RR_{\ge 0}^{Q \times Q}$ we define the directed graph $G_{\M_1,\M_2} = (Q_1 \times Q_2, E)$ such that there is an edge from $(q_1,q_2)$ to $(r_1,r_2)$ if there is $a \in \Sigma$ with $\Psi_1(a)_{q_1,r_1} > 0$ and $\Psi_2(a)_{q_2,r_2} > 0$.
+
+A \emph{generalized Lyapunov system} is a triple $\S = (\M,\H,C)$ where $\M = (Q_1, \Sigma, \Psi_1)$ is matrix system and $\H = (Q_2, \Sigma, \Psi_2)$ is a strongly connected [DEFINED?] HMM and $C \subseteq Q_1 \times Q_2$ is a bottom SCC of $G_{\M, \H}$.
+Given a generalized Lyapunov system, one can efficiently compute an ``equivalent'' Lyapunov system:
+\begin{lemma} \label{from-gen-to-nongen}
+Let $\S = ((Q_1, \Sigma, \Psi_1),(Q_2, \Sigma, \Psi_2),C)$ be a generalized Lyapunov system.
+\begin{enumerate}
+\item
+There is $\ell(\S) \in \RR$ such that, for all $\pi_1 \in \RR_{\ge 0}^{Q_1}$ and all probability distributions [NOTATION?] $\pi_2 \in [0,1]^{Q_2}$ with $\{q \mid \pi_1(q) > 0\} \times \supp(\pi_2) \subseteq C$, we have $\PP_{\pi_2}$-a.s. that either $\pi_1 \Psi_1(w_n) = \vec{0}$ [NOTATION?] for some $n \in \NN$ or the limit $\lim_{n \to \infty} \frac1n \ln \| \pi_1 \Psi_1(w_n) \|$ exists and equals~$\ell(\S)$.
+\item
+One can compute in polynomial time a Lyapunov system $\S'$ such that $\ell(\S) = \ell(\S')$.
+\end{enumerate}
+\end{lemma}
+
+Let $\H = (Q,\Sigma,\Psi)$ be an HMM.
+Let $R \subseteq Q \times Q$ be a (not necessarily bottom) SCC of the graph $G_{\H,\H}$ such that $Q_2 := \{q_2 \in Q \mid \exists\,q_1 \in Q : (q_1,q_2) \in R\}$ is a bottom SCC of the graph of $\sum_{a \in \Sigma} \Psi(a)$.
+We call such~$R$ a \emph{right-bottom} SCC.
+Clearly there are at most $|Q|^2$ right-bottom SCCs.
+Towards \cref{thm:likelihood-to-lyapunov} we want to define, for each right-bottom SCC~$R$, two generalized Lyapunov systems $\S_R^1, \S_R^2$.
+
+For a function of the form $\Phi : \Sigma \to \RR^{Q \times Q}$ and $P \subseteq Q$ we write $\Phi_{|P} : \Sigma \to \RR^{P \times P}$ for the function with $\Phi_{|P}(a)(q,r) = \Phi(a)(q,r)$ for all $a \in \Sigma$ and $q,r \in P$; i.e., $\Phi_{|P}(a)$ denotes the principal submatrix obtained from~$\Phi(a)$ by restricting it to the rows and columns indexed by~$P$.
+
+Define $\Psi'(a,r)_{q,r} := \Psi(a)_{q,r}$ for all $a \in \Sigma$ and $q,r \in Q$.
+Then $(Q, \Sigma \times Q, \Psi')$ is an HMM, which is similar to~$\H$, but which emits, in addition to an observation from~$\Sigma$, also the next state.
+Since $Q_2$ is a bottom SCC of the graph of $\sum_{a \in \Sigma} \Psi(a)$, the HMM $\H_2 := (Q_2, \Sigma \times Q_2, \Psi'_{|Q_2})$ is strongly connected.
+This HMM~$\H_2$ will be used both in $\S_R^1$ and in~$\S_R^2$.
+
+Next, define $\overline{\Psi} : (\Sigma \times Q) \to [0,1]^{(Q \times Q) \times (Q \times Q)}$ by
+\[
+ \overline{\Psi}(a,r_2)_{(q_1,q_2),(r_1,r_2)} \ := \ \Psi(a)_{q_1,r_1} \quad \text{for all } a \in \Sigma\ \text{ and } q_1, q_2, r_1, r_2 \in Q\,.
+\]
+Now define $\S_R^1 := (\M^1, \H_2, C^1)$, where $\M^1 := (R, \Sigma \times Q_2, \overline{\Psi}_{|R})$ %and 
+%\[
+% \Psi^1(a,r_2)_{(q_1,q_2),(r_1,r_2)} \ := \ \Psi(a)_{q_1,r_1} \quad \text{for all } (a,r_2) \in \Sigma \times Q_2\ \text{ and }\ (q_1,q_2), (r_1,r_2) \in R
+%\]
+and $C^1 := \{((q_1,q_2),q_2) \mid (q_1,q_2) \in R\}$.
+%
+Finally, denoting by $R' \subseteq Q_2 \times Q_2$ the SCC of the graph $G_{\H,\H}$ that contains the ``diagonal'' vertices $(q,q) \in Q_2 \times Q_2$, define $\S_R^2 := (\M^2, \H_2, C^2)$, where $\M^2 := (R', \Sigma \times Q_2, \overline{\Psi}_{|R'})$ 
+and $C^2 := \{((q_1,q_2),q_2) \mid (q_1,q_2) \in R'\}$.
+
+For sets $U, V \subseteq Q \times Q$ write $U \longrightarrow^*_{G_{\H,\H}} V$ denote that there are $u \in U$ and $v \in V$ such that $v$ is reachable from~$u$ in~$G_{\H,\H}$.
+We are ready to state the following key technical lemma:
+\begin{lemma} \label{lem:construct-L-systems}
+Given an HMM $(Q, \Sigma, \Psi)$, let $\mathcal{R} \subseteq 2^{Q \times Q}$ be the set of its right-bottom SCCs, and, for $R \in \mathcal{R}$, let $\S_{R}^1, \S_{R}^2$ be the generalized Lyapunov systems defined above.
+Then,
+\[ 
+\Lambda \ \subseteq \ \{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R}\} \,.
+\]
+\end{lemma}
+NEW AND STRONGER VERSION:
+\begin{lemma} \label{lem:construct-L-systems}
+Given an HMM $(Q, \Sigma, \Psi)$, let $\mathcal{R} \subseteq 2^{Q \times Q}$ be the set of its right-bottom SCCs, and, for $R \in \mathcal{R}$, let $\S_{R}^1, \S_{R}^2$ be the generalized Lyapunov systems defined above.
+Then, for any initial distributions $\pi_1, \pi_2$, the limit $\liexp$ exists $\PP_{\pi_2}$-a.s.\ and lies in
+\[ 
+\{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R},\ \supp(\pi_1) \times \supp(\pi_2) \longrightarrow^*_{G_{\H,\H}} R\} \,.
+\]
+Thus,
+$\Lambda_{\pi_1,\pi_2} \subseteq \{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R},\ \supp(\pi_1) \times \supp(\pi_2) \longrightarrow^*_{G_{\H,\H}} R\}$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+Let $\pi_1, \pi_2$ be initial distributions.
+%Recall the definition of likelihood ratio $L_n(w) = \frac{\| \pi_1 \Psi(w_n) \|}{\| \pi_2 \Psi(w_n) \|}$.
+Very loosely speaking, we show in the appendix that on $\PP_{\pi_2}$-almost every run~$w$ there is a right-bottom SCC~$R$ which ``traps'' ``most'' of the mass of $\pi_1 \Psi(w_n)$ and $\pi_2 \Psi(w_n)$.
+This can be made meaningful and formal using (the cross-product systems) $\S_R^1, \S_R^2$.
+We then show that on $\PP_{\pi_2}$-almost every such run~$w$, for both $i=1,2$, the limit $\lim_{n \to \infty} \frac{1}{n} \ln \| \pi_i \Psi(w_n) \|$ exists and equals $\ell(\S_R^i)$ (or $\pi_1 \Psi(w_n) = \vec{0}$ for some~$n$).
+It follows that
+\[
+ \liexp \ = \ \lim_{n \to \infty} \frac{1}{n} \ln \frac{\| \pi_1 \Psi(w_n) \|}{\| \pi_2 \Psi(w_n) \|} \ = \ \ell(\S_R^1) - \ell(\S_R^2) \,. \qedhere
+\]
+\end{proof}
+With \cref{lem:construct-L-systems} at hand, the proof of \cref{thm:likelihood-to-lyapunov} is easy:
+\begin{proof}[Proof of \cref{thm:likelihood-to-lyapunov}]
+As argued before, the set $\mathcal{R}$ of right-bottom SCCs of the given HMM has at most $|Q|^2$ elements.
+These right-bottom SCCs $R$ and the associated generalized Lyapunov systems $\S_R^1, \S_R^2$ can be computed in polynomial time.
+By \cref{lem:construct-L-systems} we have $\Lambda = \bigcup_{\pi_1,\pi_2} \Lambda_{\pi_1,\pi_2} \subseteq \{-\infty\} \cup \{\ell(\S_{R}^1) - \ell(\S_{R}^2) \mid R \in \mathcal{R}\}$.
+By \cref{from-gen-to-nongen}.2, for each $R \in \mathcal{R}$ one can compute in polynomial time an equivalent Lyapunov system.
+\end{proof}

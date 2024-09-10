@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: lyapunovhmm_deterministic_changes.aux
+The style file: plainurl.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: lyapunovhmm.bib
+Warning--I didn't find a database entry for "ose68"
+You've used 7 entries,
+            2849 wiz_defined-function locations,
+            668 strings with 6384 characters,
+and the built_in function-call counts, 3261 in all, are:
+= -- 356
+> -- 92
+< -- 3
++ -- 33
+- -- 26
+* -- 170
+:= -- 476
+add.period$ -- 27
+call.type$ -- 7
+change.case$ -- 32
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 106
+empty$ -- 312
+format.name$ -- 26
+if$ -- 850
+int.to.chr$ -- 0
+int.to.str$ -- 7
+missing$ -- 9
+newline$ -- 42
+num.names$ -- 14
+pop$ -- 65
+preamble$ -- 1
+purify$ -- 27
+quote$ -- 0
+skip$ -- 239
+stack$ -- 0
+substring$ -- 154
+swap$ -- 32
+text.length$ -- 3
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 24
+warning$ -- 0
+while$ -- 23
+width$ -- 8
+write$ -- 90
+(There was 1 warning)

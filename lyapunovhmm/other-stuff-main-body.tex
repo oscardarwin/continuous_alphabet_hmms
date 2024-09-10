@@ -1,0 +1,238 @@
+\section{Other Stuff}
+
+We write $T$ for the set of transitions of $M$. Let $C_0 = \{\perp\}$ and let $C_1, \dots, C_K$ be the remaining bottom connected components of $M$. It follows that the sets $C_0, \dots, C_K$ are disjoint.
+
+\begin{theorem}
+Let $(Q, \Sigma, \Psi)$ be a strongly connected deterministic HMM and let $i_0, j_0$ be the indices of starting states then we may compute a symbollic number $\ell \in [-\infty, 0]$ such that $\PP_{\delta_{j_0}}$-almost surely
+\begin{equation*}
+\liexp = \ell
+\end{equation*}
+\end{theorem}
+
+\begin{proof}
+-- NEEDS FIXING!!
+First assume that the pair $(i_0, j_0)$ is in the bottom connected component $C_k$ with $k \geq 1$ of $M$. Fix $n\in\NN$ then for any $a_1\cdots a_n \in \Sigma^n$, since $\Psi$ is deterministic, there are unique sets of states indexed by $i_1, \dots, i_n$ and $j_1, \dots, j_n$ such that
+\begin{equation*}
+\frac1n \ln L_n = \frac1n \ln \frac{\Psi(a_1)_{i_0, i_1} \Psi(a_2)_{i_1, i_2} \dots \Psi(a_n)_{i_{n-1}, i_n}}{\Psi(a_1)_{j_0, j_1} \Psi(a_2)_{j_1, j_2} \dots \Psi(a_n)_{j_{n-1}, j_n}} = \frac1n \sum_{m = 1}^n \ln \frac{\Psi(a_m)_{(i_{m - 1}, i_m)}}{\Psi(a_m)_{(j_{m - 1}, j_m)}}.
+\end{equation*}
+The state pair $(i_m, j_m)$ has the same distribution under $\PP_{\delta_{j_0}}$ as the state distribution of the sub-Markov chain $M$ started from $(i_0 , j_0)$ after $m$ transitions. For each transition in $M$ there is a mapping $l : T  \rightarrow (-\infty, 0]$ given by
+\begin{equation*}
+l\big( (i,j) \rightarrow (i^*, j^*) \big) = \ln \frac{\Psi(a)_{(i, i^*)}}{\Psi(a)_{(j, j^*)}}.
+\end{equation*}
+$l$ is well defined because $\Psi$ is deterministic and so $a$ is unique to each transition. Let $\mu^k$ be the unique stationary distribution of the BCC $C_k$. Then by the strong Ergodic theorem, $\liexp$ converges to
+\begin{equation*}
+\sum_{(i, j) \rightarrow (i^*, j^*) \in T} \mu^k_{(i, j)} M_{(i,j), (i^*, j^*)} l((i, j) \rightarrow (i^*, j^*)).
+\end{equation*}
+If the starting state $(i_0, j_0)$ is in $C_0$, then for all possible transitions from $j_0$ in $\Psi$, there are no transitions from $i_0$ and so it follows that $\liexp = -\infty$. Computing the bottom connected components can be done using Tarjan's algorithm in $O(|Q|^2)$ time. Then, computing the stationary distributions $\mu^k$ for $k = 1, \dots, K$ takes $O(|Q|^6)$ time. Therefore, computing the possible $\lambda_1, \dots, \lambda_K$ takes $O(|Q|^6)$ time.
+
+We may write $-\infty = \lambda_0, \dots, \lambda_K$ for the possible limits of $\frac1n \ln L_n$ starting in $C_0, \dots, C_K$ respectively. We write $C^{-1}(\lambda_k)$ for the union of bottom connected components associated with the likelihood exponent $\lambda_k$. In general, for starting states $(i,j)$, $\liexp = \lambda_k$ when the Markov chain $M$ hits any of the states in $C^{-1}(\lambda_k)$. Therefore computing $p_1, \dots, p_k$ is equivalent to computing a hitting probability which can be done in $O(|Q|^6)$ because $M$ has dimension at most $|Q|^2$. This makes the whole algorithm $O(|Q|^8)$ since $K \leq |Q|^2$.
+\end{proof}
+
+\begin{corollary}
+$(\mathcal{S}, P)$ has at most $|Q|^2$ reachable states and also $|Q|^2$ reachable end components in the deterministic case.
+\end{corollary}
+
+
+Let $(p_2, p_5)$ be the state distributions on $s_2$ and $s_5$ respectively. We have $\|(p_2, p_5)\Psi(a)\| = \|(\frac13 p_5 + p_2, \frac13 p_5)\| \leq \|(p_2, p_5)\|$ and $\|(p_2, p_5)\Psi(b)\| = \|(\frac13 p_5, 0)\| \leq \frac13 \|(p_2, p_5)\|$.
+
+
+
+
+
+\section{Computational Aspects}
+
+
+
+
+-- We may define a mapping on this Markov chain onto a set of at most $|Q|^2$ HMMs such that
+
+-- In the case of deterministic HMM, this exponential markov chain has at most $|Q|^2$ reachable states.
+
+
+\begin{lemma}
+Let $(Q, \Sigma, \Psi)$ be a strongly connected HMM with initial distribution $\pi_1$ and let $(\{q\}, \Sigma, \rho)$ be an HMM with a single state with initial distribution $e_q$. Then the likelihood exponent $\liexp$ exists and $\PP_{e_q}$-almost surely.
+\end{lemma}
+
+\begin{equation}
+\liexp = \lim \frac1n \ln \frac{\|\pi_1 \times \pi_2 \overline{\Psi}\|}{\|\pi_2 \times \pi_2 \overline{\Psi}\|} = \lim \frac1n \ln \frac{\|\pi_1 \times \pi_2 \overline{\Psi}\|}{\|e_q\rho\|} - \lim \frac1n \ln \frac{\|\pi_2 \times \pi_2 \overline{\Psi}\|}{\|e_q\rho\|}
+\end{equation}
+
+
+
+
+
+
+For the general HMMs we simulate the joint state distribution using a new HMM $(\overline{Q}, \overline{\Sigma}, \overline{\Psi})$. This HMM has state space $\overline{Q} = (Q \cup \{\perp\}) \times Q$ where the states $(\perp, q)$ are fresh states for each $q \in Q$. The set of observations is $\overline{\Sigma} = \Sigma$. Let $a \in \Sigma$ and let $l_1, l_2 \in Q \cup \{\perp\}$ and $r_1, r_2 \in Q$. We define
+\begin{equation*}
+\overline{\Psi}(a, r)_{(l_1, r_1), (l_2, r_2)} = \begin{cases}
+\Psi(a)_{l_1, l_2} & l_1, l_2 \in Q,~ r = r_2,~ \Psi(a)_{r_1, r_2} > 0 \\
+1 & l_1 \in Q,~ l_2 = \perp,~ r = r_2,~  \sum_{s \in Q}\Psi(a)_{l_1, s} = 0 \\
+1 & l_1 = l_2 = \perp,~ r = r_2 \\
+0 & \text{else.}
+\end{cases}
+\end{equation*}
+
+\begin{lemma}
+The matrix system $(\overline{Q}, \overline{\Sigma}, \overline{\Psi})$ has the property $\| \pi_1 \times \pi_2 \overline{\Psi}\Big((a_1,r_1), \dots, (a_n, r_n) \Big) \| = \| \pi_1 \Psi(a_1 \dots a_n)\|$
+\end{lemma}
+
+\begin{proof}
+In the case that $l_1 \in Q$ and $\sum_{s \in Q}\Psi(a)_{l_1, s} > 0$ we have
+\begin{align*}
+\sum_{a \in \Sigma} \sum_{r \in Q} \sum_{l_2 \in Q \cup \{\perp\}} \sum_{r_2 \in Q} \overline{\Psi}(a, r)_{(l_1, r_1),(l_2, r_2)} & = \sum_{a \in \Sigma} \sum_{r \in Q} \sum_{l_2 \in Q} \sum_{r_2 \in Q} \delta_{r = r_1} \Psi(a)_{l_1, l_2}\sum_{b \in \Sigma}\Psi(b)_{r_1, r_2} \\
+& = \sum_{a \in \Sigma} \sum_{l_2 \in Q}  \Psi(a)_{l_1, l_2}\sum_{b \in \Sigma}\sum_{r_2 \in Q} \Psi(b)_{r_1, r_2} \\
+& = 1. \\
+\end{align*}
+In the case that $l_1 \in Q$  and $\sum_{s \in Q}\Psi(a)_{l_1, s} = 0$ or in the case that $l_1 = \perp$,
+\begin{align*}
+\sum_{a \in \Sigma} \sum_{r \in Q} \sum_{l_2 \in Q \cup \{\perp\}} \sum_{r_2 \in Q} \overline{\Psi}(a, r)_{(l_1, r_1),(l_2, r_2)} & = \sum_{a \in \Sigma} \sum_{r \in Q} \sum_{r_2 \in Q} \delta_{r = r_2}  \Psi(a)_{r_1, r_2} \\
+& = \sum_{a \in \Sigma} \sum_{r_2 \in Q} \Psi(a)_{r_1, r_2} \\
+& = 1.
+\end{align*}
+Now consider a word $(a_1, r_2), (a_2, r_3), \dots, (a_n, r_{n + 1}) \in (\Sigma \times Q)^n$. We have
+\end{proof}
+
+\begin{lemma}
+
+\end{lemma}
+
+
+
+Write $O : (Q \cup \{\perp\}) \times Q \rightarrow Q$ for the function $O(l,r) = r$. Let $\mathcal{R}$ be the set of strongly connected components of $(\overline{Q}, \overline{\Sigma}, \overline{\Psi})$. The image $O(\mathcal{R})$ is a set of strongly connected components of $(Q, \Sigma, \Psi)$. We define $\mathcal{R'} = \{R \in \mathcal{R} \mid O(R) \text{ is a bottom connected component of }(Q, \Sigma, \Psi)\}$.
+
+For $R \in \mathcal{R'}$ we may define an associated HMM $(R, \Sigma', \Psi')$ where $\Sigma' = \Sigma \times Q \cup \{\$\}$ and
+\begin{equation}
+\Psi'(a)_{(l_1, r_1), (l_2, r_2)} = \begin{cases}
+
+\end{cases}
+\end{equation}
+
+
+\begin{proposition}
+Whether $0 \in \Lambda$ can be decided in polynomial time. If $0 \in \Lambda$ then $\sup_{\alpha, \beta} \PP_{\pi_2}(N_{\alpha, \beta} = \infty) = \PP_{\pi_2}(E_0)$ can be computed in PSPACE. It is PSPACE-complete to decide whether $\PP_{\pi_2}(E_0) = 1$.
+\end{proposition}
+
+
+
+$\pi_1 \times \pi_2 = \pi_1^T \pi_2$ we have $\|\pi_1 \times \pi_2 \overline{\Psi}(a, r_2) \| = \|\pi_1 \Psi(a)\|$
+
+
+
+\begin{lemma}
+It is PSPACE-hard to decide whether $\PP_{\pi_2}(E_0) = 1$.
+\end{lemma}
+
+
+
+\begin{proof}
+We reduce from the universality decision problem in NFAs. Let $\mathcal{N} = (Q, \Sigma, \delta, q_0, F)$ be an NFA. Define the HMM $(Q', \Sigma', \Psi)$ where $Q' = Q \cup \{q_\$, q_1\}$ and $\Sigma' = \Sigma \cup \{\$\}$. Then, we may define $\Psi$ as
+\begin{equation*}
+\Psi(a)_{i,j} = \begin{cases}
+\delta(a)_{i,j} / \sum_{k = 1}^{|Q|} \delta(a)_{i,k} & a \in \Sigma,~ i \in Q/F,~ j \in Q \\
+\delta(a)_{i,j} / (1 + \sum_{k = 1}^{|Q|} \delta(a)_{i,k}) & a \in \Sigma',~ i \in F,~ j \in Q\\
+1 / (1 + \sum_{k = 1}^{|Q|} \delta(a)_{i,k}) & a \in \Sigma',~ i \in F,~ j = s_\$\\
+1/|\Sigma'| & a \in \Sigma,~ i = j = q_1 \\
+1/|\Sigma'| & a = \$,~ i = q_1,~ j = q_\$ \\
+1 & i = j = q_\$\\
+0 & \text{else}.\\
+\end{cases}
+\end{equation*}
+Next, let $\pi_1 = e_{q_0}$ and $\pi_2 = e_{q_1}$ be initial distributions. If every word is accepted by $\mathcal{N}$ then for every $w \in (\Sigma)^*$, the event $w\$ \Sigma^\omega = E_0$ since $\lim_{n\rightarrow\infty} L_n > 0$. But up to a $\PP_{\pi_2}$-null set, $\Sigma^* \$ (\Sigma')^\omega = \Sigma^*(\Sigma')^\omega$ which is the set of words that can be generated starting the HMM at $\pi_2$. it follows that $\PP_{\pi_2}(E_0) = 1$. If there is a word $w \in (\Sigma)^*$ which is not final, then the word $w \$$ can be generated with non-zero probability by $\pi_2$ but is a mortal word for $\pi_1$. Hence $\PP_{\pi_2}(E_0) < 1$.
+\end{proof}
+
+
+
+
+\begin{proposition}
+Deciding whether $-\infty \in \Lambda$ is PSPACE-complete. If $-\infty \in \Lambda$ then $\EE_{\pi_2}[N_\perp | E_{-\infty}] < \infty$ and both $\PP_{\pi_2}(E_{-\infty})$ and $\EE_{\pi_2}[N_\perp | E_{-\infty}]$ are computable in PSPACE. It is PSPACE-complete to decide whether $\PP_{\pi_2}(E_{-\infty}) = 1$.
+\end{proposition}
+
+\begin{proof}
+
+It follows that $\PP_{\pi_2}(N = n) = u_{\pi_1, \pi_2} P^n \chi_{\mathcal{K}}$ since
+\begin{equation*}
+\PP_{\pi_2}(N = n) = \PP_{\pi_2}(L_n(w) = 0) \iff \PP_{\pi_2}(\|\pi_1 \Psi(w) \| = 0) \iff \PP_{\pi_2}(\supp (\pi_1 \Psi(w)) = \bold{0}).
+\end{equation*}
+Therefore $\EE_{\pi_2}[N]$ is equal to the expected hitting time of $\mathcal{K}$ in the Markov chain $(\mathcal{S}, P)$ which has $|Q| \times 2^{|Q|}$ states.
+
+--system can be computed by a PSPACE transducer.
+-- Kemeny, Snell book citation
+\end{proof}
+
+\begin{lemma}
+Deciding whether $-\infty \in \Lambda$ is PSPACE-hard.
+\end{lemma}
+\begin{proof}
+Let the matrices $M_1, \dots, M_D \in \{0,1\}^{N \times N}$ be an instance of the mortality problem. If the $i$th row of $\sum_{d = 1}^D M_i$ is a zero row, we may define $M_1', \dots, M_D'$ as the set of matrices $M_1, \dots, M_D$ but with the $i$th row and column removed. $M_1', \dots, M_D'$ is mortal if and only if $M_1, \dots, M_D$ is mortal.
+
+-- if there is remaining state after the product M' then add an additional letter.
+
+Therefore, without loss of generality, we may assume $\sum_{d = 1}^D M_d$ contains no zero rows. The matrices $\overline{M}_1, \dots, \overline{M}_D$ defined by $\overline{M}_{i,j} = M_{i,j} / \sum_{k = 1}^N M_{i,k}$ are mortal if and only if $M_1, \dots, M_D$ are mortal. Finally, define the HMM $(Q, \Sigma, \Psi)$ where $Q = [N + 1]$, $\Sigma = \{a_1, \dots, a_d\}$ and $\Psi$ is defined in blocks
+\begin{equation*}
+\Psi(a_i) = \begin{pmatrix}
+\overline{M}_i & 0 \\
+0 & 1/|\Sigma|
+\end{pmatrix}.
+\end{equation*}
+Let $\pi_1 = (1/N, \dots, 1/N, 0)$ and $\pi_2 = (0, \dots, 0, 1)$. These initial distributions lead to a set of likelihood exponents $\Lambda$ and It follows that $-\infty \in \Lambda$ if and only if $M_1, \dots, M_d$ are mortal.
+\end{proof}
+
+%-=When $\phi \neq \psi$ then $d(s_0, s_1) = 1$, but the expected time for the SPRT is longer if $\lvert \phi - \psi \rvert$ is larger. This corresponds to a more steep slope of sample runs.
+
+
+
+Define an directed graph as follows. The vertex set is $V = (Q \cup \{\perp\}) \times Q$ where $\perp$ is a fresh state. There is an edge from $(q_1,q_2) \in V$ to $(r_1, r_2) \in V$ if any of the following three conditions hold.
+
+
+
+We say an HMM $(Q, \Sigma, \Psi)$ is strongly connected if the Markov chain $\sum_{a \in \Sigma} \Psi(a)$ is strongly connected.
+
+
+
+\begin{restatable}{theorem}{nondetermconv}\label{nondetermconv}
+We may compute in polynomial time a set of at most $|Q|^2$ strongly connected HMMs $(Q_k, \Sigma, \Psi_k)$ and pairs of initial states $(q_k, r_k)$ with corresponding likelihood ratios $L^k_n$ such that for all $\ell \in \Lambda$ there is $L^k_n$ such that $\liexp^k = \ell$.
+\end{restatable}
+
+
+
+
+
+
+
+
+
+
+ Markov chain has states labelled $(q_i, q_j)$ for $i,j = 1, \dots, |Q|$ and also a special absorbing state $\perp$. The transition probabilities are taken from the outgoing transitions from $q_j$. It may be that a letter produced from $q_j$ cannot be produced from $q_i$ in which case the Markov chain transitions to $\perp$. The full definition is
+
+
+
+
+\subsection{Deterministic Chains}
+
+
+\subsection{Non-Deterministic Chains}
+
+- show that it's atleast PSPACE hard to approximate and computing them is as hard as computing lyapunov exponents (known to be a hard problem).
+
+
+
+
+
+By introducing non-determinism, the likelihood ratio can no longer be split into a simple product of random variables depending only on the transitions in a Markov chain. It follows that we may not use the Strong ergodic theorem for Markov chains to show convergence of $\liexp$. We instead prove convergence using work by Protasov. The following theorem is proven in the appendix.
+
+
+
+There is no known algorithm for computing each limit $\liexp^k$. Moreover, even if we know the values of $\liexp^k$, we show that computing the distribution of $\liexp$ over the possible limits $\{\liexp^k \mid k = 1, \dots, K\}$ is PSPACE-complete. We therefore consider consider a series of problems leading up to the final result.
+
+The starting point is language inclusion for \emph{non-deterministic finite automata} (NFA). An NFA is a quintuple $(Q,\Sigma ,\Delta ,q_0,F)$ such that
+The starting point is language inclusion for \emph{non-deterministic finite automata} (NFA). An NFA is a quintuple $(Q,\Sigma ,\Delta ,q_0,F)$ such that
+\begin{itemize}
+\item a finite set of states $Q$.
+\item a finite set of input symbols $\Sigma$.
+\item a transition function $\Delta : Q \times \Sigma \rightarrow \mathscr{P}(Q)$.
+\item an initial state $q_0$
+\item a set of final states $F \subseteq Q$.
+\end{itemize}
+The language accepted by $M$, $L(M)$ is the set of $a_1\cdots a_n \in \Sigma^n$ such that there exists a sequence of states $q_1, \dots, q_n$ such that $q_i \in \Delta (q_{i - 1}, a_i)$ for $i = 1, \dots, n$ and $q_n \in F$.
+
+

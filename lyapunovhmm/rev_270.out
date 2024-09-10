@@ -1,0 +1,25 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Preliminaries}{}% 2
+\BOOKMARK [1][-]{section.3}{Sequential Probability Ratio Test}{}% 3
+\BOOKMARK [2][-]{subsection.3.1}{Expectation of N, }{section.3}% 4
+\BOOKMARK [2][-]{subsection.3.2}{Distribution of N, }{section.3}% 5
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Likelihood Exponent 0}{subsection.3.2}% 6
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Likelihood Exponent -}{subsection.3.2}% 7
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Likelihood Exponent in \(-, 0\)}{subsection.3.2}% 8
+\BOOKMARK [1][-]{section.4}{Probability of E}{}% 9
+\BOOKMARK [1][-]{section.5}{Representing Likelihood Exponents}{}% 10
+\BOOKMARK [1][-]{section.6}{Deterministic HMMs}{}% 11
+\BOOKMARK [1][-]{section.7}{Conclusions}{}% 12
+\BOOKMARK [1][-]{appendix.A}{Proofs and Additional Material on sec:prelims}{}% 13
+\BOOKMARK [2][-]{subsection.A.1}{Proof of convergenceLn}{appendix.A}% 14
+\BOOKMARK [2][-]{subsection.A.2}{Details on sleepcycles}{appendix.A}% 15
+\BOOKMARK [1][-]{appendix.B}{Proofs from liexpsubsect}{}% 16
+\BOOKMARK [2][-]{subsection.B.1}{Proof of sprtcorrectness}{appendix.B}% 17
+\BOOKMARK [2][-]{subsection.B.2}{Proof of asymptoticwald}{appendix.B}% 18
+\BOOKMARK [2][-]{subsection.B.3}{Proof of prop:neginf}{appendix.B}% 19
+\BOOKMARK [2][-]{subsection.B.4}{Proof of liexpmotivation}{appendix.B}% 20
+\BOOKMARK [1][-]{appendix.C}{Proofs from sec:qual}{}% 21
+\BOOKMARK [2][-]{subsection.C.1}{Proof of lem:expoprop}{appendix.C}% 22
+\BOOKMARK [2][-]{subsection.C.2}{Proof of thm:qual-prob}{appendix.C}% 23
+\BOOKMARK [1][-]{appendix.D}{Proofs from sec:rep}{}% 24
+\BOOKMARK [1][-]{appendix.E}{Proofs from sec:det}{}% 25

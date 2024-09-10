@@ -1,0 +1,49 @@
+A (discrete-time, finite-state) \emph{Hidden Markov Model (HMM)} (often called \emph{labelled Markov chain}) has a finite set $Q$ of states and for each state a probability distribution over its possible successor states.
+Every state is associated with a probability transition over a successor state and an emitted letter (\emph{observation}).
+For example, consider the following diagram visualising an HMM:
+\begin{center}
+\begin{tikzpicture}[scale=2.5,LMC style]
+\node[state] (q1) at (0,0) {$q_1$};
+\node[state] (q2) at (1,0) {$q_2$};
+\path[->] (q1) edge [loop,out=200,in=160,looseness=10] node[left] {$\frac13 a$} (q1);
+\path[->] (q1) edge [bend left] node[above] {$\frac23 b$} (q2);
+\path[->] (q2) edge [loop,out=20,in=-20,looseness=10] node[right] {$\frac23 a$} (q2);
+\path[->] (q2) edge [bend left] node[below] {$\frac13 b$} (q1);
+\end{tikzpicture}
+\end{center}
+In state~$q_1$, the probability of emitting~$a$ and the next state being also~$q_1$ is~$\frac13$, and the probability of emitting~$b$ and the next state being~$q_2$ is~$\frac23$.
+An HMM is typically viewed as a producer of a finite or infinite word of emitted observations.
+For example, starting in~$q_1$, the probability of producing a word with prefix $a b a$ is $\frac13 \cdot \frac23 \cdot \frac23$, whereas starting in~$q_2$, the probability of $a b a$ is $\frac23 \cdot \frac13 \cdot \frac13$.
+The random sequence of states is considered not observable (which explains the term \emph{hidden} in HMM).
+
+HMMs are widely employed in fields such as speech recognition (see~\cite{Rabiner89} for a tutorial),
+gesture recognition~\cite{Gesture},
+%musical score following~\cite{MusicalScore},
+signal processing~\cite{SignalProcessing},
+and climate modeling~\cite{Weather}.
+HMMs are heavily used in computational biology~\cite{HMM-comp-biology},
+more specifically in DNA modeling~\cite{DNA-modeling} and biological sequence analysis~\cite{durbin1998biological},
+including protein structure prediction~\cite{ProteinStructure} %, detecting similarities in genomes~\cite{Homology}
+and gene finding~\cite{GeneFinding}.
+In computer-aided verification, HMMs are the most fundamental model for probabilistic systems; model-checking tools such as Prism~\cite{KNP11} or Storm~\cite{Storm} are based on analyzing HMMs efficiently.
+
+One of the most fundamental questions about HMMs is whether two initial distributions are \emph{(trace) equivalent}, i.e., generate the same distribution on infinite observation sequences.
+In the example above, we argued that (the Dirac distributions on) the states $q_1, q_2$ are not equivalent.
+The equivalence problem is very well studied and can be solved in polynomial time using algorithms that are based on linear algebra~\cite{schut61,Paz71,Tzeng92,CortesMRdistance}.
+The equivalence problem has applications in verification, e.g., of randomised anonymity protocols~\cite{kief11}.
+
+Equivalence is a strong notion, and a natural question about nonequivalent distributions in a given HMM is \emph{how} different they are.
+For initial distributions $\pi_1, \pi_2$ on the states of the HMM, let us write $\PP_{\pi_1}, \PP_{\pi_2}$ for the induced probability measure on infinite observation sequences; i.e., $\PP_{\pi_i}(E)$, for a measurable event $E \subseteq \Sigma^\omega$, is the probability that the random infinite word~$w \in \Sigma^\omega$ produced starting from~$\pi_i$ is in~$E$.
+Then, the \emph{total variation distance} between $\PP_{\pi_1}, \PP_{\pi_2}$ is defined as
+\[
+ d(\pi_1,\pi_2) \ := \ \sup~\{ |\PP_{\pi_1}(E) - \PP_{\pi_2}(E)| \mid \text{measurable } E \subseteq \Sigma^\omega\}\,.
+\]
+This supremum is a maximum; i.e., there always exists an event $E \subseteq \Sigma^\omega$ with $d(\pi_1,\pi_2) = \PP_{\pi_1}(E) - \PP_{\pi_2}(E)$.
+In these terms, initial distributions $\pi_1, \pi_2$ are equivalent if and only $d(\pi_1, \pi_2) = 0$.
+The total variation distance was studied in more detail in~\cite{kief14}.
+There it was shown that the problem whether $d(\pi_1, \pi_2) = 1$ holds can also be decided in polynomial time.
+Calling $\pi_1, \pi_2$ with $d(\pi_1, \pi_2) = 1$ \emph{distinguishable}, distinguishability was then used for runtime monitoring~\cite{kief16} and diagnosability~\cite{BertrandHL16,AkshayBFG19}.
+
+Although it is easy to come up with HMMs and distributions $\pi_1,\pi_2$ such that $0 < d(\pi_1,\pi_2) < 1$, there are distinguishable $\pi_1, \pi_2$ (i.e., $d(\pi_1,\pi_2) = 1$) that are nevertheless ``hard'' to distinguish.
+In our example above, (the Dirac distributions on) $q_1, q_2$ are distinguishable.
+If we replace the transition probabilities $\frac13, \frac23$ in the HMM by $\frac12-\varepsilon, \frac12+\varepsilon$, respectively, $q_1, q_2$ remain distinguishable for every $\varepsilon>0$, although, intuitively, many observations are needed to define an event that has a probability close to~$1$ starting from~$q_1$ and close to~$0$ starting from~$q_2$. 

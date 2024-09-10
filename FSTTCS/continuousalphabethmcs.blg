@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: continuousalphabethmcs.aux
+The style file: plainurl.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: continuousalphabethmcs.bib
+You've used 24 entries,
+            2849 wiz_defined-function locations,
+            786 strings with 9139 characters,
+and the built_in function-call counts, 11691 in all, are:
+= -- 1244
+> -- 410
+< -- 11
++ -- 151
+- -- 124
+* -- 656
+:= -- 1661
+add.period$ -- 80
+call.type$ -- 24
+change.case$ -- 133
+chr.to.int$ -- 0
+cite$ -- 24
+duplicate$ -- 354
+empty$ -- 1076
+format.name$ -- 124
+if$ -- 2986
+int.to.chr$ -- 0
+int.to.str$ -- 24
+missing$ -- 24
+newline$ -- 124
+num.names$ -- 48
+pop$ -- 229
+preamble$ -- 1
+purify$ -- 110
+quote$ -- 0
+skip$ -- 802
+stack$ -- 0
+substring$ -- 663
+swap$ -- 107
+text.length$ -- 11
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 92
+warning$ -- 0
+while$ -- 96
+width$ -- 26
+write$ -- 276

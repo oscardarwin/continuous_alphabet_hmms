@@ -1,0 +1,461 @@
+\documentclass[a4paper,UKenglish,cleveref, autoref,mathscr]{lipics-v2019}
+%This is a template for producing LIPIcs articles.
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling cleveref support, use "autoref"
+
+\usepackage{bbm, tikz, mathtools, thm-restate}
+\usetikzlibrary{arrows,calc,automata,intersections}
+\tikzset{LMC style/.style={>=angle 60,every edge/.append style={thick},every state/.style={thick,minimum size=20,inner sep=0.5}}}
+
+\usepackage{asymptote}
+
+\newcommand{\eow}{\$}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Epsilon}{\mathcal{E}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\Bor}{\mathscr{B}}
+\newcommand{\BorC}{\mathscr{C}}
+\newcommand{\GG}{\mathscr{G}}
+\newcommand{\HH}{\mathscr{H}}
+\newcommand{\Norm}{\mathscr{N}}
+%\newcommand{\FF}{\mathscr{F}}
+\newcommand{\DD}{\mathscr{D}}
+\newcommand{\LL}{\mathscr{L}}
+\newcommand{\Exp}{\mathit{Exp}}
+\newcommand{\MM}{\mathscr{M}}
+\newcommand{\Basis}{\mathscr{B}}
+\newcommand{\balph}{\boldsymbol{\alpha}}
+\newcommand{\bpldP}{\boldsymbol{P}}
+\newcommand{\stoch}{\boldsymbol{S}}
+\newcommand{\TT}{\boldsymbol{T}}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\pem}{\mathbf{A}}
+\newcommand{\con}{\textbf{con}}
+\newcommand{\Con}{\overline{\textbf{con}}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\pl}{\Gamma_{\mathit{GEM}}}
+\newcommand{\Leb}{\lambda_{\mathit{Leb}}}
+
+\graphicspath{ {images/} }
+
+\DeclareMathOperator{\Span}{span\,}
+
+%\newcommand{\stefan}[1]{\marginpar{\textcolor{blue}{#1}}}
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Equivalence of Hidden Markov Models with Continuous Observations}
+
+\author{Oscar Darwin}{Department of Computer Science, Oxford University, United Kingdom }{}{https://orcid.org/0000-0001-5016-014X}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\author{Stefan Kiefer}{Department of Computer Science, Oxford University, United Kingdom}{}{https://orcid.org/0000-0003-4173-6877}{}
+
+\authorrunning{O. Darwin and S. Kiefer}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{John Q. Public and Joan R. Public}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+%\ccsdesc[100]{General and reference~General literature}
+%\ccsdesc[100]{General and reference}%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm
+\ccsdesc[500]{Theory of computation~Random walks and Markov chains}
+\ccsdesc[500]{Mathematics of computing~Stochastic processes}
+\ccsdesc[300]{Theory of computation~Logic and verification}
+
+\keywords{Markov chains, equivalence, probabilistic systems, verification}%TODO mandatory; please add comma-separated list of keywords
+
+\category{}%optional, e.g. invited paper
+
+\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversion{A full version of the paper is available at \url{...}.}
+
+\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%\acknowledgements{I want to thank \dots}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sloppy
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Lyapunov
+\end{abstract}
+
+\section{Introduction}
+
+
+\section{Preliminaries}
+We write $\NN$ for the set of positive integers, $\QQ$ for the set of rationals and $\QQ_+$ for the set of positive rationals.
+For $d \in \NN$ and a finite set $Q$ we use the notation $|Q|$ for the number of elements in $Q$, $[d] = \{1, \dots, d\}$ and $[Q] = \{1, \dots, |Q|\}$. Vectors $\mu \in \RR^N$ are viewed as row vectors and we write $\1 = (1, \dots, 1) \in \RR^N$.
+Superscript~$T$ denotes transpose; e.g., $\1^T$ is a column vector of ones.
+A matrix $M \in \RR^{N \times N}$ is \emph{stochastic} if $M$ is non-negative and $\sum_{j = 1}^{N} M_{i,j} = 1$ for all $i \in [N]$.
+For a domain $\Sigma$ and subset $E \subset \Sigma$ the \emph{characteristic} function $\chi_E : \Sigma \rightarrow \{0,1\}$ is defined as $\chi_E(x) = 1$ if $x \in E$ and $\chi_E(x) = 0$ otherwise. Given a function $\gamma : [N] \rightarrow S \subseteq [N]$ and a matrix $M \in \RR^{N \times N}$ clearly $S$ is isomorphic to $[M]$ for some $M \leq N$ by a unique monotonically increasing isomorphism $\phi : S \rightarrow [M]$. We may define the restricted matrix $(M\restriction_S)_{i,j} = M_{\gamma^{-1 } \circ \phi^{-1} (i), \gamma^{-1 } \circ \phi^{-1} (j)}$.
+
+Throughout this paper, we use $\Sigma$ to denote a set of \emph{observations}.
+We assume $\Sigma$ is a topological space and $(\Sigma, \GG, \lambda)$ is a measure space where every open subset $E \in \GG$ has non-zero measure. Indeed $\RR$ and the usual Lebesgue measure space on $\RR$ satisfy these assumptions.
+The set $\Sigma^n$ is the set of words over~$\Sigma$ of length $n$ and $\Sigma^* = \bigcup_{n = 0}^\infty \Sigma^n$.
+
+
+A matrix valued function $\Psi : \Sigma \rightarrow [0,\infty)^{N \times N}$ can be integrated element-wise.
+We write $\int_E \Psi\,d\lambda$ for the matrix with entries $\left( \int_E \Psi\, d\lambda \right)_{i,j} = \int_E \Psi_{i,j}\, d\lambda$, where $\Psi_{i,j} : \Sigma \rightarrow [0,\infty)$ is defined by $\Psi_{i,j}(x) = \big( \Psi(x) \big)_{i,j}$ for all $x \in \Sigma$.
+
+
+A function $f : \Sigma \rightarrow \RR^m$ is \emph{piecewise continuous} if there is an open set $C \subset \Sigma$, called a \emph{set of continuity}, such that $f$ is continuous on $C$ and for every point $x \in  \Sigma \setminus C$ there is some sequence of points $x_n \in C$ such that $\lim_{n \rightarrow \infty} x_n = x$ and $\lim_{n \rightarrow \infty} f(x_n) = f(x)$. For a non-negative function $f : \Sigma \rightarrow [0,\infty)$ we use the notation ${\supp~f = \{x \in \Sigma \mid f(x) > 0\}}$.
+
+
+\begin{definition}\label{HMMdef}
+A \emph{Hidden Markov Model} (HMM) is a triple $(Q, \Sigma, \Psi)$ where $Q$ is a finite set of states, $\Sigma$ is a set of observations, and the \emph{observation density matrix} $\Psi : \Sigma \rightarrow [0,\infty)^{|Q| \times |Q|}$ specifies the transitions such that $\int_\Sigma \Psi\, d\lambda$ is a stochastic matrix.
+\end{definition}
+\begin{example} \label{ex-HMMdef}
+The HMM from the introduction is the triple $(\{q_1, q_2\}, \mathbb{R}, \Psi)$ with
+\begin{equation}
+\Psi(x) \ = \ \begin{pmatrix}
+\frac12 \cdot 2 \exp(-2 x) \cdot \chi_{[0,\infty)}(x) && \frac12 \cdot 1 \cdot \chi_{[-1,0)}(x) \\
+\frac13 \cdot \frac12 \cdot \chi_{[0,2)}(x) && \frac23 \cdot \exp(-x) \cdot \chi_{[0,\infty)}(x)
+\end{pmatrix}\,. \tag*{\qed}
+\end{equation}
+\end{example}
+We assume that $\Psi$ is piecewise continuous and extend $\Psi$ to the mapping $\Psi : \Sigma^* \rightarrow [0,\infty)^{|Q| \times |Q|}$ with $\Psi(x_1 \cdots x_n) = \Psi(x_1) \times \dots \times \Psi(x_n)$ for $x_1, \dots, x_n \in \Sigma$. If $C$ is the set of continuity for $\Psi : \Sigma \rightarrow [0,\infty)^{|Q| \times |Q|}$, then for fixed $n \in \NN$ the restriction $\Psi : \Sigma^n \rightarrow [0,\infty)^{|Q| \times |Q|}$ is piecewise continuous with set of continuity $C^n$. We say that $A \subseteq \Sigma^n$ is a \emph{cylinder set} if $A = A_1 \times \dots \times A_n$ and $A_i \in \GG$ for $i \in [n]$. For every $n$ there is an induced measure space $(\Sigma^n, \GG^n, \lambda^n)$ where $\GG^n$ is the smallest $\sigma$-algebra containing all cylinder sets in~$\Sigma^n$ and $\lambda^n(A_1 \times \dots \times A_n) = \prod_{i = 1}^n \lambda(A_i)$ for any cylinder set $A_1 \times \dots \times A_n$. Let $A \subset \Sigma^n$ and write $A \Sigma^\omega$ for the set of infinite words over~$\Sigma$ where the first $n$ observations fall in the set~$A$. Given a HMM $(Q, \Sigma, \Psi)$ and initial distribution $\pi$ on $Q$ viewed as vector $\pi \in \RR^{|Q|}$, there is an induced probability space $(\Sigma^\omega, \GG^*, \PP_\pi)$ where $\Sigma^\omega$ is the set of infinite words over~$\Sigma$, and $\GG^*$ is the smallest $\sigma$-algebra containing (for all $n \in \NN$) all sets $A \Sigma^\omega$ where $A\subseteq \Sigma^n$ is a cylinder set and $\PP_\pi$ is the unique probability measure such that
+$\PP_\pi(A \Sigma^\omega) =  \pi \int_A \Psi\, d\lambda^n \1^T$
+for any cylinder set $A \subseteq \Sigma^n$.
+\begin{definition}
+For two distributions $\pi_1$ and $\pi_2$ and a HMM $C = (Q, \Sigma, \Psi)$, we say that $\pi_1$ and~$\pi_2$ are \emph{equivalent}, written $\pi_1 \equiv_C \pi_2$, if $\PP_{\pi_1}(A) = \PP_{\pi_2}(A)$ holds for all measurable subsets $A \subseteq \Sigma^\omega$.
+\end{definition}
+One could define equivalence of two pairs $(C_1,\pi_1)$ and $(C_2,\pi_2)$ where $C_i = (Q_i, \Sigma, \Psi_i)$ are HMMs and $\pi_i$ are initial distributions for $i=1,2$.
+We do not need that though, as we can define, in a natural way, a single HMM over the disjoint union of $Q_1$ and~$Q_2$ and consider instead equivalence of $\pi_1$ and~$\pi_2$ (where $\pi_1,\pi_2$ are appropriately padded with zeros).
+
+%A key concept used throughout this paper is that of \emph{functional decomposition}.
+Given an observation density matrix $\Psi$, a \emph{functional decomposition} consists of functions $f_k : \Sigma \rightarrow [0,\infty)$ and matrices $P_k \in \RR^{|Q| \times |Q|}$ for $k \in [d]$ such that $\Psi(x) = \sum_{k = 1}^d f_k(x) P_k$ for all $x \in \Sigma$ and $\int_{\Sigma} f_k\, d\lambda = 1$ for all $k \in [d]$. We sometimes abbreviate this decomposition as $\Psi = \sum_{k = 1}^d f_k P_k$ and this notion has a central role in our paper.
+
+\begin{example} \label{ex-functional-decomposition}
+The observation density matrix~$\Psi$ from \cref{ex-HMMdef} has a functional decomposition
+\begin{align*}
+\Psi(x) \ = \
+& 2 \exp(-2 x) \chi_{[0,\infty)}(x)
+\begin{pmatrix}
+\frac12 && 0 \\ 0 && 0
+\end{pmatrix}
++
+\chi_{[-1,0)}(x)
+\begin{pmatrix}
+0 && \frac12 \\ 0 && 0
+\end{pmatrix}
++ \mbox{} \\
+& \frac12 \chi_{[0,2)}(x)
+\begin{pmatrix}
+0 && 0 \\
+\frac13 && 0
+\end{pmatrix}
++
+\exp(-x) \chi_{[0,\infty)}(x)
+\begin{pmatrix}
+0 && 0 \\
+0 && \frac23
+\end{pmatrix}
+\,. \tag*{\qed}
+\end{align*}
+\end{example}
+
+\begin{lemma}\label{stochasticPk}
+Let $(Q, \Sigma, \Psi)$ be a HMM.
+If $\Psi$ has functional decomposition $\Psi =  \sum_{k = 1}^d f_k P_k$ then $\sum_{k = 1}^d P_k$ is stochastic.
+\end{lemma}
+\begin{proof}
+By definition of a HMM, $\int_{\Sigma} \Psi\, d\lambda$ is stochastic, and we have
+\begin{equation*}
+\int_{\Sigma} \Psi\, d\lambda = \int_{\Sigma} \sum_{k = 1}^d f_k P_k\, d\lambda =  \sum_{k = 1}^d P_k  \int_{\Sigma} f_k\, d\lambda =  \sum_{k = 1}^d P_k.\qedhere
+\end{equation*}
+\end{proof}
+When $\Sigma$ is finite, it follows that $\int_\Sigma \Psi\, d\lambda = \sum_{a \in \Sigma} \Psi(a)$. Hence $\sum_{a \in \Sigma} \Psi(a)$ is stochastic.
+
+\subparagraph*{Encoding}
+For computational purposes we assume that rational numbers are represented as ratios of integers in binary.
+The initial distribution of a HMM with state set~$Q$ is given as a vector $\pi \in \QQ^{|Q|}$.
+We also need to encode continuous functions, in particular, density functions such as Gaussian, exponential or piecewise-polynomial functions.
+A \emph{profile} is a finite word (i.e., string) that describes a continuous function.
+It may consist of (an encoding of) a function type and its parameters. For example, the profile  $(\mathcal{N}, \mu, \sigma)$ may denote a Gaussian (also called normal) distribution with mean $\mu \in \QQ$ and standard deviation $\sigma \in \QQ_+$. A profile may also consist of a description of a rational linear combination of such building blocks.
+For any profile~$\gamma$ we write $[\![\gamma]\!] : \Sigma \rightarrow [0,\infty)$ for the function it encodes.
+For example, a profile $\gamma = (\mathcal{N}, \mu, \sigma)$ with $\mu \in \QQ,\ \sigma \in \QQ_+$ may encode the function $[\![\gamma]\!] : \RR \rightarrow [0,\infty)$ given as $[\![\gamma]\!](x) = \frac{1}{\sigma\sqrt{2\pi}} \exp{- \frac{(x - \mu)^2}{2\sigma^2}}$.
+Without restricting ourselves to any particular encoding, we assume that $\Gamma$ is a \emph{profile language}, i.e., a finitely presented but usually infinite set of valid profiles. For any $\Gamma_0 \subseteq \Gamma$ we write $[\![\Gamma_0]\!] = \{[\![\gamma]\!] \mid \gamma \in \Gamma_0\}$.
+
+We use profiles to encode HMMs $C = (Q, \Sigma, \Psi)$:
+we say that $C$ is \emph{over}~$\Gamma$ if the observation density matrix~$\Psi$ is given as a matrix of pairs $(p_{i,j}, \gamma_{i,j}) \in \QQ_+  \times \Gamma$ such that $\Psi_{i,j} = p_{i,j} [\![\gamma_{i,j}]\!]$ and $\int_{\Sigma} [\![\gamma_{i,j}]\!]\,d\lambda = 1$ hold for all $i,j \in [Q]$. In this way the $p_{i,j}$ form the transition probabilities of the embedded Markov chain and the $\gamma_{i,j}$ encode the probability densities of the observations upon each transition.
+
+\begin{example} \label{ex-encoding-prelims}
+For a suitable profile language~$\Gamma$, the HMM from \cref{ex-HMMdef} may be over~$\Gamma$, with the observation density matrix given as
+\begin{equation}
+\begin{pmatrix}
+(\frac12, (\Exp,2)) && (\frac12, (U,-1,0)) \\
+(\frac13, (U,0,2))  && (\frac23, (\Exp,1))
+\end{pmatrix}\,. \tag*{\qed}
+\end{equation}
+\end{example}
+The observation density matrix~$\Psi$ of a HMM $(Q, \Sigma, \Psi)$ with \emph{finite}~$\Sigma$ can be given as a
+list of matrices $\Psi(a) \in \QQ_+^{|Q| \times |Q|}$ for all $a \in \Sigma$ such that $\sum_{a \in \Sigma} \Psi(a)$ is a stochastic matrix.
+
+\section{Convergence to Lyapunov Exponent}
+
+Let $(\Sigma^\omega, \GG^*, \mu)$ be a probability space on infinite words and let $M = (Q, \Sigma, \Psi)$ be an HMM. We define the equivalence relation on $[Q]$ as $i \sim_\mu j$ if and only if $\forall i, j \in [Q], v \in \Sigma^*$ there exists a word $w \in \Sigma^*$ such that $\mu(v w \Sigma^\omega) > 0$ and $\Psi(w)_{i,j} > 0$. $\sim_\mu$ defines a partition $P$ on the states of $Q$ and if $P = \{Q\}$ then we say $M$ is $\mu$-connected. Clearly if $\pi$ is an initial distribution for $M$ and $\PP_{\pi}$ the resulting measure on infinite words, then $M$ is ($\PP_\pi$-)connected if and only if $\int_\Sigma \Psi d\lambda$ is an irreducible stochastic matrix.
+
+\begin{lemma}\label{absolutecontinuityprob1}
+Let $(Q, \Sigma, \Psi)$ be a connected HMM and let $\pi$ be an initial distribution. Then $\int_\Sigma \Psi d\lambda$ has a stationary distribution $\mu$ with $\pi << \mu$ and therefore for any event $E \in \GG^*$, $\mu(E) = 1$ implies $\pi(E) = 1$.  
+\end{lemma}
+
+\begin{proof}
+The stochastic matrix $\int_\Sigma \Psi d\lambda$ has a left eigenvector $\mu$ for the eigenvalue $1$ since $\int_\Sigma \Psi d\lambda \1^T = \1^T$. For any $i,j \in [Q]$ such that $\mu_i > 0$ by irredicibility and non-negativity, there is a $k \in \NN$ such that $(\int_\Sigma \Psi d\lambda)^k_{i,j} > 0$ and therefore $\mu_j = (\mu (\int_\Sigma \Psi d\lambda)^k)_j > 0$. Therefore, $\mu$ has full support and there is some $\alpha > 0$ such that $\pi \leq \alpha \mu$. Let $E \in \GG^*$ then there is a sequence of events $E_n \in \GG^n$ such that
+\begin{align}
+\pi(E) & = \lim_{n \rightarrow \infty} \pi(E_n) \\
+& = \pi \big( \lim_{n \rightarrow \infty}\int_{E_n} \Psi d\lambda \big) \1^T \\
+& \leq \alpha \mu \big( \lim_{n \rightarrow \infty}\int_{E_n} \Psi d\lambda \big) \1^T \\
+& = \alpha \mu(E).
+\end{align} 
+Therefore it follows that $\pi << \mu$ and in particular $\mu(E) = 1 \implies \mu(E^c) = 0 \implies \pi(E^c) = 0 \implies \pi(E) = 1$.
+\end{proof}
+
+\subsection{Ergodicity}
+Let $(\Sigma^\omega, \GG^*)$ be a measurable space of infinite words. The left-shift operator $\LL : \Sigma^\omega \rightarrow \Sigma^\omega$ is given as $\LL(w)_i = w_{i + 1}$. We say that a measure $\PP$ on $(\Sigma^\omega, \GG^*)$ is ergodic for $\LL$ if the following two conditions hold
+\begin{itemize}
+\item $\PP(\LL^{-1}(E)) = \PP(E) \quad \forall E \in \GG^*$
+\item $\lim_{k \rightarrow \infty} \frac{1}{k} \sum_{i = 0}^{k  - 1}\PP_\mu(\LL^{-i}(A) \cap B) = \PP_\mu(A) \PP_\mu(B) \quad \forall A, B \in \GG^*$.
+\end{itemize}
+
+\begin{lemma}\label{markovergodic}
+Let $M$ be an irreducible stochastic matrix, then $\lim_{k \rightarrow \infty} \frac{1}{k} \sum_{i = 0}^{k - 1} M^i = \1^T \mu$ where $\mu$ is the stationary distribution of $M$.
+\end{lemma}
+
+
+
+
+
+\begin{lemma}\label{ergodichmmleftshift}
+Let $(Q, \Sigma, \Psi)$ be a connected HMM and let $\mu$ be an stationary distribution for $\int_\Sigma \Psi d\lambda$ then $\PP_\mu$ is ergodic for $\LL$.
+\end{lemma}
+
+\begin{proof}
+For both conditions by \cite[p.~20, p.~41]{wal81} it suffices to check just cylinder sets. Let $n \in \NN$ and $E \in \Sigma^n$. Clearly, 
+\[\PP_\mu(\LL^{-1}(E)) = \mu \int_{\Sigma}\Psi d\lambda \int_{E}\Psi d\lambda^n \1^T = \mu \int_{E}\Psi d\lambda^n \1^T = \PP_\mu(E).\]
+And similarly, let $A, B \in \Sigma^n$ then
+\begin{align*}
+\lim_{k \rightarrow \infty} \frac{1}{k} \sum_{i = 0}^{k  - 1}\PP_\mu(\LL^{-i}(A) \cap B) & = \lim_{k \rightarrow \infty} \frac{1}{k} \sum_{i = n}^{k  - 1}\PP_\mu(\LL^{-i}(A) \cap B) \\
+& = \lim_{k \rightarrow \infty} \frac{1}{k} \sum_{i = n}^{k  - 1} \mu \int_{B}\Psi d\lambda^n \int_{\Sigma}\Psi d\lambda^{i - n} \int_{A}\Psi d\lambda^n \1^T \\
+& = \mu \int_{B}\Psi d\lambda^n \Big[ \lim_{k \rightarrow \infty} \frac{1}{k} \sum_{i = n}^{k  - 1} \Big( \int_{\Sigma}\Psi d\lambda \Big)^{i - n} \Big] \int_{A}\Psi d\lambda^n \1^T \\
+& = \mu \int_{B}\Psi d\lambda^n \1^T \mu \int_{A}\Psi d\lambda^n \1^T \\
+& = \PP_\mu(A)\PP_\mu(B)
+\end{align*}
+where the fourth equality follows by \Cref{markovergodic}.
+\end{proof}
+
+\begin{theorem}\textsc{\textbf{Kingman's Subadditive Ergodic Theorem}}
+Let $(\Sigma^\omega, \GG^*, \mu)$ a probability space on infinite words such that $\mu$ is an ergodic measure for $\LL$. Further, let $X_n$ be a sequence of integrable random variables on this space such that $X_{n+m}(w) \leq X_{n}(w) + X_{m}(\LL^n w)$. Then $\lim_{n \rightarrow \infty} \frac{X_n}{n} $ converges $\mu$-a.e. to a constant.
+\end{theorem}
+
+\begin{corollary}\label{kingmancor}
+Let $M = (Q, \Sigma, \Psi)$ be an HMM and suppose $\mu$ is an ergodic measure for $\LL$. Then, $\frac{1}{n} \ln \| \Psi_n \|$ converges $\mu$-a.e. to a constant.
+\end{corollary}
+
+\begin{proof}
+$\LL$ is ergodic for measure $\mu$ by \Cref{ergodichmmleftshift}. Writing $w_n$ for the $n$-th letter of the infinite word $w$ and $X_n = \ln \| \Psi(w_1 \cdots w_{n}) \|$ it follows that $X_n$ is integrable and
+
+\begin{align*}
+X_{n + m}(w) = \ln \| \Psi(w_1 \cdots w_{n + m}) \| & \leq \ln \| \Psi(w_1 \cdots w_n) \| \|\Psi(w_{n+1} \cdots w_{n + m}) \| \\
+& = \ln \| \Psi(w_1 \cdots w_n) \| + \ln \|\Psi(w_{n+1} \cdots w_{n + m}) \| \\
+& = X_n(w) + X_{m}(T^n w).  
+\end{align*}
+\end{proof}
+
+
+\begin{theorem}\textsc{\textbf{Oseledet's Theorem}}
+Let $C_n : \Sigma^\omega \rightarrow \RR^{r \times r}$ satisfy
+\begin{itemize}
+\item $C_0(w) = I \quad \forall w \in \Sigma^\omega$
+\item $C_{n + m}(w) = C_{m}(\LL^n(w))C_n(w).$
+\end{itemize}
+Then, there exists a finite set $L = \{\lambda_1, \dots, \lambda_k\} \subset \RR$ with $k \leq r$ such that for $u \in \RR^r$ we have $\lim_{n \rightarrow \infty} \frac{1}{n} \ln \|u C_n(w)\| \in L.$ 
+\end{theorem}
+
+
+\begin{theorem}\label{lyplimit}
+Suppose $\PP$ is an ergodic measure for $\LL$ and let $C_n : \Sigma^\omega \rightarrow \RR^{r \times r}$ be a cocycle. Suppose that for all $i,j \in [r]$ and $v \in \Sigma^*$ such that $\PP(v) > 0$ there exists a word $w \in \Sigma^*$ such that $\PP(vw) > 0$ and and $C_n(vw)_{i,j} > 0$ let $\pi$ be any initial distribution. Then
+\[
+\frac{1}{n} \ln \big( \| \pi C_n(w_n) \| \big) \rightarrow \lambda \quad \PP-\text{a.s.}
+\]
+where $\lambda \in [-\infty, 0]$ and $w_n \in \Sigma^n$ is the length $n$ prefix of a word $w \in \Sigma^\omega$. 
+\end{theorem}
+
+\begin{proof}
+By Osedelet's theorem, since $\mu$ is ergodic, $\frac{1}{n} \ln \big( \| \pi C(w_n) \| \big)$ converges $\mu$-a.s to a constant depending on $\pi$. Let $e_i$ denote the characteristic vector of state $i$. Without loss of generality, assume $e_1 \leq \supp ~\pi$ then by assumption we may construct a sequence of words $v_1, \dots v_{|Q|}$ such that $e_{i + 1} \leq \supp ~ e_i \Psi(v_i)$ and $\mu(v_1 \cdots v_{|Q|} \Sigma^\omega) > 0$ where the indices are taken mod $|Q|$. It follows that $\1 = \supp ~ \sum_{i = 1}^{|Q|} \pi \Psi(v_1 \cdots v_i)$. Noting by equivalence of norms in finite dimensional spaces that $\frac{1}{n} \ln \big( \| \1 \Psi(w_n) \| \big)$ converges to a constant by \Cref{kingmancor}, it follows that 
+\begin{align*}
+\lim_{n \rightarrow \infty} \frac{1}{n} \ln \big( \| \1 \Psi(w_n) \| \big) & = \lim_{n \rightarrow \infty} \frac{1}{n} \ln \big( \| \sum_{i = 1}^{|Q|} \pi \Psi(v_1 \cdots v_i) \Psi(w_n) \| \big) \\
+& \leq \lim_{n \rightarrow \infty} \frac{1}{n} \ln \big( |Q| \max_{i \in [Q]} \| \pi \Psi(v_1 \cdots v_i) \Psi(w_n) \| \big) \\ 
+& = \max_{i \in [Q]} \lim_{n \rightarrow \infty} \frac{1}{n} \ln \big( \| \pi \Psi(v_1 \cdots v_i) \Psi(w_n) \| \big) \\
+& \leq \lim_{n \rightarrow \infty} \frac{1}{n} \ln \big( \| \1 \Psi(w_n) \| \big).
+\end{align*}
+The third equality follows by the existance of individual limits by Osedelet's theorem and the fourth inequality follows since $\supp ~ u \leq \1$ for any $|Q|$ dimensional vector $u$. In particular the sequence of inequalities above implies that there is some word $v_1 \cdots v_i$ such that 
+\[\mu \Big\{ \lim_{n\rightarrow\infty}\frac{1}{n} \ln \big( \| \pi \Psi(w_n) \| \big) = \lim_{n \rightarrow \infty} \frac{1}{n} \ln \big( \| \1 \Psi(w_n) \| \big) \mid v_1 \cdots v_i\Sigma^\omega \Big\} = 1\]
+which in turn implies that $\mu \Big\{ \lim_{n\rightarrow\infty}\frac{1}{n} \ln ( \| \pi \Psi(w_n) \| ) = \lim_{n \rightarrow \infty} \frac{1}{n} \ln ( \| \1 \Psi(w_n) \| ) \Big\} > 0$ and hence by Osedelet's theorem must be $\mu$-a.s.
+\end{proof}
+
+We will overload the $\supp$ definition in a natural way on the domain $\mathcal{P}(Q)$. 
+
+We now define a Markov chain $M^*$ with state space $\overline{Q} = Q \times Q \times \Sigma$ and transitions 
+\[(i_1, i_2, a) \rightarrow (j_1, j_2, b) \text{ with probability } \Psi_{i_2, j_2}(b)\frac{\delta_{\Psi_{i_1, j_1} > 0}}{\sum_{j = 1}^{|Q|} \delta_{\Psi_{i_1, j} > 0}}.\] 
+
+
+Let $\PP_{\pi_1, \pi_2}^*$ be the derived probability measure on infinite runs of $M^*$ with initial distribution $\pi_1^T \pi_2 \times \{a_0\}$ where $a_0$ is chosen arbitrarily from $\Sigma$. We have that the random variables $\rho_n(\pi_1) = \frac{1}{n}\ln \|\pi_1 \Psi(w)\|$ where $w \in \Sigma^n$ take the same value on $\Sigma^n$ and $(\overline{Q})^n$ when treated as invariant on the first two variables. and for sets $A \subseteq \Sigma^n$, $\PP_{\pi_1, \pi_2}^*(Q^\omega \times Q^\omega \times A) = \PP_{\pi_2}(A)$. Therefore, the limits $\rho(\pi_1) = \lim_{n \rightarrow \infty} \rho_n(\pi_1)$ if they exist have the same distribution in $\PP^*_{\pi_1, \pi_2}$ and $\PP_{\pi_2}$.
+
+Let $P_1, \dots, P_K$ be the bottom connected components of $M^*$ with hitting times $T_1, \dots, T_k$. Write $l : \overline{Q} \rightarrow Q$ and $r : \overline{Q} \rightarrow Q$ for projection functions $l(q_1, q_2, a) = q_1$ and $r(q_1, q_2, a) = q_2$. 
+
+
+
+By the BCC property of $P_k$, $(r(P_k), \Sigma, \Psi\restriction_{r(P_k)})$ is a connected HMM so therefore has an initial distribution $\mu_k$ with support $r(P_k)$ such that $\PP_{\mu_k}$ is ergodic. $\Psi\restriction_{l(P_k)}$ defines a cocycle and together with $\PP_{\mu_k}$, satisfies the conditions in \Cref{lyplimit}. Fix $n \in \NN$. Conditioned on $\{T_k = n\}$ and emitting the prefix $w \in \Sigma^n$ before hitting $P_k$, it follows that $\supp~ \pi_1 \Psi(w) \leq \supp ~l(P_k)$ and $\supp~ \pi_2 \Psi(w) \leq \supp~ \mu_k$ and therefore $\rho(\pi_1) = \rho(\supp ~l(P_k))$ $\PP_{\mu_k}$-a.s by \Cref{lyplimit} which is also $\PP_{\pi_2 \Psi(w)}$-a.s by \Cref{absolutecontinuityprob1}. Write $\Lambda(k) = \rho(\supp ~l(P_k))$ then, $\PP_{\pi_1, \pi_2}^*(\rho(\pi_1 \Psi(w)) = L \mid T_k = t, w) = \chi_{\Lambda(k) = L}$ and so
+
+\begin{align*}
+\PP_{\pi_2}(\rho(\pi_1) = L) & = \PP_{\pi_1, \pi_2}^*(\rho(\pi_1) = L) \\
+& = \sum_{k = 1}^K \sum_{n = 1}^\infty \sum_{w \in \Sigma^n} \PP_{\pi_1, \pi_2}^*(\rho(\pi_1) = L \mid T_k = n, w) \PP_{\pi_1, \pi_2}^*(T_k = n, w) \\
+& = \sum_{k = 1}^K \sum_{n = 1}^\infty \sum_{w \in \Sigma^n} \PP_{\pi_1, \pi_2}^*(\rho(\pi_1 \Psi(w)) = L \mid T_k = n, w) \PP_{\pi_1, \pi_2}^*(T_k = n, w) \\
+& = \sum_{k = 1}^K \sum_{n = 1}^\infty \sum_{w \in \Sigma^n} \chi_{\Lambda(k) = L} \PP_{\pi_1, \pi_2}^*(T_k = n, w) \\
+& = \sum_{k : \Lambda(k) = L} \PP_{\pi_1, \pi_2}^*(T_k < \infty).
+\end{align*}
+
+\begin{corollary}\label{computingpairsofinitialdist}
+Let $(Q, \Sigma, \Psi)$ be an HMM and let $\pi_1$ and $\pi_2$ be initial distributions. One can compute in polynomial time $K \leq |Q|^2$ pairs of initial point distributions $\{(\delta_1^k, \delta_2^k)\}$ such that
+\[\PP_{\delta_2^k}(\rho(\delta_1^k) = \Lambda(k)) = 1. \]
+\end{corollary}
+
+\begin{proof}
+One can compute the end components $P_k$ of the Markov chain $M^*$ in $O(|Q|^4|\Sigma|^2)$ time. Pick any two point distributions such that $\delta_1^k \leq \supp~ l(P_k)$ and $\delta_2^k \leq \supp r(P_k)$. We have $\delta_2^k << \mu_k$ where $\mu_k$ is a stationary distribution of the end component $r(P_k)$ and by construction of $M^*$ the restriction $\Psi\restriction_{l(P_k)}$ is a cocycle satisfying the conditions of \Cref{lyplimit} with respect to the ergodic measure $\PP_{\mu_k}$. So $\rho(\delta_1^k)$ is a constant $\mu_k$-a.s which is also $\delta_2^k$-a.s.
+\end{proof}
+
+\begin{corollary}
+Let $\pi_1$ and $\pi_2$ be initial distributions for a HMM $(Q, \Sigma, \Psi)$ and write $L_n$ for the likelihood ratio $\frac{\pi_2 \Psi(w_n) \1^T}{\pi_1 \Psi(w_n) \1^T}$. Then $\frac{1}{n} \ln L_n$ converges $\PP_{\pi_1}$-a.s to a random variable on  with finite support.
+\end{corollary}
+
+We say an HMM $(Q, \Sigma, \Phi)$ with initial distribution $\pi$ is deterministic if $\pi = \delta_i$ for some $i \in [Q]$ and for all $a \in \Sigma$,  $\supp~ \Psi(a)$ is a permutation matrix.
+
+\begin{proposition}
+if $(Q, \Sigma, \Phi)$ is a deterministic and connected HMM and $\mu$ is an stationary distribution of $\int_{\Sigma} \Psi$ then $\lim_{n \rightarrow \infty} \frac{1}{n} \ln \| \pi \Psi_n \|$ exists $\PP_{\mu}$-a.s and is computable in polynomial time.
+\end{proposition}
+
+\begin{proof}
+The existence of the limit is due to (ADD REF). Since $\supp~ \Psi(a)$ is a permutation matrix there is a function $f_a : [Q] \rightarrow (0,1]$ such that $f_a(j) = \Psi(a)_{l,j} > 0$ for some $l \in [Q]$.
+
+Now consider the Markov chain $M^*$ and the random variable on the state space of $M^*$ defined as $X(i,j,a) = f_a(i)$. Writing the random sequence of states of $M^*$ as $(i_k, j_k, a_k)$ we have 
+\[\frac{1}{n} \ln \| \pi \Psi_n \| = \frac{1}{n}\sum_{k = 1}^n \ln X(i_k, j_k, a_k)\]
+Further since $X(i_k, j_k, a_k)$ takes values in a finite set $\frac{1}{n}\sum_{k = 1}^n \ln X(i_k, j_k, a_k)$ is bounded and by the dominated convergence theorem, 
+\[\lim_{n \rightarrow \infty} \frac{1}{n} \ln \| \pi \Psi_n \| = \lim_{n \rightarrow \infty} \frac{1}{n} \EE[ \ln \| \pi \Psi_n \| ] = \lim_{n \rightarrow \infty} \frac{1}{n}\sum_{k = 1}^n \EE[\ln X(i_k, j_k, a_k)].\]
+Suppose $M^*$ has period $p$, then since $M^*$ is connected $(i_{sp + r}, j_{sp + r}, a_{sp + r})$ converges in distribution to $(i_r^*, j_r^*, a_r^*)$ as $s \rightarrow \infty$ which is the stationary distribution of $(M^*)^p$. Then $\EE[\ln X(i_{sp + r}, j_{sp + r}, a_{sp + r})] = \sum_{(i,j,a) \in Q^*} \ln X(i,j,a) \PP((i_{sp + r}, j_{sp + r}, a_{sp + r} = (i,j,a)) \rightarrow \EE[\ln X(i_r^*, j_r^*, a_r^*)]$ since $X$ takes values in a finite set.
+\begin{align*}
+\lim_{n \rightarrow \infty} \frac{1}{n}\sum_{k = 1}^n \EE[\ln X(i_k, j_k, a_k)] &= \lim_{s \rightarrow \infty} \frac{1}{sp}\sum_{s = 0}^n \sum_{r = 1}^p \EE[\ln X(i_{sp + r}, j_{sp + r}, a_{sp + r})] \\
+& = \frac{1}{p}  \sum_{r = 1}^p \lim_{s \rightarrow \infty} \frac{1}{s}\sum_{s = 0}^n \EE[\ln X(i_{sp + r}, j_{sp + r}, a_{sp + r})] \\
+& =  \frac{1}{p}  \sum_{r = 1}^p \EE[\ln X(i_r^*, j_r^*, a_r^*)].\\
+\end{align*} 
+we have that $p \leq |Q|$ and $\EE[\ln X(i_r^*, j_r^*, a_r^*)]$ is computable as the sum of at most $(|Q|^2 \times |\Sigma|)^2$ terms. 
+\end{proof}
+
+\begin{lemma}
+Let $(Q, \Sigma, \Phi)$ be an HMM and suppose that $\pi_1$ and $\pi_2$ are initial distributions such that $d(\pi_1, \pi_2) = 1$. Then there exists a $\gamma \in \QQ \cap (0,1]$ computable in polynomial in $|Q|$ such that for all $N \in \NN$. 
+\begin{equation}\label{lyapboundassump}
+\PP_{\pi_1}\Big(L_{2|Q|N} < 1\Big) - \PP_{\pi_2}\Big(L_{2|Q|N} < 1\Big) \geq 1 - 2\exp\big(-\gamma N \big).
+\end{equation}
+Further, 
+\[\lim_{n \rightarrow \infty}\frac{1}{n} \ln L_n \leq -\frac{\gamma}{2|Q|} \quad \pi_1 \text{-a.s.}\]
+\end{lemma}
+
+\begin{proof}
+By \Cref{lyapboundassump} it follows that $\PP_{\pi_2}(L_{2|Q|N} < 1) \leq 2 \exp(-\gamma N)$ and $\PP_{\pi_1}(L_{2|Q|N} \geq 1) \leq 2 \exp(-\gamma N)$. Let $\epsilon \in (0,1)$ and $W_{\epsilon} = \{\epsilon \leq L_{2|Q|N} < 1\}$.
+
+\begin{align*}
+\PP_{\pi_1}(\epsilon \leq L_{2|Q|N}) & \leq \PP_{\pi_1}(L_{2|Q|N} \geq 1) + \PP_{\pi_1}(W_{\epsilon}) \\
+& \leq 2 \exp(-\gamma N) + \sum_{w \in W_\epsilon} \pi_1 \Psi(w) \1^T \\
+& \leq 2 \exp(-\gamma N) + \frac{1}{\epsilon}\sum_{w \in W_\epsilon} \pi_2 \Psi(w) \1^T \\
+& \leq 2 \exp(-\gamma N) + \frac{1}{\epsilon}\PP_{\pi_2} (L_{2|Q|N} < 1) \\
+& \leq \big(2  + \frac{1}{\epsilon}\big)\exp(-\gamma N)
+\end{align*}
+
+Finally, let $\alpha \in (0,\frac{\gamma}{2|Q|})$ then by Fatou's lemma, 
+
+\begin{align*}
+\PP_{\pi_1}(-\alpha \leq \lim_{n \rightarrow \infty} \frac{1}{n} \ln L_n )  & \leq \PP_{\pi_1}(\liminf \{-\alpha \leq \frac{1}{n} \ln L_n \}) \\
+& \leq \liminf \PP_{\pi_1}(-\alpha \leq \frac{1}{n} \ln L_n) \\
+& \leq \liminf \PP_{\pi_1}(\exp(-2|Q|N\alpha) \leq L_{2|Q|N} ) \\
+& = 0
+\end{align*}
+By choosing $\epsilon = \exp(-2|Q|N\alpha)$.
+
+\end{proof}
+
+Fix $K > 0$ and $0 \leq L < 1$. A $(K,L)$-approximation algorithm for computing the top lyapunov exponent takes as input an HMM $(Q, \Sigma, \Psi)$ and initial distributions $\pi_1, \pi_2$ then computes a number $\rho^* \in \QQ$ such that $\lvert \rho^* - \EE_{\pi_2}[\rho(\pi)]\rvert \leq K + L\rho(\pi)$. The following theorem comes from \cite{tsiblo97}.
+
+\begin{theorem}\label{tsiblothm}
+Let $A_1, A_2 \in \{0,1\}^{n \times n}$ and consider $r_n = \|\prod_{i = 1}^n A_{m_i}\|^\frac{1}{n}$ where the $m_i$ are i.i.d. random variables on the set $\{1,2\}$ then $r_n$ converges a.s. to a constant but there exists no polynomial time $(K,L)$-approximation algorithm for $\lim_{n \rightarrow \infty} r_n$.
+\end{theorem}
+
+\begin{corollary}
+There exists no polynomial time $(K,L)$-approximation algorithm for computing $\EE_{\pi_2}[\rho(\pi)]$ unless $P = NP$.
+\end{corollary}
+
+\begin{proof}
+We prove this corollary by showing equivalent hardness to \Cref{tsiblothm}. Consider the case that $|\Sigma| = 2$ and $\PP_{\pi_2}$ is equivalent to an i.d.d. distribution on $\Sigma^\omega$. Given an HMM $(Q, \Sigma, \Psi)$ we may compute in polynomial time (in $\Sigma$ and $|Q|$) $\gamma \in \QQ^+$ such that $\gamma~ \supp\{\Psi(a)\} \leq \Psi(a) \leq \supp\{\Psi(a)\}$ for all $a \in \Sigma$. it follows that for all $n \in \NN$ \[ \gamma \|\pi~ \supp~ \Psi(w)\|^\frac{1}{n} \leq \|\pi \Psi(w)\|^\frac{1}{n} \leq \|\pi~ \supp~ \Psi(w)\|^\frac{1}{n}.\]
+Suppose we can compute $\rho^*$ such that $\lvert \rho^* - \rho(\pi)\rvert \leq K + L\rho(\pi)$ in polynomial time. Then
+\[\|\rho \|\]
+\end{proof}
+
+
+
+\begin{proposition}\textsc{\textbf{NFA language inclusion}}
+NFA Language inclusion is PSPACE-complete.
+\end{proposition}
+
+\begin{corollary}
+Let $(Q_1, \Sigma, \Psi_1)$ and $(Q_2, \Sigma, \Psi_2)$ be HMMs where the latter is connected and gives rise to probability measure $\PP_2$ on $\Sigma^\omega$. Assume both HMMs are represented as arrays of binary fractions.
+
+Deciding whether $\lim_{n \rightarrow \infty} \frac{1}{n} \ln \| \Psi_1(w) \| = -\infty$ $\PP_2$-a.s. is PSPACE-complete.
+\end{corollary}
+
+\begin{proof}
+Suppose that for all $n \in \NN$ and $w \in \Sigma^n$ such that $\PP_2(w) > 0$ there exists $i,j \in [Q]$ such that $\Psi(w)_{i,j} > 0$. Then $\Psi(w)_{i,j} \geq \min_{i,j,a} \Psi(a)_{i,j}^n$ and hence $\lim_{n \rightarrow \infty} \frac{1}{n} \ln \| \Psi(w) \| \geq \ln (\min_{i,j,a} \Psi(a)_{i,j})$. Since the limit is $\PP_2$-a.s. by \cref{kingmancor} it follows that $\lim_{n \rightarrow \infty} \frac{1}{n} \ln \| \Psi_1(w) \| = -\infty$ if and only if there is some word $w \in \Sigma^*$ such that $\Psi_1(w) = 0$ and $\PP_2(w) > 0$. 
+
+Consider an instance of the Mortality problem on $\{0,1\}$ matrices given by a matrix valued function $M : \Sigma \rightarrow  \{0,1\}^{N \times N}$. If $\sum_{a \in \Sigma, k \in [N]} M(a)_{i,k} = 0$ for some $i \in [N]$ then $M$ is mortal if and only if the sub-problem $M'$ is mortal where $M'$ is the matrix valued function $M$ but with the $i$th row and column removed. Therefore we may assume WLOG that $\sum_{a \in \Sigma, k \in [N]} M(a)_{i,k} > 0$ for all $i \in [N]$.  
+
+Let $(\Psi_1(a))_{i,j} = M(a)_{i,j} / \sum_{a \in \Sigma, k \in [N]} M(a)_{i,k}$ and let $\Psi_2(a) = \frac{1}{|\Sigma|}$. Then $([N], \Sigma, \Psi_1)$ and $(\{1\}, \Sigma, \Psi_2)$ are valid HMMs and $\lim_{n \rightarrow \infty} \frac{1}{n} \ln \| \Psi_1(w) \| = -\infty$ $\PP_2$-a.s. if and only if $M$ is mortal.
+
+Now consider two HMMs $(Q_1, \Sigma, \Psi_1)$ and $(Q_2, \Sigma, \Psi_2)$ where the latter is connected. The transition function of an NFA can be represented as a matrix valued function $\Delta_i : \Sigma \rightarrow \{0,1\}^{|Q_i| \times |Q_i|}$. So consider the NFAs (for $i = 1, 2$) $N_i = (Q_i, \Sigma, \supp~ \Psi_i, q_i, Q)$ where $q_2$ is picked arbitrarily from $Q_2$. It follows that $\lim_{n \rightarrow \infty} \frac{1}{n} \ln \| \Psi_1(w) \| = -\infty$ $\PP_2$-a.s. if and only if $\LL(M_1) \subseteq \LL(M_2)$ for all choices of $q_1 \in Q_1$.
+\end{proof}
+
+\bibliography{lyapunovhmm}
+
+\appendix
+
+
+\end{document}

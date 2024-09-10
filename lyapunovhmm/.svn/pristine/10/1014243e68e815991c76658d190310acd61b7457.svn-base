@@ -1,0 +1,243 @@
+\documentclass[a4paper,UKenglish,cleveref, autoref,mathscr]{lipics-v2019}
+%This is a template for producing LIPIcs articles.
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling cleveref support, use "autoref"
+
+\usepackage{bbm, tikz, mathtools, thm-restate}
+\usetikzlibrary{arrows,calc,automata,intersections}
+\tikzset{LMC style/.style={>=angle 60,every edge/.append style={thick},every state/.style={thick,minimum size=20,inner sep=0.5}}}
+
+\usepackage{asymptote}
+
+\newcommand{\eow}{\$}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Epsilon}{\mathcal{E}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\Bor}{\mathscr{B}}
+\newcommand{\BorC}{\mathscr{C}}
+\newcommand{\GG}{\mathscr{G}}
+\newcommand{\HH}{\mathscr{H}}
+\newcommand{\Norm}{\mathscr{N}}
+%\newcommand{\FF}{\mathscr{F}}
+\newcommand{\DD}{\mathscr{D}}
+\newcommand{\Exp}{\mathit{Exp}}
+\newcommand{\MM}{\mathscr{M}}
+\newcommand{\Basis}{\mathscr{B}}
+\newcommand{\balph}{\boldsymbol{\alpha}}
+\newcommand{\bpldP}{\boldsymbol{P}}
+\newcommand{\stoch}{\boldsymbol{S}}
+\newcommand{\TT}{\boldsymbol{T}}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\pem}{\mathbf{A}}
+\newcommand{\con}{\textbf{con}}
+\newcommand{\Con}{\overline{\textbf{con}}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\pl}{\Gamma_{\mathit{GEM}}}
+\newcommand{\Leb}{\lambda_{\mathit{Leb}}}
+
+\graphicspath{ {images/} }
+
+\DeclareMathOperator{\Span}{span\,}
+
+%\newcommand{\stefan}[1]{\marginpar{\textcolor{blue}{#1}}}
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Equivalence of Hidden Markov Models with Continuous Observations}
+
+\author{Oscar Darwin}{Department of Computer Science, Oxford University, United Kingdom }{}{https://orcid.org/0000-0001-5016-014X}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional
+
+\author{Stefan Kiefer}{Department of Computer Science, Oxford University, United Kingdom}{}{https://orcid.org/0000-0003-4173-6877}{}
+
+\authorrunning{O. Darwin and S. Kiefer}%TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{John Q. Public and Joan R. Public}%TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+%\ccsdesc[100]{General and reference~General literature}
+%\ccsdesc[100]{General and reference}%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm
+\ccsdesc[500]{Theory of computation~Random walks and Markov chains}
+\ccsdesc[500]{Mathematics of computing~Stochastic processes}
+\ccsdesc[300]{Theory of computation~Logic and verification}
+
+\keywords{Markov chains, equivalence, probabilistic systems, verification}%TODO mandatory; please add comma-separated list of keywords
+
+\category{}%optional, e.g. invited paper
+
+\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversion{A full version of the paper is available at \url{...}.}
+
+\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%\acknowledgements{I want to thank \dots}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sloppy
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Lyapunov
+\end{abstract}
+
+\section{Introduction}
+
+
+\section{Preliminaries}
+We write $\NN$ for the set of positive integers, $\QQ$ for the set of rationals and $\QQ_+$ for the set of positive rationals.
+For $d \in \NN$ and a finite set $Q$ we use the notation $|Q|$ for the number of elements in $Q$, $[d] = \{1, \dots, d\}$ and $[Q] = \{1, \dots, |Q|\}$. Vectors $\mu \in \RR^N$ are viewed as row vectors and we write $\1 = (1, \dots, 1) \in \RR^N$.
+Superscript~$T$ denotes transpose; e.g., $\1^T$ is a column vector of ones.
+A matrix $M \in \RR^{N \times N}$ is \emph{stochastic} if $M$ is non-negative and $\sum_{j = 1}^{N} M_{i,j} = 1$ for all $i \in [N]$.
+For a domain $\Sigma$ and subset $E \subset \Sigma$ the \emph{characteristic} function $\chi_E : \Sigma \rightarrow \{0,1\}$ is defined as $\chi_E(x) = 1$ if $x \in E$ and $\chi_E(x) = 0$ otherwise.
+
+Throughout this paper, we use $\Sigma$ to denote a set of \emph{observations}.
+We assume $\Sigma$ is a topological space and $(\Sigma, \GG, \lambda)$ is a measure space where every open subset $E \in \GG$ has non-zero measure. Indeed $\RR$ and the usual Lebesgue measure space on $\RR$ satisfy these assumptions.
+The set $\Sigma^n$ is the set of words over~$\Sigma$ of length $n$ and $\Sigma^* = \bigcup_{n = 0}^\infty \Sigma^n$.
+
+
+A matrix valued function $\Psi : \Sigma \rightarrow [0,\infty)^{N \times N}$ can be integrated element-wise.
+We write $\int_E \Psi\,d\lambda$ for the matrix with entries $\left( \int_E \Psi\, d\lambda \right)_{i,j} = \int_E \Psi_{i,j}\, d\lambda$, where $\Psi_{i,j} : \Sigma \rightarrow [0,\infty)$ is defined by $\Psi_{i,j}(x) = \big( \Psi(x) \big)_{i,j}$ for all $x \in \Sigma$.
+
+
+A function $f : \Sigma \rightarrow \RR^m$ is \emph{piecewise continuous} if there is an open set $C \subset \Sigma$, called a \emph{set of continuity}, such that $f$ is continuous on $C$ and for every point $x \in  \Sigma \setminus C$ there is some sequence of points $x_n \in C$ such that $\lim_{n \rightarrow \infty} x_n = x$ and $\lim_{n \rightarrow \infty} f(x_n) = f(x)$. For a non-negative function $f : \Sigma \rightarrow [0,\infty)$ we use the notation ${\supp~f = \{x \in \Sigma \mid f(x) > 0\}}$.
+
+
+\begin{definition}\label{HMMdef}
+A \emph{Hidden Markov Model} (HMM) is a triple $(Q, \Sigma, \Psi)$ where $Q$ is a finite set of states, $\Sigma$ is a set of observations, and the \emph{observation density matrix} $\Psi : \Sigma \rightarrow [0,\infty)^{|Q| \times |Q|}$ specifies the transitions such that $\int_\Sigma \Psi\, d\lambda$ is a stochastic matrix.
+\end{definition}
+\begin{example} \label{ex-HMMdef}
+The HMM from the introduction is the triple $(\{q_1, q_2\}, \mathbb{R}, \Psi)$ with
+\begin{equation}
+\Psi(x) \ = \ \begin{pmatrix}
+\frac12 \cdot 2 \exp(-2 x) \cdot \chi_{[0,\infty)}(x) && \frac12 \cdot 1 \cdot \chi_{[-1,0)}(x) \\
+\frac13 \cdot \frac12 \cdot \chi_{[0,2)}(x) && \frac23 \cdot \exp(-x) \cdot \chi_{[0,\infty)}(x)
+\end{pmatrix}\,. \tag*{\qed}
+\end{equation}
+\end{example}
+We assume that $\Psi$ is piecewise continuous and extend $\Psi$ to the mapping $\Psi : \Sigma^* \rightarrow [0,\infty)^{|Q| \times |Q|}$ with $\Psi(x_1 \cdots x_n) = \Psi(x_1) \times \dots \times \Psi(x_n)$ for $x_1, \dots, x_n \in \Sigma$. If $C$ is the set of continuity for $\Psi : \Sigma \rightarrow [0,\infty)^{|Q| \times |Q|}$, then for fixed $n \in \NN$ the restriction $\Psi : \Sigma^n \rightarrow [0,\infty)^{|Q| \times |Q|}$ is piecewise continuous with set of continuity $C^n$. We say that $A \subseteq \Sigma^n$ is a \emph{cylinder set} if $A = A_1 \times \dots \times A_n$ and $A_i \in \GG$ for $i \in [n]$. For every $n$ there is an induced measure space $(\Sigma^n, \GG^n, \lambda^n)$ where $\GG^n$ is the smallest $\sigma$-algebra containing all cylinder sets in~$\Sigma^n$ and $\lambda^n(A_1 \times \dots \times A_n) = \prod_{i = 1}^n \lambda(A_i)$ for any cylinder set $A_1 \times \dots \times A_n$. Let $A \subset \Sigma^n$ and write $A \Sigma^\omega$ for the set of infinite words over~$\Sigma$ where the first $n$ observations fall in the set~$A$. Given a HMM $(Q, \Sigma, \Psi)$ and initial distribution $\pi$ on $Q$ viewed as vector $\pi \in \RR^{|Q|}$, there is an induced probability space $(\Sigma^\omega, \GG^*, \PP_\pi)$ where $\Sigma^\omega$ is the set of infinite words over~$\Sigma$, and $\GG^*$ is the smallest $\sigma$-algebra containing (for all $n \in \NN$) all sets $A \Sigma^\omega$ where $A\subseteq \Sigma^n$ is a cylinder set and $\PP_\pi$ is the unique probability measure such that
+$\PP_\pi(A \Sigma^\omega) =  \pi \int_A \Psi\, d\lambda^n \1^T$
+for any cylinder set $A \subseteq \Sigma^n$.
+\begin{definition}
+For two distributions $\pi_1$ and $\pi_2$ and a HMM $C = (Q, \Sigma, \Psi)$, we say that $\pi_1$ and~$\pi_2$ are \emph{equivalent}, written $\pi_1 \equiv_C \pi_2$, if $\PP_{\pi_1}(A) = \PP_{\pi_2}(A)$ holds for all measurable subsets $A \subseteq \Sigma^\omega$.
+\end{definition}
+One could define equivalence of two pairs $(C_1,\pi_1)$ and $(C_2,\pi_2)$ where $C_i = (Q_i, \Sigma, \Psi_i)$ are HMMs and $\pi_i$ are initial distributions for $i=1,2$.
+We do not need that though, as we can define, in a natural way, a single HMM over the disjoint union of $Q_1$ and~$Q_2$ and consider instead equivalence of $\pi_1$ and~$\pi_2$ (where $\pi_1,\pi_2$ are appropriately padded with zeros).
+
+%A key concept used throughout this paper is that of \emph{functional decomposition}.
+Given an observation density matrix $\Psi$, a \emph{functional decomposition} consists of functions $f_k : \Sigma \rightarrow [0,\infty)$ and matrices $P_k \in \RR^{|Q| \times |Q|}$ for $k \in [d]$ such that $\Psi(x) = \sum_{k = 1}^d f_k(x) P_k$ for all $x \in \Sigma$ and $\int_{\Sigma} f_k\, d\lambda = 1$ for all $k \in [d]$. We sometimes abbreviate this decomposition as $\Psi = \sum_{k = 1}^d f_k P_k$ and this notion has a central role in our paper.
+
+\begin{example} \label{ex-functional-decomposition}
+The observation density matrix~$\Psi$ from \cref{ex-HMMdef} has a functional decomposition
+\begin{align*}
+\Psi(x) \ = \
+& 2 \exp(-2 x) \chi_{[0,\infty)}(x)
+\begin{pmatrix}
+\frac12 && 0 \\ 0 && 0
+\end{pmatrix}
++
+\chi_{[-1,0)}(x)
+\begin{pmatrix}
+0 && \frac12 \\ 0 && 0
+\end{pmatrix}
++ \mbox{} \\
+& \frac12 \chi_{[0,2)}(x)
+\begin{pmatrix}
+0 && 0 \\
+\frac13 && 0
+\end{pmatrix}
++
+\exp(-x) \chi_{[0,\infty)}(x)
+\begin{pmatrix}
+0 && 0 \\
+0 && \frac23
+\end{pmatrix}
+\,. \tag*{\qed}
+\end{align*}
+\end{example}
+
+\begin{lemma}\label{stochasticPk}
+Let $(Q, \Sigma, \Psi)$ be a HMM.
+If $\Psi$ has functional decomposition $\Psi =  \sum_{k = 1}^d f_k P_k$ then $\sum_{k = 1}^d P_k$ is stochastic.
+\end{lemma}
+\begin{proof}
+By definition of a HMM, $\int_{\Sigma} \Psi\, d\lambda$ is stochastic, and we have
+\begin{equation*}
+\int_{\Sigma} \Psi\, d\lambda = \int_{\Sigma} \sum_{k = 1}^d f_k P_k\, d\lambda =  \sum_{k = 1}^d P_k  \int_{\Sigma} f_k\, d\lambda =  \sum_{k = 1}^d P_k.\qedhere
+\end{equation*}
+\end{proof}
+When $\Sigma$ is finite, it follows that $\int_\Sigma \Psi\, d\lambda = \sum_{a \in \Sigma} \Psi(a)$. Hence $\sum_{a \in \Sigma} \Psi(a)$ is stochastic.
+
+\subparagraph*{Encoding}
+For computational purposes we assume that rational numbers are represented as ratios of integers in binary.
+The initial distribution of a HMM with state set~$Q$ is given as a vector $\pi \in \QQ^{|Q|}$.
+We also need to encode continuous functions, in particular, density functions such as Gaussian, exponential or piecewise-polynomial functions.
+A \emph{profile} is a finite word (i.e., string) that describes a continuous function.
+It may consist of (an encoding of) a function type and its parameters. For example, the profile  $(\mathcal{N}, \mu, \sigma)$ may denote a Gaussian (also called normal) distribution with mean $\mu \in \QQ$ and standard deviation $\sigma \in \QQ_+$. A profile may also consist of a description of a rational linear combination of such building blocks.
+For any profile~$\gamma$ we write $[\![\gamma]\!] : \Sigma \rightarrow [0,\infty)$ for the function it encodes.
+For example, a profile $\gamma = (\mathcal{N}, \mu, \sigma)$ with $\mu \in \QQ,\ \sigma \in \QQ_+$ may encode the function $[\![\gamma]\!] : \RR \rightarrow [0,\infty)$ given as $[\![\gamma]\!](x) = \frac{1}{\sigma\sqrt{2\pi}} \exp{- \frac{(x - \mu)^2}{2\sigma^2}}$.
+Without restricting ourselves to any particular encoding, we assume that $\Gamma$ is a \emph{profile language}, i.e., a finitely presented but usually infinite set of valid profiles. For any $\Gamma_0 \subseteq \Gamma$ we write $[\![\Gamma_0]\!] = \{[\![\gamma]\!] \mid \gamma \in \Gamma_0\}$.
+
+We use profiles to encode HMMs $C = (Q, \Sigma, \Psi)$:
+we say that $C$ is \emph{over}~$\Gamma$ if the observation density matrix~$\Psi$ is given as a matrix of pairs $(p_{i,j}, \gamma_{i,j}) \in \QQ_+  \times \Gamma$ such that $\Psi_{i,j} = p_{i,j} [\![\gamma_{i,j}]\!]$ and $\int_{\Sigma} [\![\gamma_{i,j}]\!]\,d\lambda = 1$ hold for all $i,j \in [Q]$. In this way the $p_{i,j}$ form the transition probabilities of the embedded Markov chain and the $\gamma_{i,j}$ encode the probability densities of the observations upon each transition.
+
+\begin{example} \label{ex-encoding-prelims}
+For a suitable profile language~$\Gamma$, the HMM from \cref{ex-HMMdef} may be over~$\Gamma$, with the observation density matrix given as
+\begin{equation}
+\begin{pmatrix}
+(\frac12, (\Exp,2)) && (\frac12, (U,-1,0)) \\
+(\frac13, (U,0,2))  && (\frac23, (\Exp,1))
+\end{pmatrix}\,. \tag*{\qed}
+\end{equation}
+\end{example}
+The observation density matrix~$\Psi$ of a HMM $(Q, \Sigma, \Psi)$ with \emph{finite}~$\Sigma$ can be given as a
+list of matrices $\Psi(a) \in \QQ_+^{|Q| \times |Q|}$ for all $a \in \Sigma$ such that $\sum_{a \in \Sigma} \Psi(a)$ is a stochastic matrix.
+
+\section{Lyapunov Exponents Decidability}
+
+\begin{theorem}
+Let $(Q, \Sigma, \Psi)$ be a connected HMM and let $\pi$ be an initial distribution. Then
+\[
+\frac{1}{n} \ln \big( \pi \Psi(w_n) \1^T \big) \rightarrow \lambda \quad \mu-\text{a.s.}
+\]
+where $\lambda$ is the highest lyapunov exponent and $w_n \in \Sigma^n$ is the length $n$ prefix of a word $w \in \Sigma^\omega$ 
+\end{theorem}
+
+
+
+
+\bibliography{lyapunovhmm}
+
+\appendix
+
+
+\end{document}

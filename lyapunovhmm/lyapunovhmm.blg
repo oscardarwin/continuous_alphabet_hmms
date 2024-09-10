@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: lyapunovhmm.aux
+The style file: plainurl.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: lyapunovhmm.bib
+You've used 37 entries,
+            2849 wiz_defined-function locations,
+            913 strings with 12183 characters,
+and the built_in function-call counts, 18040 in all, are:
+= -- 1964
+> -- 575
+< -- 12
++ -- 208
+- -- 166
+* -- 1115
+:= -- 2532
+add.period$ -- 135
+call.type$ -- 37
+change.case$ -- 190
+chr.to.int$ -- 0
+cite$ -- 37
+duplicate$ -- 524
+empty$ -- 1696
+format.name$ -- 166
+if$ -- 4634
+int.to.chr$ -- 0
+int.to.str$ -- 37
+missing$ -- 41
+newline$ -- 205
+num.names$ -- 74
+pop$ -- 309
+preamble$ -- 1
+purify$ -- 157
+quote$ -- 0
+skip$ -- 1251
+stack$ -- 0
+substring$ -- 1038
+swap$ -- 146
+text.length$ -- 12
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 140
+warning$ -- 0
+while$ -- 136
+width$ -- 39
+write$ -- 463

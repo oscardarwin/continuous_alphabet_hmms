@@ -1,0 +1,393 @@
+\section{Proofs and Additional Material on \cref{sec:prelims}} \label{app:prelims}
+
+\subsection{Proof of \cref{convergenceLn}}
+
+\convergenceLn*
+
+\begin{proof}
+Recall that $\lim_{n \to \infty} L_n$ exists $\PP_{\pi_2}$-a.s.
+The following equalities hold:
+\stefan{Define notation $\land$}
+\begin{align*}
+1 - d(\pi_1, \pi_2) & = \lim_{n \rightarrow \infty} \sum_{w \in \Sigma^n} \| \pi_1 \Psi(w) \| \land \| \pi_2 \Psi(w) \| && \text{by \cite[Theorem~ 7]{kief14}}\\
+& = \lim_{n \rightarrow \infty} \sum_{w \in \Sigma^n} (L_n(w) \land 1 ) \| \pi_2 \Psi(w)\| \\
+& = \lim_{n \rightarrow \infty} \EE_{\pi_2} \big[ L_n \land 1  \big] \\
+& = \EE_{\pi_2} \big[ \lim_{n \rightarrow \infty}  L_n \land 1  \big] && \text{as } 0 \leq L_n(w) \land 1 \leq 1.
+\end{align*}
+Then, $\lim_{n \rightarrow \infty}  L_n \land 1 = 0 \iff \lim_{n \rightarrow \infty}  L_n = 0$.
+\end{proof}
+
+\subsection{Details on \cref{sleepcycles}} \label{app:sleepcycles}
+
+In \cite{rockhart13} they derived two embedded Markov chains with the following transition matrices:
+\begin{equation*}T_1 = \begin{bmatrix}
+0.793 & 0.099 & 0.035 & 0.064 &	0.009 \\
+0.078 & 0.769 & 0.006 & 0.144 & 0.003 \\
+0.018 & 0.004 & 0.833 & 0.134 & 0.012  \\
+0.022 & 0.094 & 0.054 & 0.827 & 0.002 \\
+0.011 & 0.005 & 0.035 & 0.005 & 0.945  \\
+\end{bmatrix}, T_2 = \begin{bmatrix}
+0.641 & 0.109 & 0.031 & 0.040 & 0.015 \\
+0.202 & 0.699 & 0.008 & 0.089 & 0.003 \\
+0.026 & 0.002 & 0.823 & 0.062 & 0.035 \\
+0.123 & 0.189 & 0.114 & 0.808 & 0.016 \\
+0.007 & 0.001 & 0.024 & 0.001 & 0.931 \\
+\end{bmatrix}.
+\end{equation*}
+
+Their HMMs are state-labelled.
+For each state $i$, they fit a Dirichlet probability density function (pdf) $f_i$ describing the distribution of observations in $\Delta^3$ emitted at state $i$.
+The pdfs of diseased and healthy individuals were so similar that they used the same pdf for both HMMs. % which was estimated from the whole population.
+Thus the two HMMs differ only in the transition probabilities.
+
+Since $\Delta^3$ is infinite and in this paper we assume finite observation alphabets, we partition the simplex into the sets
+\[
+ U_k = \{x \in \Delta^3 \mid f_k(x) \geq \sup_{i} f_i(x)\}
+\]
+for $k = 1, \dots, 5$.
+The set $U_k$ contains the points in $\Delta^3$ most likely to be produced in state~$k$.
+We assign a letter $a_k$ for each $U_k$, and define a set of observations $\Sigma = \{a_1, \dots, a_5\}$.
+Thus, the probability of producing letter $a_k$ from state $i$ is given as $O_{i,k} = \int_{U_k} f_i(x)\, dx$. We estimated the entries of $O$ using a numerical Monte Carlo technique. We generated 100,000 samples from all 5 Dirichlet distributions in their paper which yielded the estimate
+\begin{equation*}
+O = \begin{pmatrix}
+0.9172&0.0803&0&0.0002&0.0024\\
+0.0719&0.8606&0&0.0665&0.0010\\
+0&0.0007&0.8546&0.1055&0.0392\\
+0.0008&0.0998&0.0663&0.8257&0.0075\\
+0.0109&0.0094&0.1046&0.0334&0.8416\\
+\end{pmatrix}.
+\end{equation*}
+Since we consider transition labelled HMMs, we define transition functions $\Psi_1, \Psi_2$ with
+\[
+ \Psi_m(a_k)_{i,j} = \big( T_m \big)_{i,j} O_{i,k}
+\] for $m = 1, 2$.
+Let $Q = [10]$. We construct the HMM $(Q, \Sigma, \Psi)$ where
+\begin{equation*}
+\Psi(a) = \begin{pmatrix}
+\Psi_1(a) & 0 \\
+0 & \Psi_2(a) \\
+\end{pmatrix}
+\end{equation*}
+for each $a \in \Sigma$.
+
+Let $\pi_1$ and $\pi_2$ be the Dirac distributions on states 1 and 6 respectively. These initial distributions correspond to healthy and diseased individuals started from sleep state 1.
+
+
+\section{Proofs from \Cref{liexpsubsect}}
+
+\subsection{Proof of \cref{sprtcorrectness}}
+
+\sprtcorrectness*
+
+\begin{proof}
+We wish to control the probabilities $\PP_{\pi_2}\big( L_N > B\big)$ and $\PP_{\pi_1}\big( L_N < A\big)$ by choosing suitable values of $A$ and $B$. Let $W_n^1 = \{ w \in \Sigma^\omega \mid  A \leq L_m(w) \leq B ~\forall m < n, L_n < A\}$ then
+
+\begin{align*}
+\PP_{\pi_1}\big( L_N < A \big) & = \sum_{n = 1}^\infty \PP_{\pi_1}\big( W_n^1 \big) = \sum_{n = 1}^\infty \sum_{w \in W_n^1} \pi_1 \Psi(w) \1^T = \sum_{n = 1}^\infty \sum_{w \in W_n^1} L_n(w) \pi_2 \Psi(w) \1^T \\
+& \leq A \sum_{n = 1}^\infty  \sum_{w \in W_n^1} \pi_2 \Psi(w) \1^T = A \sum_{n = 1}^\infty  \PP_{\pi_2}\big( W_n^1 \big) = A \PP_{\pi_2}\big( L_N < A \big). \\
+\end{align*}
+
+Similarly, we may derive $\PP_{\pi_2}\big( L_N > b \big) \geq \frac{1}{b} \PP_{\pi_1}\big( L_N > b\big)$ so it follows that
+
+\begin{align*}
+A & \geq \frac{\PP_{\pi_1}\big(  L_N < A\big)}{\PP_{\pi_2}\big(  L_N < A\big)} = \frac{\PP_{\pi_1}\big(  L_N < A\big)}{1 - \PP_{\pi_2}\big(  L_N > B\big)} \\
+B & \leq \frac{\PP_{\pi_1}\big(  L_N > B\big)}{\PP_{\pi_2}\big(  L_{N} > B\big)} = \frac{1 - \PP_{\pi_1}\big( L_N < A\big)}{\PP_{\pi_2}\big(  L_N > B\big)}\\
+\end{align*}
+to guarantee the error bounds $\alpha = \PP_{\pi_1}\big( L_{n^*} < A\big)$ and $\beta = \PP_{\pi_2}\big( L_{n^*} > B\big)$.
+\end{proof}
+
+\subsection{Proof of \cref{liexpmotivation}} \label{app:liexpmotivation}
+
+Towards the proof of \cref{liexpmotivation} we first show the following lemma.
+
+\begin{lemma}
+The set of random variables $\{\frac{N_{\alpha, \beta}}{-\ln \alpha}\mid 0 < \alpha, \beta \leq \frac12\}$ is uniformly integrable with respect to the measure $\PP_{\pi_2}$; i.e.
+\begin{equation*}
+\lim_{K \rightarrow \infty} \sup_{\alpha, \beta} \EE_{\pi_2} \left[ -\frac{N_{\alpha, \beta}}{\ln \alpha}\1_{\frac{N_{\alpha, \beta}}{-\ln \alpha} \geq - K} \right] = 0.
+\end{equation*}
+\end{lemma}
+
+\liexpmotivation*
+
+\begin{proof}
+asdf
+\end{proof}
+\begin{proof}[Proof of \Cref{liexpmotivation}.]
+Since $\Psimin^n \leq L_n \leq \Psimin^{-n}$ it follows that
+\begin{equation*}
+N_{\alpha,\beta} \geq \frac{ \min \{ \ln \frac{\alpha}{1 - \beta}, \ln \frac{\beta}{1 - \alpha} \} }{\ln \Psimin}
+\end{equation*}
+Hence $N_{\alpha, \beta} \rightarrow \infty \ \PP_{\pi_2}$-almost surely as $\alpha, \beta \rightarrow 0$. Consider the case $\ell_k \in (-\infty, 0)$. Let $U_{\alpha,\beta} = \{w \in \Sigma^\omega \mid \ln L_{N_\alpha} \leq \ln \frac{ \alpha}{1 - \beta} \}$. The set $\bigcap_{\alpha, \beta \in (0,1]} U_{\alpha, \beta}^c \subseteq \{L_n \text{ is unbounded}\}$. Hence, $\lim_{\alpha, \beta \rightarrow 0}\1_{U_{\alpha,\beta}} = 1 \ ~\PP_{\pi_2}$-almost surely. Conditioned on $V_k$ it follows that
+
+\begin{equation*}
+0 \leq \1_{U_{\alpha, \beta}} \frac{\ln \frac{\alpha}{1 - \beta} - \ln L_{N_{\alpha, \beta}}}{N_\alpha} \leq \1_{U_{\alpha, \beta}}  \frac{\ln L_{N_{\alpha, \beta} - 1}  - \ln L_{N_{\alpha, \beta}}}{N_{\alpha, \beta}}\rightarrow 0 \ \text{ as } \alpha \rightarrow 0.
+\end{equation*}
+And so
+\begin{equation*}
+\lim_{\alpha, \beta \rightarrow 0}\frac{\ln \alpha}{N_{\alpha, \beta}} = \lim_{\alpha \rightarrow 0}\frac{\ln \frac{\alpha}{1-\beta}}{N_{\alpha, \beta}} =\lim_{\alpha \rightarrow 0}\frac{\ln L_{N_{\alpha, \beta}}}{N_{\alpha, \beta}} =\ell_k.
+\end{equation*}
+\end{proof}
+
+\section{Proofs from \Cref{sec:rep}}
+\likelihoodtolyapunov*
+
+\fromgentonongen*
+
+\begin{proof}
+Since for each $p \in Q_2$, $\sum_{a \in \Sigma} \sum_{q \in Q_2} \Psi_2(a)_{p,q} = 1$ it follows that we may define a function $\kappa_p : [0,1) \rightarrow Q_2 \times \Sigma$ such that for all $p \in Q_2$, The Lebesgue measure $\MLeb(\kappa_p^{-1}\{(q, a)\}) = \Psi(a)_{p,q}$.
+Let $\Sigma'$ be the set of atomic elements of the finite $\sigma$-algebra $\sigma\{\kappa_p^{-1}\{(q, a)\} \mid p,q \in Q_2, a \in \Sigma\}$ and let $Q' = Q_1 \times Q_2$. We also define the transition matrix $\Psi : \Sigma' \rightarrow \RR_{\geq 0}^{(Q \times Q)}$ by 
+
+
+
+
+ given by
+\begin{equation*}
+\Phi(a')_{(s,j_1),(i_2,j_2)} = \begin{cases}
+\Psi(r \circ \rho_{j_1}(p) )_{i_1, i_2} & l \circ \rho_{j_1}(p) = j_2 \\
+0 & \text{else}. \\
+\end{cases}
+\end{equation*} 
+
+Define a distribution on $\Sigma'$ as $\rho(a') = \MLeb(a')$. 
+
+
+Each 
+We define the distribution $\rho(a') = $
+
+
+$\mathcal{A}$ is a partition of $[0,1)$. Fix $p \in Q$. Let $A \in \mathcal{A}$ then $\rho_p(x)$ is constant for all $x \in A$ so we may overload the notation and consider the function $\rho_p : P \rightarrow Q \times \Sigma$. We then extend $\rho_p$ to $\rho_p : P^n \rightarrow (Q \times \Sigma)^n$ for $n \in \NN$ by iteratively defining $\rho_i(ua) = \rho_i(u) \rho_{l(\rho_i(u))}(a)$ for $u \in P^n$ and $a \in P$.
+
+We will describe the one-state chain $(\{1\}, P, \Psi_P)$ as the \emph{singleton generator} for $\Psi$ where $\Psi_P(p) = \MLeb(p)$. Given an initial distribution $\pi$ for $(Q, \Sigma, \Psi)$, a word generated by its singleton generator uniquely defines a path of states and letters. Let $\PPind$ be the measure on the set of infinite words $P^\omega$ generated by this HMM.
+
+In order to incorporate the state space of the producing HMM into the state space of the chain started from $\pi_1$, we define two functions $l : Q \times \Sigma \rightarrow Q$ and $r : Q \times \Sigma \rightarrow \Sigma$ where $l(q,a) = q$ and $r(q,a) = a$. We then define the matrix valued function $\Phi : P \rightarrow [0,1]^{(Q \times Q) \times (Q \times Q)}$ as
+
+\[\Phi(p)_{(i_1,j_1),(i_2,j_2)} = \begin{cases}
+\Psi(r \circ \rho_{j_1}(p) )_{i_1, i_2} & l \circ \rho_{j_1}(p) = j_2 \\
+0 & \text{else}. \\
+\end{cases}\]
+Further for initial distributions $\pi_1, \pi_2 \in [0,1]^{|Q|}$ we define $\pi_1 \times \pi_2 = \pi_1^T \pi_2 \in [0,1]^{|Q| \times |Q|}$.
+\end{proof}
+
+\constructLsystems*
+
+\begin{proof}
+
+\end{proof}
+
+\section{Other Stuff}
+
+\subsection{Proof of \Cref{nondetermconv}}
+
+\liexplimits*
+
+	The proof of \Cref{liexplimits} relies on related work in a subset of Ergodic Theory called \emph{Lyapunov exponents}. The main papers are by Protasov \cite{prot13} and Osedelets [ADD REFERENCE ose68]. We first must define a similar object to a observation density matrix. A \emph{random matrix product} is a triple $(Q, \Sigma, \Phi)$ where $Q$ is a set of states, $\Sigma$ is a set of letters and $\Phi : \Sigma \rightarrow [0,1]^{|Q| \times |Q|}$ is a non-negative matrix valued function. We may extend $\Phi$ to $\Sigma^*$ in the same way as an observation density matrix. we use the shorthand $\Phi_n : \Sigma^n \rightarrow [0,1]^{|Q| \times |Q|}$ for $\Phi$ restricted to $\Sigma^n$. $(Q, \Sigma, \Phi)$ is strongly connected if for all $i,j \in [Q]$ there exists a  $w \in \Sigma^*$ such that $\Phi(w)_{i,j} > 0$. $(Q, \Sigma, \Phi)$ is mortal if there exists a $w \in \Sigma^*$ such that $\Phi(w) = 0$. The main theorem by Protasov is stated below.
+
+\begin{theorem}\textsc{\textbf{Protasov's Theorem}}\label{protstheorem}
+Let $(Q, \Sigma, \Phi)$ be a strongly connected random matrix product, let $\PPind$ be an i.i.d probability measure on $\Sigma^\omega$ and let $\pi$ be an initial distribution. If $(Q, \Sigma, \Phi)$ is mortal, then $\lim_{n \rightarrow \infty} \frac1n \ln \pi \Phi_n \1^T = -\infty \quad \PPind$-a.s. otherwise there is a $\lambda \in (-\infty, 0]$ such that $\lim_{n \rightarrow \infty} \frac1n \ln \pi \Phi_n \1^T = \lambda \quad \PPind$-a.s.
+\end{theorem}
+
+The technique we use to prove \Cref{nondetermconv} involves producing an i.i.d measure $\PPind$ and random matrix product $(Q \times Q, \Sigma, \Phi)$ such that for all $n \in \NN$ and initial distributions $\pi$,
+\begin{equation*}
+\PPind\Big( \frac1n \ln \pi \Phi_n \1^T \in A \Big) = \PP_{\pi_2}\Big( \frac1n \ln \pi \Psi_n \1^T \in A\Big).
+\end{equation*}
+
+Since $\liexp = \lim_{n \rightarrow \infty} \frac1n \ln \pi_1 \Psi_n \1^T - \lim_{n \rightarrow \infty} \frac1n \ln \pi_2 \Psi_n \1^T$ such a random matrix product would imply convergence of $\liexp$ due to Protasov's theorem.
+
+When the probability space on infinite words is derived from a general HMM, the probability of a particular letter being produced at a specific position in the infinite word depends on the state the producing HMM is in. In the constructed random matrix product, the current state of the producing HMM as started from $\pi_2$ is incorporated into the state space of the HMM started from $\pi_1$.
+
+To accomplish this, we simulate transitions in the producing HMM (the chain started from $\pi_2$) by sampling a uniform random number in the interval $[0,1)$. At each state, we may partition $[0,1)$ so that each sub-interval corresponds to specific transition and the size of the sub-interval corresponds to the probability of said transition. The union over all states of these partitions has a minimal finite $\sigma$-algebra. The atoms of this $\sigma$-algebra are also a partition of $[0,1)$ and so we may sample them independently at random with probabilities according to their size. The transformation on a simple example is demonstrated in the diagram below. On the left is the original HMM. On the right is a single state HMM representing $\PPind$. For example, with probability $\frac16$, it produces the label $[\frac13, \frac12)$ which corresponds to the $b$ transition in $s_0$ or the $a$ transition in $s_1$.
+
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0) at (-1,1) {$s_0$};
+	\node[state] (s1) at (-1,0) {$s_1$};
+	\node[state] (s2) at (1,0.5) {$s^*$};
+
+	
+	\path[->] (s0) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac13 a$} (s0);
+	\path[->] (s1) edge [loop,out=250,in=290,looseness=10] node[pos=0.5,below] {$\frac12 a$} (s1);
+	\path[->] (s1) edge[bend left] node[left,pos=0.5] {$\frac12 b$} (s0);
+	\path[->] (s0) edge[bend left] node[right,pos=0.5] {$\frac23 b$} (s1);
+	
+	\path[->] (s2) edge [loop,out=20,in=340,looseness=10] node[pos=0.5,right] {$\frac13 [0,\frac13)$} (s2);
+	\path[->] (s2) edge [loop,out=100,in=140,looseness=10] node[pos=0.5,above] {$\frac16 [\frac13, \frac12)$} (s2);
+	\path[->] (s2) edge [loop,out=220,in=260,looseness=10] node[pos=0.5,left] {$\frac12 [\frac12,1)$} (s2);
+	\end{tikzpicture}
+\end{center}
+
+We now construct the random matrix product $(Q \times Q, \Sigma, \Phi)$ which can also be represented by a state transition system (but without any stochastic properties). In our example, $(Q \times Q, \Sigma, \Phi)$ consists of two strongly connected components. Each state is labelled with a left and right component state corresponding to the current states of the HMM started from $\pi_1$ and $\pi_2$ respectively. The transition weights are taken from the transitions in $\pi_1$ and the transition letters are taken from the transitions in $\pi_2$ because this random matrix product simulates $\frac1n \ln \pi_1 \Psi_n \1^T$ under the probability measure $\PP_{\pi_2}$.
+
+\begin{center}
+	\begin{tikzpicture}[scale=2.3,LMC style]
+	\node[state] (s0s0) at (-1.5,1) {$s_0 s_0$};
+	\node[state] (s1s1) at (-1.5,0) {$s_1 s_1$};
+	\node[state] (s1s0) at (1.5,1) {$s_1 s_0$};
+	\node[state] (s0s1) at (1.5,0) {$s_0 s_1$};
+	
+	\path[->] (s0s0) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac13 [0,\frac13)$} (s0s0);
+	\path[->] (s0s0) edge[bend left] node[right,pos=0.5] {$\frac23 [\frac13,\frac12)$} (s1s1);
+	\path[->] (s0s0) edge[bend left, out=80, in=100, looseness = 2.5] node[right,pos=0.5] {$\frac23 [\frac12, 1)$} (s1s1);	
+	
+	 \path[->] (s1s1) edge[bend left] node[left,pos=0.5] {$\frac12 [\frac12, 1)$} (s0s0);
+	\path[->] (s1s1) edge [loop,out=190,in=230,looseness=10] node[pos=0.5,below] {$\frac12 [0,\frac13)$} (s1s1);
+	\path[->] (s1s1) edge [loop,out=310,in=350,looseness=10] node[pos=0.5,below] {$\frac12 [\frac13,\frac12)$} (s1s1);
+	
+	
+	\path[->] (s1s0) edge [loop,out=70,in=110,looseness=10] node[pos=0.5,above] {$\frac12 [0,\frac13)$} (s1s0);
+	\path[->] (s1s0) edge[bend left] node[right,pos=0.5] {$\frac12 [\frac13,\frac12)$} (s0s1);
+	\path[->] (s1s0) edge[bend left, out=80, in=100, looseness = 2.5] node[right,pos=0.5] {$\frac12 [\frac12, 1)$} (s0s1);	
+	
+	\path[->] (s0s1) edge [loop,out=190,in=230,looseness=10] node[pos=0.5,below] {$\frac13 [0,\frac13)$} (s0s1);
+	\path[->] (s0s1) edge [loop,out=310,in=350,looseness=10] node[pos=0.5,below] {$\frac13 [\frac13,\frac12)$} (s0s1);
+	\path[->] (s0s1) edge[bend left] node[left,pos=0.5] {$\frac23 [\frac12, 1)$} (s1s0);
+		
+	\end{tikzpicture}
+\end{center}
+
+\paragraph{Random Matrix Product Construction\\}
+
+
+
+\begin{proposition}\label{existenceoflims}
+Consider the HMM $(Q, \Sigma, \Psi)$ with initial distributions $\pi_1$ and $\pi_2$ then for any measurable set $A \in [-\infty, 0]$ and for all $n \in \NN$
+\begin{equation*}
+\PP_{\pi_2}\Big( \frac1n \ln L_n \in A\Big) = \PPind\Big( \frac1n \ln \frac{\pi_1 \times \pi_2 \Phi_n \1}{\pi_2 \times \pi_2 \Phi_n \1} \in A \Big).
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+Let  $i_0, j_0 \in [Q]$ be initial states, It follows that for a word $u_1 \dots u_n \in \{\rho_{j_0}(u_1 \dots u_n) = (j_1, a_1), \dots, (j_n, a_n)\}$,
+
+\begin{align*}
+\| e_{i_0}^T e_{j_0} \Phi(u) \| & = \sum_{(i_1, \dots, i_n) \in [Q]^n} \Phi(u_1)_{(i_0, j_0),(i_1,j_1)} \dots \Phi(u_n)_{(i_{n - 1}, j_{n - 1}),(i_n,j_n)}\\
+& = \sum_{(i_1, \dots, i_n) \in [Q]^n} \Psi(a_1)_{i_0, i_1} \dots \Psi(a_n)_{i_{n - 1}, i_n}\\
+& = \| e_{i_0} \Psi(a_1 \dots a_n) \|.
+\end{align*}
+It follows that for any initial distributions $\pi_1, \pi_2$, $\| \pi_1^T \pi_2 \Psi^*(u) \| = \| \pi_1 \Psi(a_1 \dots a_n) \|$. Then considering the word $a_1, \dots, a_n$,
+
+\begin{align*}
+\PP_{\pi_2}(a_1 \dots a_n) & =\|\pi_2\Psi(a_1 \dots a_n)\| \\
+& = \sum_{j_1, \dots, j_n \in [Q]^n}\|\pi_2\Psi(a_1)_{\pi_2, j_1} \dots \Psi(a_n)_{j_{n - 1}, j_n}\|\\
+& = \sum_{u_1, \dots, u_n \in \{\rho_{\pi_2}(u_1, \dots, u_n) = (j_1, a_1), \dots, (j_n, a_n)\}} \Psi_P(u_1 \dots u_n)\\
+& = \PP_{\text{ind}}(l \circ \rho_{\pi_2}(u_1 \dots u_n) = a_1 \dots a_n)
+\end{align*}
+\end{proof}
+
+
+Consider the bottom connected components $C_1, \dots, C_k \subseteq Q \times Q$ of the Markov chain defined by $\sum_{p \in P} \Phi(p)$ and let $d : Q \times Q \rightarrow Q \times Q$ be defined as $d(s_1, s_2) = (s_2, s_2)$. The following lemmas give the $|Q|^2$ bound in \Cref{nondetermconv}.
+
+\begin{lemma}\label{Qboundfordenominator}
+Let $s$ be a starting state for an HMM $(Q, \Sigma, \Psi)$. Then $\lim_{n \rightarrow \infty} \frac1n \ln \|  (s, s) \Psi_n^* \|$ takes at most $|Q|$ values.
+\end{lemma}
+
+\begin{proof}
+Let $P_1, \dots, P_K$ be the irreducible components of $\Phi$. Consider states $(s_1, s_2), (r_1, r_2) \in Q \times Q$. If there is a path from $(s_1, s_2)$ to $(r_1, r_2)$ then there is also a path from $(s_2, s_2)$ to $(r_2, r_2)$. Therefore for any end component $P_i$ it follows that the image $d(P_i) \subseteq P_j$ for some end component $P_j$ and so we may define a function $\rho : \{ P_1, \dots, P_K \} \rightarrow \{ P_1, \dots, P_K \}$ such that $\rho(P_i) = P_j$. Suppose $P_i, P_j$ have Lyapunov exponents $\lambda_i$ and $\lambda_j$ respectively. Let $\pi_1$ and $\pi_2$ be initial distributions such that the support of $\pi_1$ is in $P_i$ and the support of $\pi_2$ is in $P_j$ then the likelihood ratio $L_n = \frac{\| \pi_1 \Psi_n \|}{\| \pi_2 \Psi_n \|}$ converges to a limit in the set $[0,\infty)$ with respect to the measure $\PP_{\pi_2}$, the same limit as $\frac{\| (\pi_1, \pi_2) \Psi_n^* \|}{\| (\pi_2, \pi_2) \Psi_n^* \|}$ with respect to $\PP_\text{ind}$. Since both $\frac{1}{n} \ln \| (\pi_1, \pi_2) \Psi_n^* \|$ and $\frac{1}{n} \ln \| (\pi_2, \pi_2) \Psi_n^* \|$ converge almost surely in the set $[-\infty, 0]$ to $\lambda_i$ and $\lambda_j$ respectively, $\frac{1}{n} \ln \frac{\| \pi_1 \Psi_n \|}{\| \pi_2 \Psi_n \|}$ converges in $[-\infty, 0]$ with respect to $\PP_{\pi_2}$. Therefore $\lambda_i \leq \lambda_j$.
+Now consider $\lim_{n \rightarrow \infty} \frac1n \ln \|  (s, s) \Psi_n^* \|$ whose possible limits is bounded by $|Q|^2$. Suppose for some word $w \in P^n$ the support of $(s, s) \Psi_n^*$ intersects an irreducible component $P_i$. Then it must also intersect $P_j$. Since $\lambda_i \leq \lambda_j$ it follows that $\lim_{n \rightarrow \infty} \frac1n \ln \|  (s, s) \Psi_n^* \| \geq \lambda_j$. Since the image $\rho \{P_1, \dots, P_K \} \leq |Q|$ it follows that $\lim_{n \rightarrow \infty} \frac1n \ln \|  (s, s) \Psi_n^* \|$ takes at most $|Q|$ values.
+\end{proof}
+
+\begin{lemma}\label{qsquaredboundlike}
+Consider an HMM $(Q, \Sigma, \Psi)$. Let $\Epsilon : [0,1]^{|Q|} \times [0,1]^{|Q|} \rightarrow [\infty, 0]$ be a parametrised random variable on $\Sigma^\omega$ defined by $\Epsilon(\pi_1, \pi_2) = \lim_{n \rightarrow \infty} \frac1n \ln \frac{\| \pi_1 \Psi(w) \|}{\|\pi_2 \Psi(w) \|}$. Then $|\{\Epsilon(\pi_1, \pi_2) \mid \pi_1, \pi_2 \in [0,1]^{|Q|}\} | \leq |Q|^2$ with respect to the measure $\PP_{\pi_2}$.
+\end{lemma}
+
+\begin{proof}
+First consider the case of dirac distributions $\pi_1 = \delta_r$ and $\pi_2 = \delta_s$. We may instead consider a bound on
+\begin{equation*}
+\lim_{n \rightarrow \infty} \frac{1}{n} \ln \frac{\| (\delta_r, \delta_s) \Psi_n^* \|}{\| (\delta_s, \delta_s) \Psi_n^* \|} = \lim_{n \rightarrow \infty} \frac1n \ln \| (\delta_r, \delta_s) \Psi_n^*\| - \lim_{n \rightarrow \infty} \frac1n \ln \| (\delta_s, \delta_s) \Psi_n^*\|
+\end{equation*}
+with respect to the $\PP_\text{ind}$ measure. Let $C_1, \dots, C_K$ be the irreducible lethal components of $\Phi$. For $L \leq K$ without loss of generality suppose $C_1, \dots, C_L$ be the irreducible components that are also end components containing diagonal entries. Let $R_1, \dots, R_L \subseteq Q$ be disjoint and have the property that for all $q \in R_i$, $(q, q) \in C_i$.
+
+Given a state $q_i \in Q$ any letter in $P$ defines a unique subsequent state $q_j$ and a unique letter produced $a$. Therefore, projecting $(\delta_p, \delta_q) \Phi_n$ onto its right component, yields a point distribution on some state. Therefore the function $\zeta : \{(\delta_p, \delta_q) \Phi(w) \mid w \in P^*\} \rightarrow Q$ defined by $\zeta((\delta_p, \delta_q) \Phi(w)) = r$ if and only if $\supp \sum_{i = 1}^{|Q|} ((\delta_p)_i, \delta_q) \Phi(w))_{i,j} = (\delta_r)_j$ for all $j$ is well defined.
+
+We may partition $\Sigma^\omega$ into $W_1, \dots, W_L$ such that $\zeta((\delta_r, \delta_s) \Phi_n(w))$ hits all states in $R_k$ infinitely often for $w \in W_k$. It follows that $(\delta_s, \delta_s) \Phi_n(w)$ intersects the end component $C_k$ and hits no other end components with diagonal entries. let $q \in C_k$ then $\frac1n \ln(\delta_s, \delta_s) \Phi_n(w)$ must converge almost surely on $W_k$ to the Lyapunov exponent given by $\lim_{n \rightarrow \infty} \frac1n \ln(\delta_q, \delta_q) \Phi_n(w)$.
+
+Similarly $\zeta((\delta_r, \delta_s) \Phi_n(w)) \in R_k$ and so $(\delta_r, \delta_s) \Phi_n(w)$ is contained in the set $Q \times R_k$ for $w \in W_k$. Since $\zeta((\delta_r, \delta_s) \Phi_n(w))$ hits all states in $R_k$ infinitely often each irreducible component $P_i$ such that $P_i \leq (\delta_r, \delta_s) \Phi_n(w)$ must have the property that $|P_i| \geq |R_k|$. Therefore the total number of irreducible components hit by $(\delta_r, \delta_s) \Phi_n(w)$ where $w \in W_k$ is at most $|Q|$. Since $L \leq |Q|$ the total number of possible limits for
+
+\begin{equation*}
+\lim_{n \rightarrow \infty} \frac{1}{n} \ln \frac{\| (\delta_r, \delta_s) \Psi_n^* \|}{\| (\delta_s, \delta_s) \Psi_n^* \|}
+\end{equation*}
+is $|Q|^2$. It remains to show that $\{\Epsilon(\pi_1, \pi_2) \mid \pi_1, \pi_2 \in [0,1]^{|Q|}\} \subseteq \{\Epsilon(\delta_r, \delta_s) \mid r, s \in Q\}$. Fix $\pi_1$ and $\pi_2$ and let us consider the possible values of
+\begin{equation*}
+\lim_{n \rightarrow \infty} \frac1n \ln \| (\pi_1, \delta_s) \Psi_n^*\| - \lim_{n \rightarrow \infty} \frac1n \ln \| (\pi_2, \delta_s) \Psi_n^*\|
+\end{equation*}
+where $s \in \supp ~\pi_2$. A consider again the partition of $\Sigma^\omega = \bigcup_{k = 1}^L W_k$. For $w \in W_k$, the only end component in $C_1, \dots, C_L$ hit by $(\pi_2, \delta_s) \Phi_n(w)$ is $C_k$. It follows that $\lim_{n \rightarrow \infty} \frac1n \ln \| (\pi_2, \delta_s) \Psi_n^* \| = \lim_{n \rightarrow \infty} \frac1n \ln \| (\delta_s, \delta_s) \Psi_n^* \|$. Any strongly connected component hit by $(\pi_1, \delta_s) \Psi_n^*(w)$, is also hit by $(\delta_r, \delta_s) \Psi_n^*(w)$ for some $r \in ~\supp \pi_1$.  It follows that we may partition $\Sigma^\omega$ so that on each part of the partition there is some $s, r \in Q$ such that
+\begin{equation*}
+\lim_{n \rightarrow \infty} \frac1n \ln \frac{ \| (\pi_1, \delta_s) \Psi_n^*\| }{ \| (\pi_2, \delta_s) \Psi_n^*\|} = \lim_{n \rightarrow \infty} \frac1n \ln \frac{ \| (\delta_r, \delta_s) \Psi_n^*\| }{ \| (\delta_s, \delta_s) \Psi_n^*\|}.
+\end{equation*}
+\end{proof}
+
+We may now prove \Cref{nondetermconv}.
+
+\begin{proof}[Proof of \Cref{nondetermconv}]
+We may compute $\Phi$ is $O(|Q|^4 |\Sigma|)$ time and a set of strongly connected components using Tarjan's algorithm $P_1, \dots, P_K \subset Q \times Q$. On each connected component, any initial distribution converges to a constant or $-\infty$ by \Cref{protstheorem} and \Cref{existenceoflims}. The  maximum of $|Q|^2$ possible limits is a result of  and \Cref{qsquaredboundlike}.
+
+for each $k \in [K]$, $(r(P_k) \cup l(P_k), \Sigma, \Psi_{\restriction l(P_k)} \bigoplus \Psi_{\restriction r(P_k)})$ is a lossy HMM. Let $(q_k,r_k) \in P_k$ then $\delta_{q_k}$ and $\delta_{r_k}$ are initial distributions such that the corresponding likelihood ratios $\liexp^k$ satisfy the requirements of the second half of the theorem.
+\end{proof}
+
+
+\subsection{Proof of the Asymptotic Wald Formula}
+\asymptoticwald*
+
+\begin{lemma}\label{2016profilethm}
+There is a number $c > 0$, computable in polynomial time, such that
+\begin{equation*}
+\PP_{\pi_2}\Big( L_{2|Q|n} \geq \exp( -\frac{c^2}{36} n ) \Big) \leq 4 \exp\Big( -\frac{c^2}{36} n \Big).
+\end{equation*}
+\end{lemma}
+
+
+
+\begin{proof}
+By \Cref{liexpmotivation}, $\lim_{\alpha, \beta \rightarrow 0} \frac{N_{\alpha, \beta}}{\ln \alpha}$ exists $\PP_{\pi_2}( \cdot \mid V_k)$-almost surely. Hence, the convergence is also in $\PP_{\pi_2}( \cdot \mid V_k)$-measure. Therefore, by the Vitali convergence theorem\cite{bog2007} it is sufficient to show that the set of random variables $\{ \frac{N_{\alpha, \beta}}{\ln \alpha} \mid \alpha, \beta \in (0,\frac12) \}$ is uniformly integrable conditioned on $V_k$. In fact, because
+\begin{equation}\label{unifintcond}
+\lim_{K \rightarrow \infty} \sup_{\alpha, \beta} \EE_{\pi_2} \big[ \frac{N_{\alpha, \beta}}{- \ln \alpha}\1_{\frac{N_{\alpha, \beta}}{-\ln \alpha} \geq - K}\big] \geq \PP_{\pi_2}(V_k) \lim_{M \rightarrow \infty} \sup_{\alpha, \beta} \frac{1}{- \ln \alpha}\EE_{\pi_2} \big[ \frac{N_{\alpha, \beta}}{- \ln \alpha}\1_{\frac{N_{\alpha, \beta}}{-\ln \alpha} \geq - K} \mid V_k \big],
+\end{equation}
+It is sufficient to check the uniform integrability condition without conditioning on $V_k$.
+
+For fixed $M \geq \frac{144|Q|}{c^2}$, write $m_\alpha = \floor{\frac{- M \ln \alpha}{2|Q|}}$. It follows that $\frac{2|Q|m_\alpha}{\ln \alpha} \leq M$ and $\alpha \geq \exp{-\frac{c^2}{36} m_\alpha}$. Further, $m_\alpha \geq \frac{M \ln 2}{2|Q|} - 1$ The following series of equalities hold
+\begin{align*}
+ \EE_{\pi_2} \big[ \frac{N_{\alpha, \beta}}{- \ln \alpha} \1_{\frac{N_{\alpha, \beta}}{-\ln \alpha} \geq M}\big] & = \frac{1}{- \ln \alpha} \sum_{n = 0}^\infty \PP_{\pi_2} \big( N_{\alpha, \beta} \1_{N_{\alpha, \beta} \geq 2|Q|m_\alpha}\big] & \leq \frac{2|Q|}{- \ln \alpha}\Big( m_\alpha ~\PP_{\pi_2}(N_{\alpha, \beta} \geq 2|Q|m_\alpha) + \sum_{n = m_\alpha}^\infty \PP_{\pi_2}\big( N_{\alpha, \beta} \geq 2|Q|n\big) > n \Big)\\
+& \leq M \PP_{\pi_2}\big( L_{2|Q|m_{\alpha}} \geq \alpha\big) + \frac{2|Q|}{- \ln \alpha} \sum_{n = m_\alpha}^\infty \PP_{\pi_2}\big( L_{2|Q|n} \geq \alpha\big) \\
+& \leq M \PP_{\pi_2}\big( L_{2|Q|m_{\alpha}} \geq \exp{-\frac{c^2}{36} m_\alpha}\big) + \frac{2|Q|}{- \ln \alpha} \sum_{n = m_\alpha}^\infty \PP_{\pi_2}\big( L_{2|Q|n} \geq \exp{-\frac{c^2}{36} n}\big) \\
+& \leq 4M \exp{-\frac{c^2}{36}m_\alpha}  + \frac{8|Q|}{- \ln \alpha} \sum_{n = m_\alpha}^\infty \exp{-\frac{c^2}{36} n}\\
+& \leq 4M \exp{-\frac{c^2}{36}m_\alpha}  + \frac{8|Q|\exp{-\frac{c^2}{36} m_\alpha}}{- \ln \alpha} \frac{1}{1 - \exp{c^2 / 36}}\\
+& \leq 4M \exp{-\frac{c^2}{36} \Big(\frac{M \ln 2}{2|Q|} - 1 \Big)}  + \frac{8|Q|\exp \Big( -\frac{c^2}{36} (\frac{M \ln 2}{2|Q|} - 1 ) \Big) }{\ln 2} \frac{1}{1 - \exp{c^2 / 36}}\\
+& \rightarrow 0
+\end{align*}
+as $K \rightarrow \infty$ where the fourth inequality follows by \Cref{2016profilethm}. Hence, \Cref{unifintcond} must hold.
+\end{proof}
+
+
+\begin{lemma}
+The events $\{L_n \rightarrow 0\}$ and $\{\liexp < 0\}$ are equal up to a $\PP_{\pi_2}$-null set.
+\end{lemma}
+
+\begin{proof}
+Fix $A < \alpha < 0$ and define the event $W_n = \{1 > L_n \geq \e^{n\alpha}\}$. Then
+\begin{align*}
+\PP_{\pi_2}(\lim_{n \rightarrow \infty} \frac1n \ln L_n > \alpha) & \leq \PP_{\pi_2}(\liminf_n \{\frac1n \ln L_n \geq \alpha\}) \\
+& \leq \liminf_n \PP_{\pi_2}(\frac1n \ln L_n \geq \alpha) \\
+& \leq \liminf_n \PP_{\pi_2}(L_n \geq \e^{n\alpha}) \\
+& = \liminf_n \Big[ \PP_{\pi_2}(1 > L_n \geq \e^{n\alpha}) +  \PP_{\pi_2}(L_n \geq 1) \Big]\\
+& \leq \liminf_n \Big[ \sum_{w \in W_n} \pi_2 \Psi(w) \1^T + e^{An + B} \Big]\\
+& \leq \liminf_n \Big[ e^{-n\alpha} \sum_{w \in W_n} \pi_1 \Psi(w) \1^T\Big]\\
+& \leq \liminf_n \Big[ e^{-n\alpha} \PP_{\pi_1}(L_n < 1)\Big]\\
+& \leq \liminf_n \Big[ e^{-n\alpha} e^{An + B}\Big]\\
+& = 0.
+\end{align*}
+\end{proof}
+Now suppose $\pi_1$ and $\pi_2$ are distinguishable.  By Theorem 5 of \cite{kief16} one may compute a $c \in (-\infty, 0)$ such that
+\begin{align*}
+\PP_{\pi_1}(L_n < 1) - \PP_{\pi_2}(L_n < 1) & \geq 1 - 2e^{cn} \\
+& \geq 1 - 2e^{n \max\Lambda }
+\end{align*}
+
+For a given HMM $(Q, \Sigma, \Psi)$, we may define a \emph{monitor} as a function $M_n : \Sigma^n \rightarrow \{1,2\}$. A well designed monitor reads an input word from an HMM started with either $\pi_1$ or $\pi_2$ and aims to return $1$ or $2$ respectively with high probability. However the following series of inequalities hold
+
+\begin{align*}
+\PP_{\pi_2}(M_n(w) = 2) - \PP_{\pi_1}(M_n(w) = 2)  &= \PP_{\pi_2}(M_n(w) = 1) + \PP_{\pi_1}(M_n(w) = 2) \\
+& = \sum_{w \in \Sigma^n} \pi_1 \Psi(w) \1^T \delta_{M_n(w) = 1} + \pi_2 \Psi(w) \1^T \delta_{M_n(w) = 2} \\
+& \geq \sum_{w \in \Sigma^n} \pi_1\Psi(w)\1^T \land \pi_2 \Psi(w) \1^T \\
+& = \PP_{\pi_2}(L_n \leq 1) - \PP_{\pi_1}(L_n \leq 1)
+\end{align*}
+which means for any monitor, to guarantee an error probability bound of at most $\epsilon$, we require atleast $\frac{\ln(\epsilon) - \ln 2}{\max \Lambda}$ observations. This bound motivates us to investigate computability properties of $\Lambda$.
+

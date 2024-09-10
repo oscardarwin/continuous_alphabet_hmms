@@ -1,0 +1,52 @@
+\begin{thebibliography}{1}
+
+\bibitem{bog2007}
+V.I. Bogachev.
+\newblock {\em Measure Theory}.
+\newblock Number v. 1 in Measure Theory. Springer Berlin Heidelberg, 2007.
+\newblock URL: \url{https://books.google.co.uk/books?id=CoSIe7h5mTsC}.
+
+\bibitem{kief14}
+Taolue Chen and Stefan Kiefer.
+\newblock On the total variation distance of labelled {M}arkov chains.
+\newblock In {\em Proceedings of the Joint Meeting of the Twenty-Third EACSL
+  Annual Conference on Computer Science Logic (CSL) and the Twenty-Ninth Annual
+  ACM/IEEE Symposium on Logic in Computer Science (LICS)}, pages 33:1--33:10,
+  Vienna, Austria, 2014.
+
+\bibitem{kief16}
+Stefan Kiefer and A.~Prasad Sistla.
+\newblock Distinguishing hidden {M}arkov chains.
+\newblock In {\em Proceedings of the 31st Annual Symposium on Logic in Computer
+  Science (LICS)}, pages 66--75, New York, USA, 2016. ACM.
+
+\bibitem{rockhart13}
+Roland Langrock, Bruce Swihart, Brian Caffo, Naresh Punjabi, and Ciprian
+  Crainiceanu.
+\newblock Combining hidden markov models for comparing the dynamics of multiple
+  sleep electroencephalograms.
+\newblock {\em Statistics in medicine}, 32, 08 2013.
+\newblock \href {http://dx.doi.org/10.1002/sim.5747}
+  {\path{doi:10.1002/sim.5747}}.
+
+\bibitem{prot13}
+Vladimir~Yu. Protasov.
+\newblock Asymptotics of products of nonnegative random matrices.
+\newblock {\em Functional Analysis and Its Applications}, 47:138--147, 2013.
+
+\bibitem{wald45}
+A.~Wald.
+\newblock {Sequential Tests of Statistical Hypotheses}.
+\newblock {\em The Annals of Mathematical Statistics}, 16(2):117 -- 186, 1945.
+\newblock URL: \url{https://doi.org/10.1214/aoms/1177731118}, \href
+  {http://dx.doi.org/10.1214/aoms/1177731118}
+  {\path{doi:10.1214/aoms/1177731118}}.
+
+\bibitem{will91}
+David Williams.
+\newblock {\em Probability with Martingales}.
+\newblock Cambridge University Press, 1991.
+\newblock \href {http://dx.doi.org/10.1017/CBO9780511813658}
+  {\path{doi:10.1017/CBO9780511813658}}.
+
+\end{thebibliography}

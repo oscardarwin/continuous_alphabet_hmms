@@ -1,0 +1,737 @@
+@inproceedings{kief14,
+    address = {Vienna, Austria},
+    author = {Taolue Chen and Stefan Kiefer},
+    booktitle = {Proceedings of the Joint Meeting of the Twenty-Third EACSL Annual Conference on Computer Science Logic (CSL) and the Twenty-Ninth Annual ACM/IEEE Symposium on Logic in Computer Science (LICS)},
+    pages = {33:1--33:10},
+    title = {On the Total Variation Distance of Labelled {M}arkov Chains},
+    year = {2014}
+}
+
+@article{schut61,
+title = "On the definition of a family of automata",
+journal = "Information and Control",
+volume = "4",
+number = "2",
+pages = "245--270",
+year = "1961",
+issn = "0019-9958",
+author = "M.P. Schützenberger"
+}
+
+@inproceedings{kief16,
+    address = {New York, USA},
+    author = {Stefan Kiefer and A. Prasad Sistla},
+    booktitle = {Proceedings of the 31st Annual Symposium on Logic in Computer Science (LICS)},
+    pages = {66--75},
+    publisher = {ACM},
+    title = {Distinguishing Hidden {M}arkov Chains},
+    year = {2016}
+}
+
+@inproceedings{kief18,
+    author = {Stefan Kiefer},
+    booktitle = {Proceedings of the 45th International Colloquium on Automata, Languages, and Programming (ICALP)},
+    series = {Leibniz International Proceedings in Informatics (LIPIcs)},
+    title = {On Computing the Total Variation Distance of Hidden {M}arkov Models},
+    year = {2018}
+}
+
+@article{bog,
+   author = {L. V. Bogachev},
+   booktitle = {eprint arXiv:0707.3160},
+   title = {Random Walks in Random Environments},
+   year = {2007}
+}
+
+@book{bog2007,
+  title={Measure Theory},
+  author={Bogachev, V.I.},
+  number={v. 1},
+  isbn={9783540345145},
+  lccn={2006933997},
+  series={Measure Theory},
+  url={https://books.google.co.uk/books?id=CoSIe7h5mTsC},
+  year={2007},
+  publisher={Springer Berlin Heidelberg}
+}
+
+
+@incollection{lililisong15,
+title = {Efficient Learning of Continuous-Time Hidden Markov Models for Disease Progression},
+author = {Liu, Yu-Ying and Li, Shuang and Li, Fuxin and Song, Le and Rehg, James M},
+booktitle = {Advances in Neural Information Processing Systems 28},
+editor = {C. Cortes and N. D. Lawrence and D. D. Lee and M. Sugiyama and R. Garnett},
+pages = {3600--3608},
+year = {2015},
+publisher = {Curran Associates, Inc.},
+url = {http://papers.nips.cc/paper/5792-efficient-learning-of-continuous-time-hidden-markov-models-for-disease-progression.pdf}
+}
+
+@article{burosch95,
+  added-at = {2016-05-30T23:17:48.000+0200},
+  author = {Bunke, Horst and Roth, Markus and Schukat-Talamazzini, Ernst Günter},
+  biburl = {https://www.bibsonomy.org/bibtex/29e7d71e9ca04e0762602bcb443a1550c/ftschammler},
+  description = {Wurde aufgenommen, v.a. wegen Topologie: Lineares Modell},
+  interhash = {30557466cf477bd9ac415052c3264df9},
+  intrahash = {9e7d71e9ca04e0762602bcb443a1550c},
+  journal = {Pattern Recognition},
+  keywords = {final handwriting recognition thema:hmm},
+  number = 9,
+  pages = {1399-1413},
+  timestamp = {2016-06-19T00:15:49.000+0200},
+  title = {Off-line cursive handwriting recognition using hidden Markov models},
+  url = {http://www.sciencedirect.com/science/article/pii/003132039500013P/pdf?md5=6b4980285d6a9fb3d1863221298d8fff&pid=1-s2.0-003132039500013P-main.pdf},
+  volume = 28,
+  year = 1995
+}
+
+@article{gayo07,
+ author = {Gales, Mark and Young, Steve},
+ title = {The Application of Hidden Markov Models in Speech Recognition},
+ journal = {Found. Trends Signal Process.},
+ issue_date = {January 2008},
+ volume = {1},
+ number = {3},
+ month = jan,
+ year = {2007},
+ issn = {1932-8346},
+ pages = {195--304},
+ numpages = {110},
+ url = {http://dx.doi.org/10.1561/2000000004},
+ doi = {10.1561/2000000004},
+ acmid = {1373537},
+ publisher = {Now Publishers Inc.},
+ address = {Hanover, MA, USA},
+}
+
+@article{juang84,
+author = {Juang, B.-H.},
+title = {On the Hidden Markov Model and Dynamic Time Warping for Speech Recognition—A Unified View},
+journal = {AT\&T Bell Laboratories Technical Journal},
+volume = {63},
+number = {7},
+pages = {1213-1243},
+doi = {10.1002/j.1538-7305.1984.tb00034.x},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/j.1538-7305.1984.tb00034.x},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/j.1538-7305.1984.tb00034.x},
+year = {1984}
+}
+
+@article{baum66,
+author = "Baum, Leonard E. and Petrie, Ted",
+doi = "10.1214/aoms/1177699147",
+fjournal = "The Annals of Mathematical Statistics",
+journal = "Ann. Math. Statist.",
+month = "12",
+number = "6",
+pages = "1554--1563",
+publisher = "The Institute of Mathematical Statistics",
+title = "Statistical Inference for Probabilistic Functions of Finite State Markov Chains",
+url = "https://doi.org/10.1214/aoms/1177699147",
+volume = "37",
+year = "1966"
+}
+
+@article{gilbert59,
+author = "Gilbert, Edgar J.",
+doi = "10.1214/aoms/1177706199",
+fjournal = "The Annals of Mathematical Statistics",
+journal = "Ann. Math. Statist.",
+month = "09",
+number = "3",
+pages = "688--697",
+publisher = "The Institute of Mathematical Statistics",
+title = "On the Identifiability Problem for Functions of Finite Markov Chains",
+url = "https://doi.org/10.1214/aoms/1177706199",
+volume = "30",
+year = "1959"
+}
+
+@inproceedings{poritz82,
+	author={A. {Poritz}},
+	booktitle={ICASSP '82. IEEE International Conference on Acoustics, Speech, and Signal Processing},
+	title={Linear predictive hidden Markov models and the speech signal},
+	year={1982},
+	volume={7},
+	number={},
+	pages={1291-1294},
+	keywords={Hidden Markov models;Speech analysis;Symmetric matrices;Filters;Signal analysis;Time series analysis;Polynomials;Predictive models;Density measurement;Time measurement},
+	doi={10.1109/ICASSP.1982.1171633},
+	ISSN={},
+	month={May},}
+
+@article{baum70,
+	ISSN = {00034851},
+	URL = {http://www.jstor.org/stable/2239727},
+	author = {Leonard E. Baum and Ted Petrie and George Soules and Norman Weiss},
+	journal = {The Annals of Mathematical Statistics},
+	number = {1},
+	pages = {164--171},
+	publisher = {Institute of Mathematical Statistics},
+	title = {A Maximization Technique Occurring in the Statistical Analysis of Probabilistic Functions of Markov Chains},
+	volume = {41},
+	year = {1970}
+}
+
+@article{baker75,
+author = {Baker, James},
+year = {1975},
+month = {03},
+pages = {24 - 29},
+title = {The DRAGON system--An overview},
+volume = {23},
+journal = {Acoustics, Speech and Signal Processing, IEEE Transactions on},
+doi = {10.1109/TASSP.1975.1162650}
+}
+
+@article{rabin63,
+ title = "Probabilistic automata",
+ journal = "Information and Control",
+ volume = "6",
+ number = "3",
+ pages = "230 - 245",
+ year = "1963",
+ issn = "0019-9958",
+ doi = "https://doi.org/10.1016/S0019-9958(63)90290-0",
+ url = "http://www.sciencedirect.com/science/article/pii/S0019995863902900",
+  author = "Michael O. Rabin",
+}
+
+@book{paz71,
+ author = {Paz, A.},
+ title = {Introduction to Probabilistic Automata (Computer Science and Applied Mathematics)},
+ year = {1971},
+ isbn = {0125476507},
+ publisher = {Academic Press, Inc.},
+ address = {Orlando, FL, USA},
+}
+
+@article{Tzeng92,
+ author = {Tzeng, W.-G.},
+ title = {A Polynomial-time Algorithm for the Equivalence of Probabilistic Automata},
+ journal = {SIAM J. Comput.},
+ issue_date = {April 1992},
+ volume = {21},
+ number = {2},
+ month = apr,
+ year = {1992},
+ issn = {0097-5397},
+ pages = {216--227},
+ numpages = {12},
+ acmid = {130206},
+ publisher = {Society for Industrial and Applied Mathematics},
+ address = {Philadelphia, PA, USA},
+ keywords = {approximate equivalence, equivalence, nondeterministic finite automata, path equivalence, probabilistic automata, unambiguous finite automata},
+}
+
+@article{dohethra08,
+author = {DOYEN, LAURENT and HENZINGER, THOMAS A. and RASKIN, JEAN-FRANÇOIS},
+title = {EQUIVALENCE OF LABELED MARKOV CHAINS},
+journal = {International Journal of Foundations of Computer Science},
+volume = {19},
+number = {03},
+pages = {549-563},
+year = {2008},
+doi = {10.1142/S0129054108005814},
+URL = {https://doi.org/10.1142/S0129054108005814},
+eprint = { https://doi.org/10.1142/S0129054108005814},
+}
+
+@article{Schwartz80,
+ author = {Schwartz, J. T.},
+ title = {Fast Probabilistic Algorithms for Verification of Polynomial Identities},
+ journal = {J. ACM},
+ issue_date = {Oct. 1980},
+ volume = {27},
+ number = {4},
+ month = oct,
+ year = {1980},
+ issn = {0004-5411},
+ pages = {701--717},
+ numpages = {17},
+ url = {http://doi.acm.org/10.1145/322217.322225},
+ doi = {10.1145/322217.322225},
+ acmid = {322225},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+}
+
+@InProceedings{zippel79,
+author="Zippel, Richard",
+editor="Ng, Edward W.",
+title="Probabilistic algorithms for sparse polynomials",
+booktitle="Symbolic and Algebraic Computation",
+year="1979",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="216--226",
+isbn="978-3-540-35128-3"
+}
+
+@Article{Razshp05,
+author="Raz, Ran
+and Shpilka, Amir",
+title="Deterministic polynomial identity testing in non-commutative models",
+journal="computational complexity",
+year="2005",
+month="Apr",
+day="01",
+volume="14",
+number="1",
+pages="1--19",
+issn="1420-8954",
+doi="10.1007/s00037-005-0188-8",
+url="https://doi.org/10.1007/s00037-005-0188-8"
+}
+
+@inproceedings{kief11,
+    author = {S. Kiefer and A.S. Murawski and J. Ouaknine and B. Wachter and J. Worrell},
+    booktitle = {Proceedings of the 23rd International Conference on Computer Aided Verification (CAV)},
+    pages = {526--540},
+    publisher = {Springer},
+    series = {LNCS},
+    title = {Language Equivalence for Probabilistic Automata},
+    volume = {6806},
+    year = {2011}
+}
+
+@article{cormoh07,
+title	= {Lp Distance and Equivalence of Probabilistic Automata},
+author	= {Corinna Cortes and Mehryar Mohri and Ashish Rastogi},
+year	= {2007},
+URL	= {http://www.cs.nyu.edu/~mohri/postscript/dist.pdf},
+journal	= {International Journal of Foundations of Computer Science},
+pages	= {761-780},
+volume	= {18}
+}
+
+@inproceedings{Holl12,
+  title={Probability Theory : The Coupling Method},
+  author={Frank den Hollander},
+  year={2012}
+}
+
+
+@inproceedings{claeme81,
+ author = {Clarke, Edmund M. and Emerson, E. Allen},
+ title = {Design and Synthesis of Synchronization Skeletons Using Branching-Time Temporal Logic},
+ booktitle = {Logic of Programs, Workshop},
+ year = {1982},
+ isbn = {3-540-11212-X},
+ pages = {52--71},
+ numpages = {20},
+ url = {http://dl.acm.org/citation.cfm?id=648063.747438},
+ acmid = {747438},
+ publisher = {Springer-Verlag},
+ address = {Berlin, Heidelberg},
+}
+
+@article{clemsi86,
+ author = {Clarke, E. M. and Emerson, E. A. and Sistla, A. P.},
+ title = {Automatic Verification of Finite-state Concurrent Systems Using Temporal Logic Specifications},
+ journal = {ACM Trans. Program. Lang. Syst.},
+ issue_date = {April 1986},
+ volume = {8},
+ number = {2},
+ month = apr,
+ year = {1986},
+ issn = {0164-0925},
+ pages = {244--263},
+ numpages = {20},
+ url = {http://doi.acm.org/10.1145/5397.5399},
+ doi = {10.1145/5397.5399},
+ acmid = {5399},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+}
+
+@Article{hanjon94,
+author="Hansson, Hans
+and Jonsson, Bengt",
+title="A logic for reasoning about time and reliability",
+journal="Formal Aspects of Computing",
+year="1994",
+month="Sep",
+day="01",
+volume="6",
+number="5",
+pages="512--535",
+issn="1433-299X",
+doi="10.1007/BF01211866",
+url="https://doi.org/10.1007/BF01211866"
+}
+
+@InProceedings{zhaherjan05,
+author="Zhang, Lijun
+and Hermanns, Holger
+and Jansen, David N.",
+editor="Wang, Farn",
+title="Logic and Model Checking for Hidden Markov Models",
+booktitle="Formal Techniques for Networked and Distributed Systems - FORTE 2005",
+year="2005",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="98--112"
+}
+
+@ARTICLE{Bel57,
+    author = "Richard Bellman",
+     title = "A Markovian Decision Process",
+   journal = "Indiana Univ. Math. J.",
+  fjournal = "Indiana University Mathematics Journal",
+    volume = 6,
+      year = 1957,
+     issue = 4,
+     pages = "679--684",
+      issn = "0022-2518",
+     coden = "IUMJAB",
+   mrclass = "",
+}
+
+@Article{norm17,
+	author="Norman, Gethin
+	and Parker, David
+	and Zou, Xueyi",
+	title="Verification and control of partially observable probabilistic systems",
+	journal="Real-Time Systems",
+	year="2017",
+	month="May",
+	day="01",
+	volume="53",
+	number="3",
+	pages="354--402",
+	issn="1573-1383",
+	doi="10.1007/s11241-017-9269-4",
+	url="https://doi.org/10.1007/s11241-017-9269-4"
+}
+
+@book{will91, place={Cambridge}, title={Probability with Martingales}, DOI={10.1017/CBO9780511813658}, publisher={Cambridge University Press}, author={Williams, David}, year={1991}}
+
+@book{thomson33,
+  title={The Calculus of Finite Differences},
+  author={Thomson, L.M.M.},
+  isbn={9781297543944},
+  url={https://books.google.co.uk/books?id=vi5AjgEACAAJ},
+  year={1933},
+  publisher={Creative Media Partners, LLC}
+}
+
+@article{oliike12,
+author = {Oliveira, Mauri and Ikeda, Ricardo},
+year = {2012},
+month = {01},
+pages = {},
+title = {Representation of the n-th Derivative of the Normal PDF Using Bernoulli Numbers and Gamma Function},
+volume = {6},
+journal = {Applied Mathematical Sciences (Ruse)}
+}
+
+
+@article{Rabiner89,
+title = "A Tutorial on Hidden {M}arkov Models and Selected Applications in Speech Recognition",
+journal = "Proceedings of the IEEE",
+volume = "77",
+number = "2",
+pages = "257--286",
+year = "1989",
+author = "L.R. Rabiner"
+}
+
+@article{Gesture,
+title = "Hand gesture recognition using a real-time tracking method and hidden {M}arkov models",
+journal = "Image and Vision Computing",
+volume = "21",
+number = "8",
+pages = "745--758",
+year = "2003",
+author = "F.-S. Chen and C.-M. Fu and C.-L. Huang"
+}
+
+
+@ARTICLE{SignalProcessing,
+ author={Crouse, M.S. and Nowak, R.D. and Baraniuk, R.G.},
+ journal={IEEE Transactions on Signal Processing},
+ title={Wavelet-based statistical signal processing using hidden {M}arkov models},
+ year={1998},
+ month={April},
+ volume={46},
+ number={4},
+ pages={886--902}
+}
+
+@article{Weather,
+author = {Ailliot, P. and Thompson, C. and Thomson, P.},
+title = {Space-time modelling of precipitation by using a hidden {M}arkov model and censored {G}aussian distributions},
+journal = {Journal of the Royal Statistical Society},
+volume = {58},
+number = {3},
+pages = {405--426},
+year = {2009}
+}
+
+@article{HMM-comp-biology,
+title={What is a hidden {M}arkov model?},
+year={2004},
+month={October},
+author={S.R. Eddy},
+journal={Nature Biotechnology},
+volume={22},
+number={10},
+pages={1315--1316}
+}
+
+@article{DNA-modeling,
+year={1989},
+journal={Bulletin of Mathematical Biology},
+volume={51},
+number={1},
+title={Stochastic models for heterogeneous {DNA} sequences},
+publisher={Kluwer Academic Publishers},
+author={Churchill, G.A.},
+pages={79--94}
+}
+
+@book{durbin1998biological,
+  title={Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids},
+  author={Durbin, R.},
+  year={1998},
+  publisher={Cambridge University Press}
+}
+
+@article{ProteinStructure,
+title = "Predicting transmembrane protein topology with a hidden {Markov} model: Application to complete genomes",
+journal = "Journal of Molecular Biology",
+volume = "305",
+number = "3",
+pages = "567--580",
+year = "2001",
+author = "A. Krogh and B. Larsson and G. von Heijne and E.L.L. Sonnhammer"
+}
+
+@article{GeneFinding,
+year={2003},
+journal={Genome Research},
+volume={13},
+title={{SLAM}: Cross-Species Gene Finding and Alignment with a Generalized Pair Hidden {M}arkov Model},
+author={M. Alexandersson and S. Cawley and L. Pachter},
+pages={469--502}
+}
+
+@InProceedings{Storm,
+author="Dehnert, C.
+and Junges, S.
+and Katoen, J.-P.
+and Volk, M.",
+title="A {Storm} is Coming: A Modern Probabilistic Model Checker",
+booktitle="Proceedings of Computer Aided Verification (CAV)",
+year="2017",
+publisher="Springer",
+pages="592--600"
+}
+
+@inproceedings{KNP11,
+author={M. Kwiatkowska and G. Norman and D. Parker},
+title={{PRISM} 4.0: Verification of Probabilistic Real-time Systems},
+booktitle={Proceedings of Computer Aided Verification (CAV)},
+year={2011},
+pages={585--591},
+publisher={Springer},
+series={LNCS},
+volume={6806}
+}
+
+@article{CortesMRdistance,
+author = {C. Cortes and M. Mohri and A. Rastogi},
+title = {{$L_p$} Distance and Equivalence of Probabilistic Automata},
+journal = {International Journal of Foundations of Computer Science},
+volume = {18},
+number = {04},
+pages = {761--779},
+year = {2007}
+}
+
+@article{BHHK03,
+author={C. Baier and B. Haverkort and H. Hermanns and J.-P. Katoen},
+journal={IEEE Transactions on Software Engineering},
+title={Model-checking algorithms for continuous-time {M}arkov chains},
+year={2003},
+volume={29},
+number={6},
+pages={524--541}
+}
+
+@inproceedings{CDKM11,
+  author    = {T. Chen and
+               M. Diciolla and
+               M.Z. Kwiatkowska and
+               A. Mereacre},
+  title     = {Time-Bounded Verification of {CTMCs} against Real-Time Specifications},
+  booktitle = {Proceedings of Formal Modeling and Analysis of Timed Systems (FORMATS)},
+  series    = {LNCS},
+  volume    = {6919},
+  pages     = {26--42},
+  publisher = {Springer},
+  year      = {2011}
+}
+
+@inproceedings{Grassmann91,
+author = {W.K. Grassmann},
+title = {Finding transient solutions in {M}arkovian event systems through randomization},
+booktitle = {Numerical solution of {M}arkov chains},
+pages = {357--371},
+year = {1991}
+}
+
+@book{horn_johnson_1991, 
+place={Cambridge}, title={Topics in Matrix Analysis},  publisher={Cambridge University Press}, author={Horn, R.A. and Johnson, C.R.}, year={1991}}
+
+@inproceedings{HKK14,
+author="Hermanns, H.
+and Kr{\v{c}}{\'a}l, J.
+and K{\v{r}}et{\'i}nsk{\'y}, J.",
+title="Probabilistic Bisimulation: Naturally on Distributions",
+booktitle="CONCUR 2014 -- Concurrency Theory",
+year="2014",
+publisher="Springer",
+pages="249--265"
+}
+
+@book{milne33,
+  title={The Calculus of Finite Differences},
+  author={Milne-Thomson, L.M.},
+  year={1933},
+  publisher={Macmillan and Company}
+}
+
+@InProceedings{TimedCompSemiMarkov18,
+author="Pedersen, M.R.
+and Fijalkow, N.
+and Bacci, G.
+and Larsen, K.G.
+and Mardare, R.",
+title="Timed Comparisons of Semi-{M}arkov Processes",
+booktitle="Language and Automata Theory and Applications",
+year="2018",
+pages="271--283"
+}
+
+@InProceedings{TVDistanceSemiMarkov,
+author="Bacci, G.
+and Bacci, G.
+and Larsen, K.G.
+and Mardare, R.",
+title="On the Total Variation Distance of Semi-{M}arkov Chains",
+booktitle="Foundations of Software Science and Computation Structures",
+year="2015",
+publisher="Springer",
+pages="185--199"
+}
+
+@article{stochasticTimedAutomata,
+  TITLE = {{Stochastic Timed Automata}},
+  AUTHOR = {Bertrand, N. and Bouyer, P. and Brihaye, T. and Menet, Q. and Baier, C. and Groesser, M. and Jurdzinski, M.},
+  JOURNAL = {{Logical Methods in Computer Science}},
+  VOLUME = {{Volume 10, Issue 4}},
+  YEAR = {2014}
+}
+
+@InProceedings{EquivForSecurity10,
+author="Alvim, M.S.
+and Andr{\'e}s, M.E.
+and Palamidessi, C.
+and van Rossum, P.",
+title="Safe Equivalences for Security Properties",
+booktitle="Theoretical Computer Science",
+year="2010",
+publisher="Springer",
+pages="55--70"
+}
+
+@InProceedings{ModVerif17,
+author="Bauer, M.S.
+and Chadha, R.
+and Viswanathan, M.",
+title="Modular Verification of Protocol Equivalence in the Presence of Randomness",
+booktitle="Computer Security -- ESORICS 2017",
+year="2017",
+publisher="Springer",
+pages="187--205"
+}
+
+@misc{braun2015robust,
+    title={Robust and Efficient Elimination of Cache and Timing Side Channels},
+    author={B.A. Braun and S. Jana and D. Boneh},
+    year={2015},
+    eprint={1506.00189},
+    archivePrefix={arXiv},
+    primaryClass={cs.CR}
+}
+
+@article{tsiblo97,
+	author = {Tsitsiklis, John and Blondel, Vincent},
+	year = {2002},
+	month = {09},
+	pages = {},
+	title = {The Lyapunov exponent and joint spectral radius of pairs of matrices are hard—when not impossible—to compute and to approximate},
+	volume = {10},
+	journal = {Mathematics of Control, Signals, and Systems},
+	doi = {10.1007/BF01219774}
+}
+
+@article{karasha09,
+	title = {On NFAs where all states are final, initial, or both},
+	journal = {Theoretical Computer Science},
+	volume = {410},
+	number = {47},
+	pages = {5010-5021},
+	year = {2009},
+	issn = {0304-3975},
+	doi = {https://doi.org/10.1016/j.tcs.2009.07.049},
+	url = {https://www.sciencedirect.com/science/article/pii/S0304397509005477},
+	author = {Jui-Yi Kao and Narad Rampersad and Jeffrey Shallit},
+	keywords = {Nondeterministic finite automata, PSPACE-complete problem, State complexity},
+	abstract = {We examine questions involving nondeterministic finite automata where all states are final, initial, or both initial and final. First, we prove hardness results for the nonuniversality and inequivalence problems for these NFAs. Next, we characterize the languages accepted. Finally, we discuss some state complexity problems involving such automata.}
+}
+
+@book{wal81,
+	title =     {An Introduction to Ergodic Theory},
+	author =    {Peter Walters},
+	publisher = {Springer},
+	isbn =      {9780387951522,0387951520},
+	year =      {2000},
+	series =    {Graduate Texts in Mathematics},
+	edition =   {},
+	volume =    {}}
+	
+@article{prot13,
+  title={Asymptotics of products of nonnegative random matrices},
+  author={Vladimir Yu. Protasov},
+  journal={Functional Analysis and Its Applications},
+  year={2013},
+  volume={47},
+  pages={138-147}
+}
+
+@article{rockhart13,
+author = {Langrock, Roland and Swihart, Bruce and Caffo, Brian and Punjabi, Naresh and Crainiceanu, Ciprian},
+year = {2013},
+month = {08},
+pages = {},
+title = {Combining hidden Markov models for comparing the dynamics of multiple sleep electroencephalograms},
+volume = {32},
+journal = {Statistics in medicine},
+doi = {10.1002/sim.5747}
+}
+
+@article{wald45,
+	author = {A. Wald},
+	title = {{Sequential Tests of Statistical Hypotheses}},
+	volume = {16},
+	journal = {The Annals of Mathematical Statistics},
+	number = {2},
+	publisher = {Institute of Mathematical Statistics},
+	pages = {117 -- 186},
+	year = {1945},
+	doi = {10.1214/aoms/1177731118},
+	URL = {https://doi.org/10.1214/aoms/1177731118}
+}
